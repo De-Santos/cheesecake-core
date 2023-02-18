@@ -5,7 +5,7 @@ eureka:
     fetch-registry: false
     register-with-eureka: false
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-server-svc:8761/eureka/
   instance:
     hostname: 192.168.0.69
     prefer-ip-address: true

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  namespace: default
+  labels:
+    app: user-service
+spec:
+  selector:
+    matchLabels:
+      app: user-service
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: localhost:5000/user-service
+          ports:
+            - containerPort: 8761
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-svc
+  namespace: default
+spec:
+  selector:
+    app: user-service
+  type: NodePort
+  ports:
+    - port: 8761
+      targetPort: 8761

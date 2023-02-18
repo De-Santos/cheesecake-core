@@ -19,10 +19,9 @@ spec:
       containers:
         - name: postgres
           image: postgres:latest
-          imagePullPolicy: "IfNotPresent"
           env:
             - name: POSTGRES_PASSWORD
-              value: example_password
+              value: postgres
           ports:
             - containerPort: 5432
       restartPolicy: Always
