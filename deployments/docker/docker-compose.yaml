@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  docker-registry:
+    image: registry:2
+    restart : always
+    container_name: docker-registry
+    ports:
+      - "5000:5000"
+    environment:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+    volumes:
+      - ./data:/data
