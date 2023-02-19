@@ -3,7 +3,24 @@ eureka:
     service-url:
       defaultZone: http://eureka-server-svc:8761/eureka/
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQL81Dialect
+  datasource:
+    username: ${username}
+    password: ${password}
+    url: ${postgres_url}
   application:
     name: user-service
 server:
   port: 8080
+
+#  spring.jpa.hibernate.ddl-auto=update
+#  spring.jpa.show-sql=true
+#  spring.jpa.properties.hibernate.format_sql=true
+#  spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQL81Dialect
