@@ -1,0 +1,19 @@
+DOCKER:
+    docker build -t localhost:5000/my-image -f dockerfile.
+    docker push localhost:5000/my-app:latest
+
+KUBECTL:
+    kubectl create -f file.yaml
+    kubectl get pods
+    kubectl get pods -w
+    kubectl get pods -o wide
+    kubectl get deploy
+    kubectl logs <pod-name>
+    kubectl describe <resource>
+    kubectl get svc
+    kubectl scale deploy user-service --replicas=5
+    kubectl create deploy nginx --image=nginx --dry-run -o yaml ------ create deploy
+    kubectl run nginx --image=nginx -it --rm -- sh ----- temp image
+    kubectl rollout restart deploy <deploy>
+POSTGRES:
+    kubectl exec -it postgres-d65fd9959-6gxxg -- psql -U postgres

@@ -1,44 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: mongoDB
   namespace: default
   labels:
-    app: postgres
+    app: mongoDB
 spec:
   selector:
     matchLabels:
-      app: postgres
+      app: mongoDB
   replicas: 1
 
   template:
     metadata:
       labels:
-        app: postgres
+        app: mongoDB
     spec:
       containers:
-        - name: postgres
-          image: postgres:latest
+        - name: mongoDB
+          image: mongoDB:latest
           env:
-            - name: POSTGRES_DB
-              value: cheesecake_db
-            - name: POSTGRES_USER
-              value: admin
-            - name: POSTGRES_PASSWORD
-              value: password
+            - name: mongoDB_PASSWORD
+              value: mongoDB
           ports:
-            - containerPort: 5432
+            - containerPort:
       restartPolicy: Always
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-svc
+  name: mongoDB-svc
   namespace: default
 spec:
   selector:
-    app: postgres
+    app: mongoDB
   type: NodePort
   ports:
     - port: 5432

@@ -1,0 +1,2 @@
+docker build -t localhost:5000/user-service -f user-dockerfile .
+docker push localhost:5000/user-service

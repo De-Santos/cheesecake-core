@@ -19,6 +19,22 @@ spec:
       containers:
         - name: user-service
           image: localhost:5000/user-service
+          env:
+            - name: username
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: user
+            - name: password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: password
+            - name: postgres_url
+              valueFrom:
+                configMapKeyRef:
+                  name: user-config
+                  key: postgres_url
           ports:
             - containerPort: 8761
       restartPolicy: Always
