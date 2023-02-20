@@ -24,19 +24,19 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: database-secret
-                  key: user
+                  key: postgres-user
             - name: password
               valueFrom:
                 secretKeyRef:
                   name: database-secret
-                  key: password
+                  key: postgres-password
             - name: postgres_url
               valueFrom:
                 configMapKeyRef:
                   name: user-config
                   key: postgres_url
           ports:
-            - containerPort: 8761
+            - containerPort: 8081
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -49,5 +49,5 @@ spec:
     app: user-service
   type: NodePort
   ports:
-    - port: 8761
-      targetPort: 8761
+    - port: 8081
+      targetPort: 8081
