@@ -5,10 +5,12 @@ import com.user.sevice.userservice.dto.UserRegistrationDto;
 import com.user.sevice.userservice.entities.User;
 import com.user.sevice.userservice.entities.UserPrivateData;
 import com.user.sevice.userservice.service.utils.UserConvertor;
+import org.springframework.stereotype.Component;
 
 import java.sql.Time;
 import java.util.Date;
 
+@Component
 public class UserConvertorImpl implements UserConvertor {
     @Override
     public User convertor(UserRegistrationDto userRegistrationDto) {

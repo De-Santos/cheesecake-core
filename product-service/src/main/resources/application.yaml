@@ -1,0 +1,17 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server-svc:8761/eureka/
+spring:
+  data:
+    mongodb:
+      host: mongo-svc
+      port: 27017
+      username: ${username}
+      password: ${password}
+      uri: ${mongo_url}
+      database: product-db
+  application:
+    name: product-service
+server:
+  port: 8082

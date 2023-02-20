@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-config
+data:
+  mongo_url:
+    "mongodb://mongo-svc:27017/product-db"
