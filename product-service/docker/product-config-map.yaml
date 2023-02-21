@@ -4,4 +4,4 @@ metadata:
   name: product-config
 data:
   mongo_url:
-    "mongodb://mongo-svc:27017/product-db"
+    "mongodb://root:password@mongo-svc:27017/product-db"

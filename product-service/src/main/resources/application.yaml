@@ -11,6 +11,7 @@ spring:
       password: ${password}
       uri: ${mongo_url}
       database: product-db
+      authentication-database: admin
   application:
     name: product-service
 server:
