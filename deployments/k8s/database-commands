@@ -1,1 +1,23 @@
 kubectl exec -it postgres-6b59fd4c9-ghs8p -- psql -U admin -d postgres
+----------------------------------------------------------------------
+test> show dbs
+admin       100.00 KiB
+config      108.00 KiB
+local        72.00 KiB
+product-db    8.00 KiB
+test> use product-db
+switched to db product-db
+product-db> db.createUser({user:"root", pwd:"root",roles: ["readWrite"]})
+{ ok: 1 }
+product-db> show users
+[
+  {
+    _id: 'product-db.root',
+    userId: new UUID("9884f3a6-ecbe-4a38-b65a-f351d4a911c5"),
+    user: 'root',
+    db: 'product-db',
+    roles: [ { role: 'readWrite', db: 'product-db' } ],
+    mechanisms: [ 'SCRAM-SHA-1', 'SCRAM-SHA-256' ]
+  }
+]
+product-db>
