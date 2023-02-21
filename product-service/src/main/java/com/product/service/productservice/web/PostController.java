@@ -1,4 +1,4 @@
-package com.product.service.productservice.controller;
+package com.product.service.productservice.web;
 
 import com.product.service.productservice.dao.PostRepository;
 import com.product.service.productservice.dto.PostDto;
