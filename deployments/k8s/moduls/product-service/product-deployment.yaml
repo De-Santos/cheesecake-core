@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: file-receiver
+  name: product-service
   namespace: default
   labels:
-    app: file-receiver
+    app: product-service
 spec:
   selector:
     matchLabels:
-      app: file-receiver
+      app: product-service
   replicas: 1
 
   template:
     metadata:
       labels:
-        app: file-receiver
+        app: product-service
     spec:
       containers:
-        - name: file-receiver
-          image: localhost:5000/file-receiver
+        - name: product-service
+          image: localhost:5000/product-service
           env:
             - name: username
               valueFrom:
@@ -36,21 +36,5 @@ spec:
                   name: mongo-config
                   key: mongo_uri
           ports:
-            - containerPort: 8083
+            - containerPort: 8082
       restartPolicy: Always
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: file-receiver-svc
-  namespace: default
-spec:
-  selector:
-    app: file-receiver
-  type: NodePort
-  ports:
-    - port: 8083
-      targetPort: 8083
-
-
-
