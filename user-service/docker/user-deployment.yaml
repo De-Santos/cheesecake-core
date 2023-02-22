@@ -33,7 +33,7 @@ spec:
             - name: postgres_url
               valueFrom:
                 configMapKeyRef:
-                  name: user-config
+                  name: postgres-config
                   key: postgres_url
           ports:
             - containerPort: 8081
