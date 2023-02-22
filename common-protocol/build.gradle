@@ -5,6 +5,7 @@ plugins {
 
 group 'ua.cheesecake'
 version '1.0-SNAPSHOT'
+sourceCompatibility = '17'
 
 publishing {
     publications {
