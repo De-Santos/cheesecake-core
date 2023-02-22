@@ -13,6 +13,7 @@ spring:
       database: product-db
       authentication-database: admin
   application:
-    name: product-service
+    name: file-receiver
 server:
-  port: 8082
+  port: 8083
+
