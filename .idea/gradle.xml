@@ -9,6 +9,14 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/common-protocol" />
+        <option name="modules">
+          <set>
             <option value="$PROJECT_DIR$/common-protocol" />
           </set>
         </option>

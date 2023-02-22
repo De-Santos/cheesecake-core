@@ -1,3 +1,2 @@
 rootProject.name = 'cheesecake-core'
-include 'common-protocol'
 
