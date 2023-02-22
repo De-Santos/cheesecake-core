@@ -1,0 +1,2 @@
+docker build -t localhost:5000/file-receiver -f file-dockerfile .
+docker push localhost:5000/file-receiver

@@ -1,0 +1,2 @@
+docker build -t localhost:5000/eureka-server -f eureka-dockerfile .
+docker push localhost:5000/eureka-server

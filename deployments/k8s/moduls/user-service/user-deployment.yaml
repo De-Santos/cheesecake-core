@@ -33,21 +33,8 @@ spec:
             - name: postgres_url
               valueFrom:
                 configMapKeyRef:
-                  name: user-config
+                  name: postgres-config
                   key: postgres_url
           ports:
             - containerPort: 8081
       restartPolicy: Always
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: user-service-svc
-  namespace: default
-spec:
-  selector:
-    app: user-service
-  type: NodePort
-  ports:
-    - port: 8081
-      targetPort: 8081
