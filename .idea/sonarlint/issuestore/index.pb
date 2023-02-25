@@ -15,5 +15,3 @@ Q
 !deployments/build_utility/main.py,5\1\513228fc57f61533aba557c87767f6b8c577340e
 h
 8deployments/k8s/moduls/user-service/user-deployment.yaml,2\b\2bf8a90812e81b3423619bf1078dbab6d98e08bb
-{
-Kfile-receiver/src/main/java/com/file/receiver/filereceiver/model/Photo.java,3\d\3d69b9e3b35abcd6c4ee5d81df4ceaf6a648ad87
