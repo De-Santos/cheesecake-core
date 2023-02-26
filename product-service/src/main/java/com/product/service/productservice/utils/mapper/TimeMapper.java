@@ -7,9 +7,9 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 public class TimeMapper {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+    private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 
-    public String toTime(LocalDateTime time){
+    public final String toTime(LocalDateTime time) {
         return dtf.format(time);
     }
 }

@@ -39,4 +39,19 @@ public class ProductConvertor {
                 .active(product.isActive())
                 .build();
     }
+
+    /**
+     * @return compressed product with date from product
+     */
+    public Product convert(Product product, ProductRequest productRequest) {
+        return Product.builder()
+                .imagesId(productRequest.getImagesId())
+                .descriptionImageId(productRequest.getDescriptionImageId())
+                .name(productRequest.getName())
+                .description(productRequest.getDescription())
+                .price(productRequest.getPrice())
+                .createDate(product.getCreateDate())
+                .active(productRequest.getActive())
+                .build();
+    }
 }

@@ -28,7 +28,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getPost(@PathVariable String id) {
-        log.info("get product by id: " + id);
+        log.info("get product by id: {}", id);
         return ResponseEntity.ok(productService.getPostById(id));
     }
 
@@ -36,5 +36,18 @@ public class ProductController {
     public ResponseEntity<List<ProductResponse>> getAll() {
         log.info("get all products");
         return ResponseEntity.ok(productService.getAll());
+    }
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable String id,
+                                                         @RequestBody ProductRequest productRequest) {
+        log.info("update product by id: {}", id);
+        return ResponseEntity.ok(productService.update(id, productRequest));
+    }
+
+    @PatchMapping("edit/{id}")
+    public ResponseEntity<ProductResponse> editProduct(@PathVariable String id) {
+        log.info("edit(active/inactive) product by id: {}", id);
+        return ResponseEntity.ok(productService.edit(id));
     }
 }

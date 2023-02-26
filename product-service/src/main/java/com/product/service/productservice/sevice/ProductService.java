@@ -21,8 +21,8 @@ public class ProductService {
 
     public ProductResponse addPost(ProductRequest productRequest) {
         Product product = convertor.convert(productRequest);
-        productRepository.save(product); // TODO: 2/25/2023 create image checker which will make get request of file-receiver
-        return convertor.convert(product);
+        // TODO: 2/25/2023 create image checker which will make get request of file-receiver
+        return convertor.convert(productRepository.save(product));
     }
 
     public ProductResponse getPostById(String id) {
@@ -35,5 +35,19 @@ public class ProductService {
                 .parallelStream()
                 .map(convertor::convert)
                 .toList();
+    }
+
+    public ProductResponse update(String id, ProductRequest productRequest) {
+        Product product = productRepository.findById(id).orElseThrow();
+        product.setActive(false);
+        productRepository.save(product);
+        Product modifiedProduct = convertor.convert(product, productRequest);
+        return convertor.convert(productRepository.save(modifiedProduct));
+    }
+
+    public ProductResponse edit(String id) {
+        Product product = productRepository.findById(id).orElseThrow();
+        product.setActive(!product.isActive());
+        return convertor.convert(productRepository.save(product));
     }
 }
