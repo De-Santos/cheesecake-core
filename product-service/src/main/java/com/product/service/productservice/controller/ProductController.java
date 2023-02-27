@@ -14,9 +14,10 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/product")
-public class ProductController {
+public class ProductController implements ProductApi {
     private final ProductService productService;
 
+    @Override
     @PostMapping("/add")
     public ResponseEntity<ProductResponse> addPost(@RequestBody ProductRequest productRequest) {
         log.info("add post in mongo database");
@@ -26,18 +27,21 @@ public class ProductController {
         return ResponseEntity.ok(productResponse);
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getPost(@PathVariable String id) {
         log.info("get product by id: {}", id);
         return ResponseEntity.ok(productService.getPostById(id));
     }
 
+    @Override
     @GetMapping()
     public ResponseEntity<List<ProductResponse>> getAll() {
         log.info("get all products");
         return ResponseEntity.ok(productService.getAll());
     }
 
+    @Override
     @PatchMapping("/update/{id}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable String id,
                                                          @RequestBody ProductRequest productRequest) {
@@ -45,6 +49,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.update(id, productRequest));
     }
 
+    @Override
     @PatchMapping("edit/{id}")
     public ResponseEntity<ProductResponse> editProduct(@PathVariable String id) {
         log.info("edit(active/inactive) product by id: {}", id);

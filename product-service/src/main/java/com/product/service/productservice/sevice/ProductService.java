@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Log4j2
 @Service
@@ -26,7 +27,8 @@ public class ProductService {
     }
 
     public ProductResponse getPostById(String id) {
-        return convertor.convert(productRepository.findById(id).orElseThrow());
+        return convertor.convert(productRepository.findById(id)
+                .orElseThrow(() ->  new NoSuchElementException("no element in database")));
     }
 
     public List<ProductResponse> getAll() {
