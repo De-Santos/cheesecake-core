@@ -1,7 +1,7 @@
 package com.product.service.productservice.controller;
 
-import com.product.service.productservice.dto.ProductRequest;
-import com.product.service.productservice.dto.ProductResponse;
+import com.product.service.productservice.dto.product.ProductRequest;
+import com.product.service.productservice.dto.product.ProductResponse;
 import com.product.service.productservice.sevice.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,10 +28,10 @@ public class ProductController implements ProductApi {
     }
 
     @Override
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getPost(@PathVariable String id) {
-        log.info("get product by id: {}", id);
-        return ResponseEntity.ok(productService.getPostById(id));
+    @GetMapping("/{versionId}")
+    public ResponseEntity<ProductResponse> getPost(@PathVariable String versionId) {
+        log.info("get product by version id: {}", versionId);
+        return ResponseEntity.ok(productService.getPostById(versionId));
     }
 
     @Override
@@ -42,11 +42,11 @@ public class ProductController implements ProductApi {
     }
 
     @Override
-    @PatchMapping("/update/{id}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable String id,
+    @PatchMapping("/update/{versionId}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable String versionId,
                                                          @RequestBody ProductRequest productRequest) {
-        log.info("update product by id: {}", id);
-        return ResponseEntity.ok(productService.update(id, productRequest));
+        log.info("update product by id: {}", versionId);
+        return ResponseEntity.ok(productService.update(versionId, productRequest));
     }
 
     @Override
@@ -54,5 +54,19 @@ public class ProductController implements ProductApi {
     public ResponseEntity<ProductResponse> editProduct(@PathVariable String id) {
         log.info("edit(active/inactive) product by id: {}", id);
         return ResponseEntity.ok(productService.edit(id));
+    }
+
+    @Override
+    @DeleteMapping()
+    public void deleteAll() {
+        log.info("delete all items in database");
+        productService.deleteAll();
+        log.info("successful");
+    }
+
+    @Override
+    @GetMapping("/getArchive")
+    public List<ProductResponse> getArchive() {
+        return productService.getArchive();
     }
 }

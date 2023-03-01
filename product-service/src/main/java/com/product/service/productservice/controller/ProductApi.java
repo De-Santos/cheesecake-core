@@ -1,7 +1,7 @@
 package com.product.service.productservice.controller;
 
-import com.product.service.productservice.dto.ProductRequest;
-import com.product.service.productservice.dto.ProductResponse;
+import com.product.service.productservice.dto.product.ProductRequest;
+import com.product.service.productservice.dto.product.ProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -55,4 +55,16 @@ public interface ProductApi {
             @ApiResponse(responseCode = "404", description = "Post doesn't found")
     })
     ResponseEntity<ProductResponse> editProduct(@PathVariable String id);
+
+    @Operation(summary = "Delete all product DEVELOP", description = "ONLY FOR DEVELOPERS")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+    })
+    void deleteAll();
+
+    @Operation(summary = "Get all archived products", description = "ONLY FOR DEVELOPERS")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+    })
+    List<ProductResponse> getArchive();
 }

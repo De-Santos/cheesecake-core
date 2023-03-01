@@ -1,4 +1,4 @@
-package com.product.service.productservice.dto;
+package com.product.service.productservice.dto.product;
 
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +16,5 @@ public class ProductRequest {
     private final List<String> imagesId;
     private final String descriptionImageId;
     private final Integer price;
-    private final Boolean active;
+    private final boolean active;
 }

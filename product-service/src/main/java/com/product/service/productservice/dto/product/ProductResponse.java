@@ -1,4 +1,4 @@
-package com.product.service.productservice.dto;
+package com.product.service.productservice.dto.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,11 +14,12 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductResponse {
-    private String id;
-    private Collection<String> imagesId;
-    private String descriptionImageId;
+    private String versionId;
+    private String activeVersionId;
     private String name;
     private String description;
+    private Collection<String> imagesId;
+    private String descriptionImageId;
     private Integer price;
     private String createDate;
     private boolean active;
