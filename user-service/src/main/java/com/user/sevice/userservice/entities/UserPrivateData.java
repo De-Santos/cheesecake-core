@@ -3,7 +3,8 @@ package com.user.sevice.userservice.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Time;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -20,7 +21,7 @@ public class UserPrivateData {
 
     private Integer phoneNumber;
 
-    private Time createTime;
+    private LocalDateTime createTime;
 
     @OneToOne(mappedBy = "userPrivateData")
     private User user;

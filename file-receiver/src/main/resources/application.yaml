@@ -20,4 +20,3 @@ spring:
     name: file-receiver
 server:
   port: 8083
-
