@@ -1,0 +1,2 @@
+docker build -t localhost:5000/order-service -f order-dockerfile .
+docker push localhost:5000/order-service
