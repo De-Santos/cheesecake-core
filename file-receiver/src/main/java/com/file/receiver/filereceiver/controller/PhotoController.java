@@ -21,6 +21,8 @@ public class PhotoController implements PhotoApi {
     @Override
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestPart("file") MultipartFile file) {
+        log.debug(file);
+        log.info("upload file with name: {}", file.getName());
         return ResponseEntity.ok(photoService.uploadFile(file));
     }
 
@@ -34,11 +36,14 @@ public class PhotoController implements PhotoApi {
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<Photo> get(@PathVariable String id) {
+        log.info("get photo by id: {}", id);
         return ResponseEntity.ok(photoService.getPhoto(id));
     }
+
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remove(@PathVariable String id) {
+        log.info("remove photo by id: {}", id);
         photoService.remove(id);
         return ResponseEntity.noContent().build();
     }
