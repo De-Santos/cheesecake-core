@@ -1,0 +1,2 @@
+docker build -t localhost:5000/authentication-service -f authentication-dockerfile .
+docker push localhost:5000/authentication-service
