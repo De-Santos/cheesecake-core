@@ -5,7 +5,6 @@ import com.file.receiver.filereceiver.model.Photo;
 import com.file.receiver.filereceiver.utils.PhotoUtil;
 import com.file.receiver.filereceiver.utils.exception.FileNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.bson.types.Binary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,10 +26,7 @@ public class PhotoService {
     }
 
     public String uploadFile(MultipartFile file) {
-        String fileName = file.getOriginalFilename();
-        Binary binary = photoUtil.getBinaryFromFile(file);
-
-        return photoRepository.save(new Photo(fileName, binary)).getId();
+        return photoRepository.save(photoUtil.photoBuilder(file)).getId();
     }
 
     public void remove(String id) {

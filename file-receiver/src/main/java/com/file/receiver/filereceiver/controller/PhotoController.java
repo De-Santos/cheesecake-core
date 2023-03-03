@@ -1,14 +1,10 @@
-package com.file.receiver.filereceiver.web;
-
+package com.file.receiver.filereceiver.controller;
 
 import com.file.receiver.filereceiver.model.Photo;
 import com.file.receiver.filereceiver.service.PhotoService;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.log4j.Log4j2;
-
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,26 +14,29 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/file/photo")
-public class PhotoController {
+public class PhotoController implements PhotoApi {
 
     private final PhotoService photoService;
 
+    @Override
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok(photoService.uploadFile(file));
     }
 
+    @Override
     @GetMapping
-    public List<Photo> getAll() {
+    public ResponseEntity<List<Photo>> getAll() {
         log.info("getAll");
-        return photoService.getAll();
+        return ResponseEntity.ok(photoService.getAll());
     }
 
+    @Override
     @GetMapping("/{id}")
-    public Photo get(@PathVariable String id) {
-        return photoService.getPhoto(id);
+    public ResponseEntity<Photo> get(@PathVariable String id) {
+        return ResponseEntity.ok(photoService.getPhoto(id));
     }
-
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remove(@PathVariable String id) {
         photoService.remove(id);
