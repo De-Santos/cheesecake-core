@@ -18,5 +18,5 @@ spring:
   application:
     name: order-service
 server:
-  port: 8085
+  port: 8084
 

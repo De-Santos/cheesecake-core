@@ -18,4 +18,4 @@ spring:
   application:
     name: authentication-server
 server:
-  port: 8086
+  port: 8085

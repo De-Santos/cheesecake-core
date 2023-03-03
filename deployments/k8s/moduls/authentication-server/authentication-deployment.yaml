@@ -36,5 +36,5 @@ spec:
                   name: postgres-config
                   key: postgres_url
           ports:
-            - containerPort: 8086
+            - containerPort: 8085
       restartPolicy: Always
