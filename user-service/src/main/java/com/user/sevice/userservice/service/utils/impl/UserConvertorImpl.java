@@ -8,6 +8,7 @@ import com.user.sevice.userservice.service.utils.UserConvertor;
 import org.springframework.stereotype.Component;
 
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
@@ -20,7 +21,7 @@ public class UserConvertorImpl implements UserConvertor {
         UserPrivateData userPrivateData = new UserPrivateData();
         userPrivateData.setEmail(userRegistrationDto.getEmail());
         userPrivateData.setPassword(userRegistrationDto.getPassword());
-        userPrivateData.setCreateTime(new Time(new Date().getTime()));
+        userPrivateData.setCreateTime(LocalDateTime.now());
         user.setUserPrivateData(userPrivateData);
         return user;
     }
