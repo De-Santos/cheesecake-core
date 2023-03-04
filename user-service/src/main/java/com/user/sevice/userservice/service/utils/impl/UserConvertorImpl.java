@@ -1,15 +1,10 @@
 package com.user.sevice.userservice.service.utils.impl;
 
-import com.user.sevice.userservice.dto.UserDto;
 import com.user.sevice.userservice.dto.UserRegistrationDto;
 import com.user.sevice.userservice.entities.User;
-import com.user.sevice.userservice.entities.UserPrivateData;
 import com.user.sevice.userservice.service.utils.UserConvertor;
 import org.springframework.stereotype.Component;
-
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.util.Date;
+import ua.cheesecake.dto.UserDto;
 
 @Component
 public class UserConvertorImpl implements UserConvertor {
@@ -18,11 +13,11 @@ public class UserConvertorImpl implements UserConvertor {
         User user = new User();
         user.setName(userRegistrationDto.getName());
         user.setSecondName(userRegistrationDto.getSecondName());
-        UserPrivateData userPrivateData = new UserPrivateData();
-        userPrivateData.setEmail(userRegistrationDto.getEmail());
-        userPrivateData.setPassword(userRegistrationDto.getPassword());
-        userPrivateData.setCreateTime(LocalDateTime.now());
-        user.setUserPrivateData(userPrivateData);
+//        UserPrivateData userPrivateData = new UserPrivateData();
+//        userPrivateData.setEmail(userRegistrationDto.getEmail());
+//        userPrivateData.setPassword(userRegistrationDto.getPassword());
+//        userPrivateData.setCreateTime(LocalDateTime.now());
+//        user.setUserPrivateData(userPrivateData);
         return user;
     }
 

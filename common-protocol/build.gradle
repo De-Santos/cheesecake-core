@@ -1,17 +1,23 @@
 plugins {
-    id 'java'
-    id 'maven-publish'
+    id 'java-library'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group 'ua.cheesecake'
 version '1.0-SNAPSHOT'
 sourceCompatibility = '17'
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
+//publishing {
+//    publications {
+//        mavenJava(MavenPublication) {
+//            from components.java
+//        }
+//    }
+//}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'ua.cheesecake.dto.Main'
     }
 }
 
@@ -20,8 +26,8 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'

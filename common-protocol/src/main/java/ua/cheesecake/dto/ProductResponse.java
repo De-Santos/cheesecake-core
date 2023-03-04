@@ -1,4 +1,4 @@
-package com.product.service.productservice.dto.product;
+package ua.cheesecake.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.user.sevice.userservice.dto;
+package ua.cheesecake.dto;
 
 import lombok.Data;
 

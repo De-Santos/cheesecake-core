@@ -1,0 +1,3 @@
+gradle shadowJar
+cd ./build/libs
+mvn install:install-file -Dfile="common-protocol-1.0-SNAPSHOT-all.jar" -DgroupId="com.cheesecake" -DartifactId="artifact" -Dversion="1.0-SNAPSHOT" -Dpackaging="jar"

@@ -1,7 +1,7 @@
 package com.product.service.productservice.controller;
 
 import com.product.service.productservice.dto.product.ProductRequest;
-import com.product.service.productservice.dto.product.ProductResponse;
+import ua.cheesecake.dto.ProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

@@ -14,9 +14,4 @@ public class User {
     private String name;
 
     private String secondName;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id", referencedColumnName = "id")
-    @MapsId
-    private UserPrivateData userPrivateData;
 }
