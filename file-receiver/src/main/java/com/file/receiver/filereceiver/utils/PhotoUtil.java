@@ -3,11 +3,13 @@ package com.file.receiver.filereceiver.utils;
 import com.file.receiver.filereceiver.model.Photo;
 import lombok.extern.log4j.Log4j2;
 import org.bson.types.Binary;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @Log4j2
+@Component
 public class PhotoUtil {
 
     public Binary getBinaryFromFile(MultipartFile file) {

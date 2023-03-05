@@ -1,8 +1,9 @@
 package com.product.service.productservice.controller;
 
 import com.product.service.productservice.dto.product.ProductRequest;
+import com.product.service.productservice.service.ProductService;
+
 import ua.cheesecake.dto.ProductResponse;
-import com.product.service.productservice.sevice.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;

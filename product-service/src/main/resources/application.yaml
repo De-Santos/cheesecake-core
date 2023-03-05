@@ -16,3 +16,4 @@ spring:
     name: product-service
 server:
   port: 8082
+file.receiver.url: http://file-receiver-svc:8083/api/v2/file/photo

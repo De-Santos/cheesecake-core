@@ -1,4 +1,4 @@
-package com.file.receiver.filereceiver.controller;
+package com.file.receiver.filereceiver.controller.photo;
 
 import com.file.receiver.filereceiver.model.Photo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,13 +36,6 @@ public interface PhotoApi {
         })
         @ResponseStatus(HttpStatus.OK)
         ResponseEntity<Photo> get(@PathVariable String id);
-
-        @Operation(summary = "Chech is file in database", description = "Check is file in database, return bullean")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Successful operation"),
-        })
-        @ResponseStatus(HttpStatus.OK)
-        ResponseEntity<Boolean> fileExist(@PathVariable String id);
 
         @Operation(summary = "Delete photo by id", description = "Delete photo from database by id")
         @ApiResponses(value = {

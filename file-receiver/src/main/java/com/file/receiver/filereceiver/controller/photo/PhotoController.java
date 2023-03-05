@@ -1,4 +1,4 @@
-package com.file.receiver.filereceiver.controller;
+package com.file.receiver.filereceiver.controller.photo;
 
 import com.file.receiver.filereceiver.model.Photo;
 import com.file.receiver.filereceiver.service.PhotoService;
@@ -38,13 +38,6 @@ public class PhotoController implements PhotoApi {
     public ResponseEntity<Photo> get(@PathVariable String id) {
         log.info("get photo by id: {}", id);
         return ResponseEntity.ok(photoService.getPhoto(id));
-    }
-
-    @Override
-    @GetMapping("/is/{id}")
-    public ResponseEntity<Boolean> fileExist(@PathVariable String id) {
-        log.info("Exist file by id: {}", id);
-        return ResponseEntity.ok(photoService.checkFileExists(id));
     }
 
     @Override

@@ -13,7 +13,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PhotoService {
-
     private final PhotoRepository photoRepository;
     private final PhotoUtil photoUtil;
 
