@@ -35,3 +35,4 @@ out/
 
 ### VS Code ###
 .vscode/
+!/docker/jar/product-service-0.0.1-SNAPSHOT.jar
