@@ -29,8 +29,11 @@ public class ProductService {
     }
 
     public ProductResponse getPostById(String versionId) {
+        log.debug("getPostById supplied id is: {}", versionId);
         Optional<Product> product = productRepository.findProductByVersionId(versionId);
-        if (product.isEmpty()) return convertor.convert(archiveProductService.getArchivePostById(versionId));
+        log.debug("Founded product is: {}", product);
+        if (product.isEmpty())
+            return convertor.convert(archiveProductService.getArchivePostById(versionId));
         return convertor.convert(product.get());
     }
 
@@ -43,16 +46,20 @@ public class ProductService {
     }
 
     public ProductResponse update(String versionId, ProductRequest productRequest) {
+        log.debug("Supplied in method update are versionId: {}, productRequest: {}", versionId, productRequest);
         Product product = productRepository.findProductByVersionId(versionId)
-                .orElseThrow(() -> new NoSuchElementException("unknown versionId"));
+                .orElseThrow(() -> new NoSuchElementException("unknown versionId" + versionId));
+        log.debug("NoUpdated product is: {}", product);
         archiveProductService.addProduct(product);
         Product newProduct = convertor.updateConvert(product, productRequest);
+        log.debug("Updated product is: {}", newProduct);
         return convertor.convert(productRepository.save(newProduct));
     }
 
     public ProductResponse edit(String versionId) {
         Product product = productRepository.findProductByVersionId(versionId)
                 .orElseThrow(() -> new NoSuchElementException("unknown versionId"));
+        log.debug("Edited product is: ", product);
         product.setActive(!product.isActive());
         return convertor.convert(productRepository.save(product));
     }

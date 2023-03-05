@@ -30,13 +30,11 @@ public class PhotoService {
     }
 
     public void remove(String id) {
-        checkFileExists(id);
+        if (!checkFileExists(id)) throw new FileNotFoundException("Photo with id " + id + " does not exist.");
         photoRepository.deleteById(id);
     }
 
-    private void checkFileExists(String id) {
-        if (!photoRepository.existsById(id)) {
-            throw new FileNotFoundException("Photo with id " + id + " does not exist.");
-        }
+    public boolean checkFileExists(String id) {
+        return photoRepository.existsById(id);
     }
 }

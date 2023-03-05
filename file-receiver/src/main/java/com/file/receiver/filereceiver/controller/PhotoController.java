@@ -41,6 +41,13 @@ public class PhotoController implements PhotoApi {
     }
 
     @Override
+    @GetMapping("/is/{id}")
+    public ResponseEntity<Boolean> fileExist(@PathVariable String id) {
+        log.info("Exist file by id: {}", id);
+        return ResponseEntity.ok(photoService.checkFileExists(id));
+    }
+
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remove(@PathVariable String id) {
         log.info("remove photo by id: {}", id);

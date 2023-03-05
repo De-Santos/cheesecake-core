@@ -6,14 +6,11 @@ import com.product.service.productservice.model.ArchiveProduct;
 import com.product.service.productservice.model.Product;
 import com.product.service.productservice.utils.convertor.Convertor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
-
-@Log4j2
 @Service
 @RequiredArgsConstructor
 public class ArchiveProductService {

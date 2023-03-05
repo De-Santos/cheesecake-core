@@ -15,6 +15,7 @@ public class PhotoUtil {
             return new Binary(file.getBytes());
         } catch (IOException e) {
             throw new RuntimeException("File is invalid", e);
+            // TODO: 3/5/2023 change exemption
         }
     }
 
