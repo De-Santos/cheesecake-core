@@ -26,7 +26,7 @@ public class ProductService {
     private final ArchiveProductService archiveProductService;
 
     public ProductResponse addPost(ProductRequest productRequest) {
-        photoChecker.checker(productRequest);
+        photoChecker.check(productRequest);
         Product product = convertor.convert(productRequest);
         return convertor.convert(productRepository.save(product));
     }
@@ -38,6 +38,11 @@ public class ProductService {
         if (product.isEmpty())
             return convertor.convert(archiveProductService.getArchivePostById(versionId));
         return convertor.convert(product.get());
+    }
+
+    public Boolean checkProduct(String versionId) {
+        // TODO check me please
+        return productRepository.existsProductByVersionIdAndActiveIsTrue(versionId);
     }
 
     public List<ProductResponse> getAll() {

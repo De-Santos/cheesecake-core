@@ -1,7 +1,7 @@
 package com.product.service.productservice.utils.convertor;
 
 import com.product.service.productservice.dto.product.ProductRequest;
-import com.product.service.productservice.dto.product.ProductResponse;
+import ua.cheesecake.dto.ProductResponse;
 import com.product.service.productservice.model.ArchiveProduct;
 import com.product.service.productservice.model.Product;
 import com.product.service.productservice.utils.mapper.TimeMapper;

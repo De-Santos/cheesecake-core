@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import ua.cheesecake.dto.exception.PhotoNotFoundException;
 
 @ControllerAdvice
-public class ExceptionHandlingController extends ResponseEntityExceptionHandler {
+public class ExceptionHandlingController {
     @ExceptionHandler(PhotoNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> handleException(PhotoNotFoundException e) {

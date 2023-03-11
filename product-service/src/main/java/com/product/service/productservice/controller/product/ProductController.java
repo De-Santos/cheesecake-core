@@ -1,4 +1,4 @@
-package com.product.service.productservice.controller;
+package com.product.service.productservice.controller.product;
 
 import com.product.service.productservice.dto.product.ProductRequest;
 import com.product.service.productservice.service.ProductService;
@@ -29,23 +29,9 @@ public class ProductController implements ProductApi {
     }
 
     @Override
-    @GetMapping("/{versionId}")
-    public ResponseEntity<ProductResponse> getPost(@PathVariable String versionId) {
-        log.info("get product by version id: {}", versionId);
-        return ResponseEntity.ok(productService.getPostById(versionId));
-    }
-
-    @Override
-    @GetMapping()
-    public ResponseEntity<List<ProductResponse>> getAll() {
-        log.info("get all products");
-        return ResponseEntity.ok(productService.getAll());
-    }
-
-    @Override
     @PatchMapping("/update/{versionId}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable String versionId,
-                                                         @RequestBody ProductRequest productRequest) {
+            @RequestBody ProductRequest productRequest) {
         log.info("update product by id: {}", versionId);
         return ResponseEntity.ok(productService.update(versionId, productRequest));
     }
@@ -70,4 +56,19 @@ public class ProductController implements ProductApi {
     public List<ProductResponse> getArchive() {
         return productService.getArchive();
     }
+
+    @Override
+    @GetMapping("/{versionId}")
+    public ResponseEntity<ProductResponse> getPost(@PathVariable String versionId) {
+        log.info("get product by version id: {}", versionId);
+        return ResponseEntity.ok(productService.getPostById(versionId));
+    }
+
+    @Override
+    @GetMapping()
+    public ResponseEntity<List<ProductResponse>> getAll() {
+        log.info("get all products");
+        return ResponseEntity.ok(productService.getAll());
+    }
+
 }
