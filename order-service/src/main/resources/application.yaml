@@ -19,4 +19,15 @@ spring:
     name: order-service
 server:
   port: 8084
+product.service.url: ${product_service_url}
+user.service.url: ${user_service_url}
+#logging:
 
+#  level:
+#    root: debug
+#  file:
+#    path:
+#logging:
+#  pattern:
+#    console: [%5p] %d{mm:ss}(%F:%M:%L)%n%m%n%n
+#

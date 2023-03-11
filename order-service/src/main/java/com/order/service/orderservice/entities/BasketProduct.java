@@ -1,9 +1,6 @@
 package com.order.service.orderservice.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -14,7 +11,8 @@ public class BasketProduct {
     private Long id;
 
     @ManyToOne
-    private Order orderId;
+    @JoinColumn(name = "basket_id")
+    private Basket basket;
 
     private String productId;
 

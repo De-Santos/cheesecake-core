@@ -12,9 +12,8 @@ public class Basket {
     @Id
     private Long id;
 
-    @MapsId
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "basket")
+//    @JoinColumn(name = "basket", referencedColumnName = "id")
     private List<BasketProduct> productList;
 
 }
