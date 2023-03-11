@@ -19,6 +19,10 @@ spec:
       containers:
         - name: eureka-server
           image: localhost:5000/eureka-server
+          resources:
+            limits:
+              cpu: 100m
+              memory: 250Mi
           ports:
             - containerPort: 8761
       restartPolicy: Always

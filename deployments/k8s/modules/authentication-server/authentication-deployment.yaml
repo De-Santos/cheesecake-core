@@ -19,6 +19,10 @@ spec:
       containers:
         - name: authentication
           image: localhost:5000/authentication-service
+          resources:
+            limits:
+              cpu: 100m
+              memory: 250Mi
           env:
             - name: username
               valueFrom:

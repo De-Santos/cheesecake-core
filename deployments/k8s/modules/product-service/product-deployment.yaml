@@ -19,6 +19,10 @@ spec:
       containers:
         - name: product-service
           image: localhost:5000/product-service
+          resources:
+            limits:
+              cpu: 500m
+              memory: 250Mi
           env:
             - name: username
               valueFrom:
@@ -35,6 +39,11 @@ spec:
                 configMapKeyRef:
                   name: mongo-config
                   key: mongo_uri
+            - name: file_receiver_url
+              valueFrom:
+                configMapKeyRef:
+                  name: module-url
+                  key: file-receiver
           ports:
             - containerPort: 8082
       restartPolicy: Always

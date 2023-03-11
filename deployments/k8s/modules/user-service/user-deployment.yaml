@@ -1,40 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: file-receiver
+  name: user-service
   namespace: default
   labels:
-    app: file-receiver
+    app: user-service
 spec:
   selector:
     matchLabels:
-      app: file-receiver
+      app: user-service
   replicas: 1
 
   template:
     metadata:
       labels:
-        app: file-receiver
+        app: user-service
     spec:
       containers:
-        - name: file-receiver
-          image: localhost:5000/file-receiver
+        - name: user-service
+          image: localhost:5000/user-service
+          resources:
+            limits:
+              cpu: 100m
+              memory: 250Mi
           env:
             - name: username
               valueFrom:
                 secretKeyRef:
                   name: database-secret
-                  key: mongo-user
+                  key: postgres-user
             - name: password
               valueFrom:
                 secretKeyRef:
                   name: database-secret
-                  key: mongo-password
-            - name: mongo_uri
+                  key: postgres-password
+            - name: postgres_url
               valueFrom:
                 configMapKeyRef:
-                  name: mongo-config
-                  key: mongo_uri
+                  name: postgres-config
+                  key: postgres_url
           ports:
-            - containerPort: 8083
+            - containerPort: 8081
       restartPolicy: Always

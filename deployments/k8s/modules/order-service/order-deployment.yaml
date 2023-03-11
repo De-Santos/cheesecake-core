@@ -1,24 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service
+  name: order-service
   namespace: default
   labels:
-    app: user-service
+    app: order-service
 spec:
   selector:
     matchLabels:
-      app: user-service
+      app: order-service
   replicas: 1
 
   template:
     metadata:
       labels:
-        app: user-service
+        app: order-service
     spec:
       containers:
-        - name: user-service
-          image: localhost:5000/user-service
+        - name: order-service
+          image: localhost:5000/order-service
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 500Mi
           env:
             - name: username
               valueFrom:
@@ -35,6 +39,11 @@ spec:
                 configMapKeyRef:
                   name: postgres-config
                   key: postgres_url
+            - name: product_service_url
+              valueFrom:
+                configMapKeyRef:
+                  name: module-url
+                  key: product-service
           ports:
-            - containerPort: 8081
+            - containerPort: 8084
       restartPolicy: Always

@@ -19,6 +19,10 @@ spec:
       containers:
         - name: postgres
           image: postgres:latest
+          resources:
+            limits:
+              cpu: 100m
+              memory: 500Mi
           env:
             - name: POSTGRES_DB
               value: cheesecake_db
