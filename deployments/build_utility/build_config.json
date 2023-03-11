@@ -1,0 +1,12 @@
+{
+  "k8s_deployments": [
+    "k8s/moduls/user-service/user-deployment.yaml"
+  ],
+  "docker_registry": "localhost:5000",
+  "build_associations": {
+    "user-service": "user-service"
+  },
+  "docker_remove_previous_images_before_build": true,
+  "docker_build_tag": "latest",
+  "gradle_build_command": "bootJar"
+}
