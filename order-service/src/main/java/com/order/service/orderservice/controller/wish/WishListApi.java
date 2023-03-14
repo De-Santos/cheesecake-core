@@ -11,10 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.order.service.orderservice.dto.WishListRequest;
-
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import com.order.service.orderservice.dto.wishList.WishListRequest;
 
 public interface WishListApi {
     @Operation(summary = "Add item in wishList", description = "Return 'true' if operation was successful else return 'false'")

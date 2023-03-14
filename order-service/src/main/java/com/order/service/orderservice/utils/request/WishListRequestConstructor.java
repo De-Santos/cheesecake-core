@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.order.service.orderservice.dao.WishListRepository;
 import com.order.service.orderservice.entities.WishList;
-import com.order.service.orderservice.exceptions.WishListNotFoundException;
+import com.order.service.orderservice.exceptions.exceptions.WishListNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

@@ -1,4 +1,4 @@
-package com.order.service.orderservice.dto;
+package com.order.service.orderservice.dto.wishList;
 
 import lombok.Builder;
 import lombok.Data;

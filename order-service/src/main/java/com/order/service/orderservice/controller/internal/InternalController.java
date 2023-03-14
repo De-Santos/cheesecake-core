@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.order.service.orderservice.dao.WishListRepository;
-import com.order.service.orderservice.dto.WishListResponse;
+import com.order.service.orderservice.dto.wishList.WishListResponse;
 import com.order.service.orderservice.service.GlobalService;
 import com.order.service.orderservice.utils.convertor.Convertor;
 

@@ -8,9 +8,10 @@ import lombok.Data;
 @Table(name = "basket_product")
 public class BasketProduct {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "basket_id")
     private Basket basket;
 

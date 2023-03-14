@@ -1,4 +1,4 @@
-package com.order.service.orderservice.exceptions;
+package com.order.service.orderservice.exceptions.exceptions;
 
 public class WishListNotFoundException extends RuntimeException {
 

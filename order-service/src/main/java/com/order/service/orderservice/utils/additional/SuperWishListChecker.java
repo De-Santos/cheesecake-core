@@ -13,14 +13,14 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class SuperChecker {
+public class SuperWishListChecker {
 
     private final WishListChecker wishListChecker;
     private final BasketChecker basketChecker;
     private final UserChecker userChecker;
     private final ProductChecker productChecker;
 
-    public void wishList(Long userId, String versionId) {
+    public void checkWishListExistence(Long userId, String versionId) {
         userChecker.check(userId);
         wishListChecker.checkCreate(userId);
         productChecker.check(versionId);

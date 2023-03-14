@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.order.service.orderservice.dto.WishListRequest;
+import com.order.service.orderservice.dto.wishList.WishListRequest;
 import com.order.service.orderservice.service.WishListService;
 
 import jakarta.validation.constraints.NotNull;
