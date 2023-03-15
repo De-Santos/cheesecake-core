@@ -2,7 +2,7 @@ package com.user.sevice.userservice.controller;
 
 import com.user.sevice.userservice.dto.UserRegistrationDto;
 import com.user.sevice.userservice.entities.User;
-import com.user.sevice.userservice.service.UserService;
+import com.user.sevice.userservice.service.impl.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;

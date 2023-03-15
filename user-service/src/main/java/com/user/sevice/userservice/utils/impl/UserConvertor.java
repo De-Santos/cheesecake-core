@@ -1,14 +1,12 @@
-package com.user.sevice.userservice.service.utils.impl;
+package com.user.sevice.userservice.utils.impl;
 
 import com.user.sevice.userservice.dto.UserRegistrationDto;
 import com.user.sevice.userservice.entities.User;
-import com.user.sevice.userservice.service.utils.UserConvertor;
 import org.springframework.stereotype.Component;
 import ua.cheesecake.dto.UserDto;
 
 @Component
-public class UserConvertorImpl implements UserConvertor {
-    @Override
+public class UserConvertor {
     public User convertor(UserRegistrationDto userRegistrationDto) {
         User user = new User();
         user.setName(userRegistrationDto.getName());
@@ -21,7 +19,6 @@ public class UserConvertorImpl implements UserConvertor {
         return user;
     }
 
-    @Override
     public User convertor(UserDto userDto) {
         return null;
     }

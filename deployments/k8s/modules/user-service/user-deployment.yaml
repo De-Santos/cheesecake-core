@@ -21,8 +21,8 @@ spec:
           image: localhost:5000/user-service
           resources:
             limits:
-              cpu: 100m
-              memory: 250Mi
+              cpu: 1000m
+              memory: 500Mi
           env:
             - name: username
               valueFrom:
@@ -39,6 +39,11 @@ spec:
                 configMapKeyRef:
                   name: postgres-config
                   key: postgres_url
+            - name: product_service_url
+              valueFrom:
+                configMapKeyRef:
+                  name: module-url
+                  key: product-service
           ports:
             - containerPort: 8081
       restartPolicy: Always
