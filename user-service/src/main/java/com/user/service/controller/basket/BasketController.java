@@ -20,7 +20,7 @@ public class BasketController implements BasketApi {
     private final BasketService basketService;
 
     @Override
-    @PutMapping("/add")
+    @PutMapping()
     public ResponseEntity<Boolean> addItem(@NotNull BasketRequest basketRequest) {
         log.info("Add item in basket");
         log.debug(basketRequest);
@@ -36,7 +36,7 @@ public class BasketController implements BasketApi {
     }
 
     @Override
-    @PatchMapping("/update")
+    @PatchMapping()
     public ResponseEntity<BasketProductDto> updateBasketProduct(@NotNull BasketRequest basketRequest) {
         log.info("Update basket");
         log.debug(basketRequest);

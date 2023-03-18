@@ -1,6 +1,8 @@
 package com.user.service.dao;
 
 import com.user.service.entities.User;
+import com.user.service.entities.UserPrivateData;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -8,9 +10,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserPrivateDataRepository extends JpaRepository<UserPrivateData, Long> {
     @Modifying
-    @Query("delete from User u where u.id=:userId")
-    void deleteByUserId(@Param("userId") Long userid);
-
+    @Query("delete from UserPrivateData up where up.id=:user")
+    void deleteByUserId(@Param("user") Long userId);
 }

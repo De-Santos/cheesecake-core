@@ -23,7 +23,7 @@ public interface WishListApi {
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<Boolean> addItem(@RequestBody @NotNull WishListRequest wishListRequest);
 
-    @Operation(summary = "delete item in wishList", description = "Return 'true' if operation was successful else return 'false'")
+    @Operation(summary = "Delete item in wishList", description = "Return 'true' if operation was successful else return 'false'")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "404", description = "Unknown userId"),

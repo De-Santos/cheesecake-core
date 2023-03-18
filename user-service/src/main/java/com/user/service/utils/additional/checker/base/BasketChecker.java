@@ -1,4 +1,4 @@
-package com.user.service.utils.additional.checker;
+package com.user.service.utils.additional.checker.base;
 
 
 import com.user.service.utils.convertor.Convertor;

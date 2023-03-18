@@ -5,7 +5,7 @@ import com.user.service.dto.basket.BasketProductDto;
 import com.user.service.dto.basket.BasketRequest;
 import com.user.service.dto.basket.BasketResponse;
 import com.user.service.utils.request.BasketRequestConstructor;
-import com.user.service.utils.additional.SuperBasketChecker;
+import com.user.service.utils.additional.checker.SuperBasketChecker;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;

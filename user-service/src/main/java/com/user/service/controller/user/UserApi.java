@@ -1,6 +1,6 @@
 package com.user.service.controller.user;
 
-import com.user.service.dto.UserRegistrationDto;
+import com.user.service.dto.user.UserRegistrationDto;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public interface UserApi {
     @Operation(summary = "Create new user", description = "Create user in database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Unknown userId"),
+            @ApiResponse(responseCode = "406", description = "Not acceptable email or password")
     })
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<UserDto> registration(@NotNull @RequestBody UserRegistrationDto userRegistrationDto);

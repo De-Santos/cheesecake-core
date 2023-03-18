@@ -1,18 +1,20 @@
 package com.user.service.utils.convertor;
 
-import com.user.service.dto.UserRegistrationDto;
+import com.user.service.dto.user.UserRegistrationDto;
 import com.user.service.dto.basket.BasketProductDto;
 import com.user.service.dto.basket.BasketResponse;
 import com.user.service.dto.wishList.WishListResponse;
 import com.user.service.entities.Basket;
 import com.user.service.entities.BasketProduct;
 import com.user.service.entities.User;
+import com.user.service.entities.UserPrivateData;
 import com.user.service.entities.WishList;
 import lombok.RequiredArgsConstructor;
 import ua.cheesecake.dto.UserDto;
 
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,6 +53,14 @@ public class Convertor {
         user.setName(userRegistrationDto.getName());
         user.setSecondName(userRegistrationDto.getSecondName());
         return user;
+    }
+    public UserPrivateData convert(UserRegistrationDto userRegistrationDto, User user) {
+        UserPrivateData userPrivateData = new UserPrivateData();
+        userPrivateData.setUser(user);
+        userPrivateData.setEmail(userRegistrationDto.getEmail());
+        userPrivateData.setPassword(userRegistrationDto.getPassword());
+        userPrivateData.setCreateTime(LocalDateTime.now());
+        return userPrivateData;
     }
 
     public UserDto convert(User user) {

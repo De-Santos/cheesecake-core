@@ -3,7 +3,7 @@ package com.user.service.service;
 
 import com.user.service.dto.wishList.WishListRequest;
 import com.user.service.utils.request.WishListRequestConstructor;
-import com.user.service.utils.additional.SuperWishListChecker;
+import com.user.service.utils.additional.checker.SuperWishListChecker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

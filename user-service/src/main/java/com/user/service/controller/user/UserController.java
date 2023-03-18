@@ -1,8 +1,9 @@
 package com.user.service.controller.user;
 
-import com.user.service.dto.UserRegistrationDto;
+import com.user.service.dto.user.UserRegistrationDto;
 import com.user.service.service.UserService;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,7 +24,7 @@ public class UserController implements UserApi {
 
     @Override
     @PostMapping("/registration")
-    public ResponseEntity<UserDto> registration(@RequestBody UserRegistrationDto userRegistrationDto) {
+    public ResponseEntity<UserDto> registration(@RequestBody @Valid UserRegistrationDto userRegistrationDto) {
         log.info("Registration user");
         log.debug(userRegistrationDto);
         return ResponseEntity.ok(userService.create(userRegistrationDto));

@@ -1,9 +1,9 @@
-package com.user.service.utils.additional;
+package com.user.service.utils.additional.checker;
 
 
-import com.user.service.utils.additional.checker.UserChecker;
-import com.user.service.utils.additional.checker.WishListChecker;
-import com.user.service.utils.additional.checker.ProductChecker;
+import com.user.service.utils.additional.checker.base.UserChecker;
+import com.user.service.utils.additional.checker.base.WishListChecker;
+import com.user.service.utils.additional.checker.base.ProductChecker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
