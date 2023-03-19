@@ -4,9 +4,10 @@ import com.product.service.productservice.dto.product.ProductRequest;
 import ua.cheesecake.dto.ProductResponse;
 import com.product.service.productservice.model.ArchiveProduct;
 import com.product.service.productservice.model.Product;
-import com.product.service.productservice.utils.mapper.TimeMapper;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ua.cheesecake.dto.TimeMapper;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class Convertor {
 
-    private final TimeMapper mapper;
+    private final TimeMapper mapper = new TimeMapper();
 
     public Product convert(ProductRequest productRequest) {
         return Product.builder()

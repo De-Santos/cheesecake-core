@@ -1,6 +1,5 @@
 package com.user.service.utils.convertor;
 
-import com.user.service.dto.user.UserRegistrationDto;
 import com.user.service.dto.basket.BasketProductDto;
 import com.user.service.dto.basket.BasketResponse;
 import com.user.service.dto.wishList.WishListResponse;
@@ -10,9 +9,11 @@ import com.user.service.entities.User;
 import com.user.service.entities.UserPrivateData;
 import com.user.service.entities.WishList;
 import lombok.RequiredArgsConstructor;
+import ua.cheesecake.dto.TimeMapper;
 import ua.cheesecake.dto.UserDto;
 
 import org.springframework.stereotype.Component;
+import ua.cheesecake.dto.UserPrivateDataDto;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -21,6 +22,8 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class Convertor {
+    
+    private final TimeMapper timeMapper = new TimeMapper();
 
     public WishListResponse convert(WishList wishList) {
         return WishListResponse.builder()
@@ -29,7 +32,7 @@ public class Convertor {
                 .build();
     }
 
-    public BasketProduct convert(Basket basket, String productId, Integer count) {
+    public BasketProduct mergeConvert(Basket basket, String productId, Integer count) {
         BasketProduct product = new BasketProduct();
         product.setBasket(basket);
         product.setProductId(productId);
@@ -48,17 +51,19 @@ public class Convertor {
                 .build();
     }
 
-    public User convert(UserRegistrationDto userRegistrationDto) {
+    public User convert(UserPrivateDataDto userPrivateDataDto) {
         User user = new User();
-        user.setName(userRegistrationDto.getName());
-        user.setSecondName(userRegistrationDto.getSecondName());
+        user.setName(userPrivateDataDto.getName());
+        user.setSecondName(userPrivateDataDto.getSecondName());
         return user;
     }
-    public UserPrivateData convert(UserRegistrationDto userRegistrationDto, User user) {
+    public UserPrivateData mergeConvert(UserPrivateDataDto userPrivateDataDto, User user) {
         UserPrivateData userPrivateData = new UserPrivateData();
         userPrivateData.setUser(user);
-        userPrivateData.setEmail(userRegistrationDto.getEmail());
-        userPrivateData.setPassword(userRegistrationDto.getPassword());
+        userPrivateData.setEmail(userPrivateDataDto.getEmail());
+        userPrivateData.setPassword(userPrivateDataDto.getPassword());
+        userPrivateData.setAddress(userPrivateDataDto.getAddress());
+        userPrivateData.setPhoneNumber(userPrivateDataDto.getPhoneNumber());
         userPrivateData.setCreateTime(LocalDateTime.now());
         return userPrivateData;
     }
@@ -99,6 +104,41 @@ public class Convertor {
                 .toList();
     }
 
+    public UserPrivateDataDto mergeConvert(UserPrivateData userPrivateData, User user) {
+        return UserPrivateDataDto.builder()
+                .userId(user.getId())
+                .name(user.getName())
+                .secondName(user.getSecondName())
+                .email(userPrivateData.getEmail())
+                .password(userPrivateData.getPassword())
+                .address(userPrivateData.getAddress())
+                .phoneNumber(userPrivateData.getPhoneNumber())
+                .createTime(timeMapper.toTime(userPrivateData.getCreateTime()))
+                .build();
+    }
+
+    public UserPrivateDataDto convert(UserPrivateData userPrivateData) {
+        return UserPrivateDataDto.builder()
+                .email(userPrivateData.getEmail())
+                .password(userPrivateData.getPassword())
+                .address(userPrivateData.getAddress())
+                .phoneNumber(userPrivateData.getPhoneNumber())
+                .createTime(timeMapper.toTime(userPrivateData.getCreateTime()))
+                .build();
+    }
+
+    public UserPrivateDataDto mergeConvert(UserDto user, UserPrivateDataDto userPrivateDataDto) {
+        return UserPrivateDataDto.builder()
+                .name(user.getName())
+                .secondName(user.getSecondName())
+                .email(userPrivateDataDto.getEmail())
+                .password(userPrivateDataDto.getPassword())
+                .address(userPrivateDataDto.getAddress())
+                .phoneNumber(userPrivateDataDto.getPhoneNumber())
+                .createTime(userPrivateDataDto.getCreateTime())
+                .build();
+    }
+
     public WishList emptyWishList(Long userId) {
         WishList list = new WishList();
         list.setId(userId);
@@ -123,5 +163,19 @@ public class Convertor {
     public BasketProduct setConvert(BasketProduct basketProduct, Integer count) {
         basketProduct.setCount(count);
         return basketProduct;
+    }
+
+    public UserPrivateData updateCovert(UserPrivateData userPrivateData, UserPrivateDataDto userPrivateDataDto) {
+        userPrivateData.setEmail(userPrivateDataDto.getEmail());
+        userPrivateData.setPassword(userPrivateDataDto.getPassword());
+        userPrivateData.setAddress(userPrivateDataDto.getAddress());
+        userPrivateData.setPhoneNumber(userPrivateDataDto.getPhoneNumber());
+        return userPrivateData;
+    }
+
+    public User mergeConvert(User user, UserPrivateDataDto userPrivateDataDto) {
+        user.setName(userPrivateDataDto.getName());
+        user.setSecondName(userPrivateDataDto.getSecondName());
+        return user;
     }
 }

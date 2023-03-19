@@ -1,10 +1,7 @@
 package com.user.service.controller.user;
 
-import com.user.service.dto.user.UserRegistrationDto;
 import com.user.service.service.UserService;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +11,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import ua.cheesecake.dto.UserPrivateDataDto;
 
 @Log4j2
 @Controller
@@ -24,10 +22,26 @@ public class UserController implements UserApi {
 
     @Override
     @PostMapping("/registration")
-    public ResponseEntity<UserDto> registration(@RequestBody @Valid UserRegistrationDto userRegistrationDto) {
+    public ResponseEntity<UserDto> registration(@RequestBody UserPrivateDataDto userPrivateDataDto) {
         log.info("Registration user");
-        log.debug(userRegistrationDto);
-        return ResponseEntity.ok(userService.create(userRegistrationDto));
+        log.debug(userPrivateDataDto);
+        return ResponseEntity.ok(userService.create(userPrivateDataDto));
+    }
+
+    @Override
+    @PostMapping("/{id}")
+    public ResponseEntity<UserPrivateDataDto> getUserPrivateData(@PathVariable(name = "id") Long userId) {
+        log.info("Get user private data");
+        log.debug(userId);
+        return ResponseEntity.ok(userService.getPrivateData(userId));
+    }
+
+    @Override
+    @PatchMapping()
+    public ResponseEntity<UserPrivateDataDto> updateUserPrivateData(@RequestBody UserPrivateDataDto userPrivateDataDto) {
+        log.info("Update user private data");
+        log.debug(userPrivateDataDto);
+        return ResponseEntity.ok(userService.updateData(userPrivateDataDto));
     }
 
     @Override
@@ -39,7 +53,7 @@ public class UserController implements UserApi {
 
     @Override
     @DeleteMapping("/{id}")
-    public void deleteUser(@NotNull @PathVariable(name = "id") Long userId) {
+    public void deleteUser(@PathVariable(name = "id") Long userId) {
         log.info("Delete user by id");
         log.debug(userId);
         userService.delete(userId);

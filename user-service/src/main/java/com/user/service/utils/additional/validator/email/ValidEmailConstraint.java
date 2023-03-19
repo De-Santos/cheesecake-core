@@ -5,8 +5,6 @@ import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.validator.routines.EmailValidator;
 
-import com.user.service.exceptions.exceptions.InvalidEmailException;
-
 @Log4j2
 public class ValidEmailConstraint implements
         ConstraintValidator<ValidEmail, String> {
@@ -16,7 +14,7 @@ public class ValidEmailConstraint implements
 
     @Override
     public boolean isValid(String contactField,
-                           ConstraintValidatorContext cxt) {
+            ConstraintValidatorContext cxt) {
         log.debug("Validating contactField is: {}", contactField);
         return validateEmail(contactField);
     }

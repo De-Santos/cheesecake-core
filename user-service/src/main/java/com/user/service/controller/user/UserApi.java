@@ -1,6 +1,7 @@
 package com.user.service.controller.user;
 
 import com.user.service.dto.user.UserRegistrationDto;
+import com.user.service.entities.UserPrivateData;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -15,15 +16,31 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
 import ua.cheesecake.dto.UserDto;
+import ua.cheesecake.dto.UserPrivateDataDto;
 
 public interface UserApi {
     @Operation(summary = "Create new user", description = "Create user in database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "406", description = "Not acceptable email or password")
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<UserDto> registration(@NotNull @RequestBody UserRegistrationDto userRegistrationDto);
+    ResponseEntity<UserDto> registration(@NotNull @RequestBody UserPrivateDataDto userPrivateDataDto);
+
+    @Operation(summary = "Get user private data", description = "Return user private data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "404", description = "User or private data does not exist"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<UserPrivateDataDto> getUserPrivateData(@NotNull @PathVariable(name = "id") Long userId);
+
+    @Operation(summary = "Update user private data", description = "Update user private data by supplied private data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "404", description = "User or private data does not exist"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<UserPrivateDataDto> updateUserPrivateData(@NotNull @RequestBody UserPrivateDataDto userPrivateDataDto);
 
     @Operation(summary = "Get all users", description = "Return list of user")
     @ApiResponses(value = {

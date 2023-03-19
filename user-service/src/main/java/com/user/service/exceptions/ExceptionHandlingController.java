@@ -1,6 +1,7 @@
 package com.user.service.exceptions;
 
 import com.user.service.exceptions.exceptions.BasketProductNotFoundException;
+import com.user.service.exceptions.exceptions.UserPrivateDataNotFoundException;
 import com.user.service.exceptions.exceptions.WishListNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,14 @@ public class ExceptionHandlingController {
         return new ResponseEntity<>(
                 new ExceptionDto(e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()),
                 HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserPrivateDataNotFoundException.class)
+    @ResponseStatus(HttpStatus.FAILED_DEPENDENCY)
+    public ResponseEntity<ExceptionDto> handleException(UserPrivateDataNotFoundException e) {
+        return new ResponseEntity<>(
+                new ExceptionDto(e.getMessage(), HttpStatus.FAILED_DEPENDENCY, LocalDateTime.now()),
+                HttpStatus.FAILED_DEPENDENCY);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

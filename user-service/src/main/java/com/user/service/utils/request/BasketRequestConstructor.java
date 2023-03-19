@@ -30,7 +30,7 @@ public class BasketRequestConstructor {
         Basket basket = basketRepository.findById(userId).orElseThrow(BasketNotFoundException::new);
         log.debug("addItemToBasket get versionId: {} response basket is: {}", versionId, basket);
         if (basketProductContainsMapper(basket, versionId)) {
-            basketProductRepository.save(convertor.convert(basket, versionId, count));
+            basketProductRepository.save(convertor.mergeConvert(basket, versionId, count));
             return true;
         }
         return false;
