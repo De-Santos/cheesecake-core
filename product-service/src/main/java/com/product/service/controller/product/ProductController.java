@@ -21,55 +21,55 @@ public class ProductController implements ProductApi {
 
     @Override
     @PostMapping("/add")
-    public ResponseEntity<ProductResponse> addPost(@RequestBody ProductRequest productRequest) {
-        log.info("add post in mongo database");
-        log.debug(productRequest);
-        ProductResponse productResponse = productService.addPost(productRequest);
-        log.debug("added post: {}", productResponse);
-        return ResponseEntity.ok(productResponse);
+    public ResponseEntity<ProductResponse> addProduct(@RequestBody ProductRequest productRequest) {
+        log.info("Add product");
+        log.debug("ProductRequest is: {}", productRequest);
+        return ResponseEntity.ok(productService.addProduct(productRequest));
     }
 
     @Override
     @PatchMapping("/update/{versionId}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable String versionId,
             @RequestBody ProductRequest productRequest) {
-        log.info("update product by id: {}", versionId);
-        return ResponseEntity.ok(productService.update(versionId, productRequest));
+        log.info("Update product by id: {}", versionId);
+        log.debug("Updated product is: {}", productRequest);
+        return ResponseEntity.ok(productService.updateProduct(versionId, productRequest));
     }
 
     @Override
     @PatchMapping("edit/{id}")
     public ResponseEntity<ProductResponse> editProduct(@PathVariable String id) {
-        log.info("edit(active/inactive) product by id: {}", id);
-        return ResponseEntity.ok(productService.edit(id));
+        log.info("Edit(active/inactive) product by id: {}", id);
+        return ResponseEntity.ok(productService.editProduct(id));
     }
 
+    // ONLY FOR DEVELOP
     @Override
     @DeleteMapping()
     public void deleteAll() {
-        log.info("delete all items in database");
+        log.info("Delete all items in database");
         productService.deleteAll();
-        log.info("successful");
     }
 
     @Override
     @GetMapping("/getArchive")
-    public List<ProductResponse> getArchive() {
-        return productService.getArchive();
+    public ResponseEntity<List<ProductResponse>> getArchive() {
+        log.info("Get all archive products");
+        return ResponseEntity.ok(productService.getArchiveProducts());
     }
 
     @Override
     @GetMapping("/{versionId}")
-    public ResponseEntity<ProductResponse> getPost(@PathVariable String versionId) {
-        log.info("get product by version id: {}", versionId);
-        return ResponseEntity.ok(productService.getPostById(versionId));
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable String versionId) {
+        log.info("Get product by version id: {}", versionId);
+        return ResponseEntity.ok(productService.getById(versionId));
     }
 
     @Override
     @GetMapping()
     public ResponseEntity<List<ProductResponse>> getAll() {
-        log.info("get all products");
-        return ResponseEntity.ok(productService.getAll());
+        log.info("Get all products");
+        return ResponseEntity.ok(productService.getProducts());
     }
 
     @Override

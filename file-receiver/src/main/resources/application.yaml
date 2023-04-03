@@ -20,3 +20,16 @@ spring:
     name: file-receiver
 server:
   port: 8083
+
+
+service:
+  product:
+    url: ${product_service_url}
+
+
+logging:
+  level:
+    com.file.receiver: TRACE
+  pattern:
+    console: "%d{ISO8601} %highlight(%-5level{TRACE=blue, DEBUG=yellow}) [%green(%t)] %cyan(%C{1.}): %msg%n%throwable"
+

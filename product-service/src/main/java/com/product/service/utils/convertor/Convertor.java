@@ -3,19 +3,21 @@ package com.product.service.utils.convertor;
 import com.product.service.dto.product.ProductRequest;
 import com.product.service.entity.ArchiveProduct;
 import com.product.service.entity.Product;
-
+import com.product.service.utils.template.Template;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import ua.cheesecake.dto.additional.TimeMapper;
 import ua.cheesecake.dto.product.ProductResponse;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class Convertor {
+    private final Template template;
     private final TimeMapper timeMapper;
 
     public Product convert(ProductRequest productRequest) {
@@ -81,5 +83,11 @@ public class Convertor {
         product.setCreateDate(LocalDateTime.now());
         product.setActive(product.isActive());
         return product;
+    }
+
+    public void convertToFileInUse(Product product) {
+        List<String> photos = new ArrayList<>(product.getImagesId());
+        photos.add(product.getDescriptionImageId());
+        template.makeFilesInUse(photos);
     }
 }

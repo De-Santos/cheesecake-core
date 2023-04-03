@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 
 @Data
@@ -18,7 +19,7 @@ public final class Product {
     @Id
     private String id;
     private String versionId;
-    private Collection<String> imagesId;
+    private List<String> imagesId;
     private String descriptionImageId;
     private String name;
     private String description;
