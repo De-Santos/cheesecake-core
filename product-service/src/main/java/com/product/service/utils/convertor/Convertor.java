@@ -1,17 +1,28 @@
 package com.product.service.utils.convertor;
 
+import com.product.service.dto.photo.PhotoResponse;
 import com.product.service.dto.product.ProductRequest;
 import com.product.service.entity.ArchiveProduct;
+import com.product.service.entity.Photo;
 import com.product.service.entity.Product;
+import com.product.service.exception.exceptions.photo.invalid.InvalidFileException;
 import com.product.service.utils.template.Template;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.Binary;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import ua.cheesecake.dto.additional.TimeMapper;
 import ua.cheesecake.dto.product.ProductResponse;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Component
@@ -89,5 +100,40 @@ public class Convertor {
         List<String> photos = new ArrayList<>(product.getImagesId());
         photos.add(product.getDescriptionImageId());
         template.makeFilesInUse(photos);
+    }
+
+    public PhotoResponse convert(Photo photo) {
+        return this.createPhotoResponse(photo);
+    }
+
+    public ResponseEntity<byte[]> mergeToPhotoResponse(Photo photo) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.valueOf(photo.getMediaType()));
+        return new ResponseEntity<>(photo.getImage().getData(), headers, HttpStatus.OK);
+    }
+
+    private PhotoResponse createPhotoResponse(Photo photo) {
+        return PhotoResponse.builder()
+                .id(photo.getId())
+                .realPhotoName(photo.getRealPhotoName())
+                .photo(photo.getImage().getData())
+                .build();
+    }
+
+    public Photo photoBuilder(MultipartFile file) {
+        return Photo.builder()
+                .inUse(Boolean.FALSE)
+                .mediaType(MediaType.valueOf(Objects.requireNonNull(file.getContentType())).toString())
+                .realPhotoName(file.getOriginalFilename())
+                .image(this.getBinaryFromFile(file))
+                .build();
+    }
+
+    private Binary getBinaryFromFile(MultipartFile file) {
+        try {
+            return new Binary(file.getBytes());
+        } catch (IOException e) {
+            throw new InvalidFileException(e);
+        }
     }
 }
