@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @Log4j2
 @RestController
 @RequiredArgsConstructor
@@ -19,23 +21,36 @@ public class PhotoController implements PhotoApi {
 
     @Override
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
+                                             @RequestParam("draftId") String draftId) {
         log.debug(file);
         log.info("Upload file with real file name: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(photoService.uploadFile(file));
+        return ResponseEntity.ok(photoService.upload(file, draftId));
     }
 
     @Override
-    @GetMapping("/{id}")
-    public ResponseEntity<byte[]> get(@PathVariable("id") String id) {
+    @PostMapping("/upload/insert")
+    public ResponseEntity<String> insertUploadFile(@RequestParam("file") MultipartFile fileRequest,
+                                                   @RequestParam("draftId") String draftId,
+                                                   @RequestParam("position") Integer position) {
+        log.info("Upload fil with real file name: {}, in position: {}, for draft product: {}",
+                fileRequest.getOriginalFilename(), position, draftId);
+        return ResponseEntity.ok(photoService.insert(fileRequest, draftId, position));
+    }
+
+    @Override
+    @GetMapping("/")
+    public ResponseEntity<byte[]> get(@RequestParam("id") UUID id,
+                                      @RequestParam("draftId") String draftId) {
         log.info("Get photo by id: {}", id);
-        return photoService.getPhoto(id);
+        return photoService.getPhoto(draftId, id);
     }
 
     @Override
-    @DeleteMapping("/{id}")
-    public ResponseEntity<PhotoResponse> remove(@PathVariable("id") String id) {
+    @DeleteMapping("/")
+    public ResponseEntity<PhotoResponse> remove(@RequestParam("id") UUID id,
+                                                @RequestParam("draftId") String draftId) {
         log.info("Remove photo by id: {}", id);
-        return ResponseEntity.ok(photoService.remove(id));
+        return ResponseEntity.ok(photoService.remove(draftId, id));
     }
 }

@@ -1,12 +1,17 @@
 package com.product.service.utils.additional;
 
 import com.product.service.dao.ArchiveProductRepository;
+import com.product.service.dao.DraftProductRepository;
 import com.product.service.dao.ProductRepository;
+import com.product.service.dto.draft.DraftProductDto;
 import com.product.service.dto.product.ModifyingProductRequest;
 import com.product.service.dto.product.ProductRequest;
+import com.product.service.entity.DraftProduct;
+import com.product.service.entity.additional.Photo;
 import com.product.service.exception.exceptions.product.empty.EmptyDescriptionException;
 import com.product.service.exception.exceptions.product.empty.EmptyNameException;
 import com.product.service.exception.exceptions.product.empty.EmptyPhotosException;
+import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
 import com.product.service.exception.exceptions.product.invalid.ProductInvalidPriceException;
 import com.product.service.exception.exceptions.product.invalid.ProductInvalidSailPriceException;
 import com.product.service.exception.exceptions.product.nullable.NullArgumentException;
@@ -27,7 +32,7 @@ import java.util.NoSuchElementException;
 public class ProductChecker {
     private final ProductRepository productRepository;
     private final ArchiveProductRepository archiveProductRepository;
-    private final PhotoChecker photoChecker;
+    private final DraftProductRepository draftProductRepository;
     // TODO: 3/26/2023 create configuration from database
     private static final Integer MAX_PRODUCT_NAME_LENGTH = 100;
     private static final Integer MIN_PRODUCT_NAME_LENGTH = 0;
@@ -45,37 +50,35 @@ public class ProductChecker {
         return productRepository.existsProductByVersionIdAndActiveIsTrue(versionId);
     }
 
-    public void checkRequest(ProductRequest productRequest) {
-        log.info("Checking productRequest.");
-        this.checkName(productRequest);
-        this.checkPhoto(productRequest);
-        this.checkPrice(productRequest);
-        this.checkDescription(productRequest);
+    public void checkDraft(String id) {
+        if(draftProductRepository.existsById(id)) throw new DraftProductNotFoundException("Draft product not found by id: " + id);
     }
 
-    private void checkName(ProductRequest productRequest) {
-        String name = productRequest.getName();
+    public void checkDraftRequest(DraftProduct draftProduct) {
+        this.checkName(draftProduct.getName());
+        this.checkPhoto(draftProduct.getImages().getAll());
+        this.checkPrice(draftProduct.getPrice());
+        this.checkDescription(draftProduct.getDescription());
+    }
+
+    private void checkName(String name) {
         if (name == null) throw new NoSuchElementException();
         if (name.isEmpty()) throw new EmptyNameException();
         if (name.length() > MAX_PRODUCT_NAME_LENGTH
                 || name.length() <= MIN_PRODUCT_NAME_LENGTH) throw new ProductNameOutOfBoundsException();
     }
 
-    private void checkDescription(ProductRequest productRequest) {
-        String description = productRequest.getDescription();
+    private void checkDescription(String description) {
         if (description.isEmpty()) throw new EmptyDescriptionException();
     }
 
-    private void checkPhoto(ProductRequest productRequest) {
-        List<String> photos = productRequest.getImagesId();
+    private void checkPhoto(List<Photo> photos) {
         if (photos == null) throw new NoSuchElementException();
         if (photos.isEmpty()) throw new EmptyPhotosException();
-        if (photos.size() > 9) throw new ProductPhotosLimitException();
-        photoChecker.check(productRequest);
+        if (photos.size() > 10) throw new ProductPhotosLimitException();
     }
 
-    private void checkPrice(ProductRequest productRequest) {
-        BigDecimal price = productRequest.getPrice();
+    private void checkPrice(BigDecimal price) {
         if (price == null) throw new NoSuchElementException();
         if (price.compareTo(BigDecimal.ZERO) < 0)
             throw new ProductInvalidPriceException("Price can't be less than zero.");
@@ -107,5 +110,19 @@ public class ProductChecker {
         if (productRepository.existsById(versionId)) return;
         if (archiveProductRepository.existsById(versionId)) return;
         throw new ProductNotFoundException("Product not found by id: " + versionId);
+    }
+
+    // think about it
+    public void checkDraft(DraftProductDto draftProductDto) {
+        this.checkName(draftProductDto.getName());
+        // FIXME: 4/4/2023
+        this.checkPhoto(draftProductDto.getImages());
+        this.checkPrice(draftProductDto.getPrice());
+        this.checkDescription(draftProductDto.getDescription());
+    }
+
+    public void checkDraftById(String id) {
+        if (Boolean.FALSE.equals(draftProductRepository.existsById(id)))
+            throw new DraftProductNotFoundException("Draft product not found.");
     }
 }
