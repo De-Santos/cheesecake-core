@@ -1,7 +1,8 @@
 package com.product.service.controller.product;
 
+import com.product.service.dto.draft.DraftProductDto;
 import com.product.service.dto.product.ModifyingProductRequest;
-import com.product.service.dto.product.ProductRequest;
+import com.product.service.dto.product.ProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ua.cheesecake.dto.product.ProductResponse;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Error in request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<ProductResponse> addProduct(@RequestBody @NotNull ProductRequest productRequest);
+    ResponseEntity<ProductResponse> addProduct(@PathVariable("draftId") @NotNull String draftId);
 
     @Operation(summary = "Get all archived products", description = "ONLY FOR DEVELOPERS")
     @ApiResponses(value = {
@@ -38,8 +38,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "404", description = "Post doesn't found")
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<ProductResponse> updateProduct(@PathVariable String id,
-                                                  @RequestBody @NotNull ProductRequest productRequest);
+    ResponseEntity<ProductResponse> updateProduct(@PathVariable("draftId") String id);
 
     @Operation(summary = "Set off/on product by id", description = "Change field active/inactive, return product")
     @ApiResponses(value = {
@@ -85,4 +84,38 @@ public interface ProductApi {
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<ProductResponse> sailMode(@RequestBody ModifyingProductRequest modifyingProductRequest);
 
+    @Operation(summary = "Crate new draft from product",
+            description = "Crate new draft product with data from product by versionId")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
+            @ApiResponse(responseCode = "404", description = "Post doesn't found")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<DraftProductDto> toDraftProduct(@PathVariable("id") String versionId);
+
+    @Operation(summary = "Create new product", description = "Returns id of the created product")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in request body"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<String> addDraftProduct();
+
+
+    @Operation(summary = "Create new product", description = "Returns id of the created product")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in request body"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<DraftProductDto> updateDraftProduct(@RequestBody DraftProductDto draftProductDto);
+
+    @Operation(summary = "Create new product", description = "Returns id of the created product")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in request body"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") String id);
 }

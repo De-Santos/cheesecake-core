@@ -1,54 +1,37 @@
 package com.product.service.utils.convertor;
 
+import com.product.service.dto.draft.DraftProductDto;
 import com.product.service.dto.photo.PhotoResponse;
-import com.product.service.dto.product.ProductRequest;
+import com.product.service.dto.product.ProductResponse;
 import com.product.service.entity.ArchiveProduct;
-import com.product.service.entity.Photo;
+import com.product.service.entity.DraftProduct;
 import com.product.service.entity.Product;
+import com.product.service.entity.additional.Photo;
 import com.product.service.exception.exceptions.photo.invalid.InvalidFileException;
-import com.product.service.utils.template.Template;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.Binary;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ua.cheesecake.dto.additional.TimeMapper;
-import ua.cheesecake.dto.product.ProductResponse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class Convertor {
-    private final Template template;
     private final TimeMapper timeMapper;
-
-    public Product convert(ProductRequest productRequest) {
-        return Product.builder()
-                .versionId(UUID.randomUUID().toString())
-                .imagesId(productRequest.getImagesId())
-                .descriptionImageId(productRequest.getDescriptionImageId())
-                .name(productRequest.getName())
-                .description(productRequest.getDescription())
-                .price(productRequest.getPrice())
-                .createDate(LocalDateTime.now())
-                .active(productRequest.isActive())
-                .build();
-    }
 
     public ProductResponse convert(Product product) {
         return ProductResponse.builder()
                 .versionId(product.getVersionId())
-                .imagesId(product.getImagesId())
-                .descriptionImageId(product.getDescriptionImageId())
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
@@ -61,8 +44,6 @@ public class Convertor {
     public ProductResponse convert(ArchiveProduct archiveProduct) {
         return ProductResponse.builder()
                 .versionId(archiveProduct.getVersionId())
-                .imagesId(archiveProduct.getImagesId())
-                .descriptionImageId(archiveProduct.getDescriptionImageId())
                 .name(archiveProduct.getName())
                 .description(archiveProduct.getDescription())
                 .price(archiveProduct.getPrice())
@@ -71,12 +52,45 @@ public class Convertor {
                 .build();
     }
 
+    public DraftProduct convert(@NonNull DraftProductDto draftProductDto) {
+        DraftProduct draftProduct = DraftProduct.builder()
+                .id(draftProductDto.getId())
+                .images(draftProductDto.getImages())
+                .name(draftProductDto.getName())
+                .description(draftProductDto.getDescription())
+                .price(draftProductDto.getPrice())
+                .createDate(draftProductDto.getCreateDate())
+                .build();
+        draftProduct.setCreateDate(draftProductDto.getCreateDate());
+        return draftProduct;
+    }
+
+    public DraftProductDto convert(DraftProduct draftProduct) {
+        return DraftProductDto.builder()
+                .id(draftProduct.getId())
+                .images(draftProduct.getImages())
+                .name(draftProduct.getName())
+                .description(draftProduct.getDescription())
+                .price(draftProduct.getPrice())
+                .createDate(draftProduct.getCreateDate())
+                .build();
+    }
+
+    public Product convertToProduct(DraftProduct draftProduct) {
+        return Product.builder()
+                .images(draftProduct.getImages())
+                .name(draftProduct.getName())
+                .description(draftProduct.getDescription())
+                .price(draftProduct.getPrice())
+                .createDate(LocalDateTime.now())
+                .build();
+    }
+
     public ArchiveProduct convertToArchive(Product product) {
         return ArchiveProduct.builder()
                 .versionId(product.getVersionId())
                 .actualProductId(product.getId())
-                .imagesId(product.getImagesId())
-                .descriptionImageId(product.getDescriptionImageId())
+                .images(product.getImages())
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
@@ -84,22 +98,15 @@ public class Convertor {
                 .build();
     }
 
-    public Product updateConvert(Product product, ProductRequest productRequest) {
+    public Product updateConvert(Product product, DraftProduct draftProduct) {
         product.setVersionId(UUID.randomUUID().toString());
-        product.setImagesId(productRequest.getImagesId());
-        product.setDescriptionImageId(productRequest.getDescriptionImageId());
-        product.setName(productRequest.getName());
-        product.setDescription(productRequest.getDescription());
-        product.setPrice(productRequest.getPrice());
+        product.setImages(draftProduct.getImages());
+        product.setName(draftProduct.getName());
+        product.setDescription(draftProduct.getDescription());
+        product.setPrice(draftProduct.getPrice());
         product.setCreateDate(LocalDateTime.now());
         product.setActive(product.isActive());
         return product;
-    }
-
-    public void convertToFileInUse(Product product) {
-        List<String> photos = new ArrayList<>(product.getImagesId());
-        photos.add(product.getDescriptionImageId());
-        template.makeFilesInUse(photos);
     }
 
     public PhotoResponse convert(Photo photo) {
@@ -114,15 +121,14 @@ public class Convertor {
 
     private PhotoResponse createPhotoResponse(Photo photo) {
         return PhotoResponse.builder()
-                .id(photo.getId())
                 .realPhotoName(photo.getRealPhotoName())
-                .photo(photo.getImage().getData())
                 .build();
     }
 
-    public Photo photoBuilder(MultipartFile file) {
+    public Photo photoBuilder(MultipartFile file, Integer order) {
         return Photo.builder()
-                .inUse(Boolean.FALSE)
+                .hash(UUID.randomUUID())
+                .order(order)
                 .mediaType(MediaType.valueOf(Objects.requireNonNull(file.getContentType())).toString())
                 .realPhotoName(file.getOriginalFilename())
                 .image(this.getBinaryFromFile(file))
@@ -135,5 +141,27 @@ public class Convertor {
         } catch (IOException e) {
             throw new InvalidFileException(e);
         }
+    }
+
+    public DraftProduct toDraft(Product product) {
+        return DraftProduct.builder()
+                .parentId(product.getVersionId())
+                .images(product.getImages())
+                .name(product.getName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .createDate(LocalDateTime.now())
+                .build();
+    }
+
+    public DraftProduct toDraft(ArchiveProduct archiveProduct) {
+        return DraftProduct.builder()
+                .parentId(archiveProduct.getVersionId())
+                .images(archiveProduct.getImages())
+                .name(archiveProduct.getName())
+                .description(archiveProduct.getDescription())
+                .price(archiveProduct.getPrice())
+                .createDate(LocalDateTime.now())
+                .build();
     }
 }

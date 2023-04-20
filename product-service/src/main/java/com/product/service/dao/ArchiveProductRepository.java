@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface ArchiveProductRepository extends MongoRepository<ArchiveProduct, String> {
     Optional<ArchiveProduct> findByVersionId(String versionId);
+    boolean existsByVersionId(String versionId);
 }

@@ -1,25 +1,18 @@
-package com.product.service.entity;
+package com.product.service.dto.draft;
 
 import com.product.service.entity.additional.FileCollection;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.extern.jackson.Jacksonized;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Document(collection = "draft")
-public final class DraftProduct {
-    @Id
+@Jacksonized
+public class DraftProductDto {
     private String id;
-    private String parentId;
     private FileCollection images;
     private String name;
     private String description;

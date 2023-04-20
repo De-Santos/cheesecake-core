@@ -11,4 +11,5 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     Optional<Product> findProductByVersionId(String versionId);
     boolean existsProductByVersionIdAndActiveIsTrue(String versionId);
     boolean existsProductByName(String name);
+    boolean existsByVersionId(String versionId);
 }

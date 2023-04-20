@@ -8,6 +8,7 @@ import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+@Deprecated(since = "since: 4/4/2023", forRemoval = true)
 @Data
 @Builder
 @NoArgsConstructor

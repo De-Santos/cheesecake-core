@@ -1,11 +1,14 @@
 package com.product.service.utils.request;
 
 import com.product.service.dao.ArchiveProductRepository;
+import com.product.service.dao.DraftProductRepository;
 import com.product.service.dao.ProductRepository;
 import com.product.service.dto.product.ModifyingProductRequest;
-import com.product.service.dto.product.ProductRequest;
+import com.product.service.dto.product.ProductResponse;
 import com.product.service.entity.ArchiveProduct;
+import com.product.service.entity.DraftProduct;
 import com.product.service.entity.Product;
+import com.product.service.exception.exceptions.product.exist.ProductAlreadyExistDraftException;
 import com.product.service.exception.exceptions.product.exist.ProductAlreadyExistException;
 import com.product.service.exception.exceptions.product.found.ArchiveProductNotFoundException;
 import com.product.service.utils.convertor.Convertor;
@@ -13,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import ua.cheesecake.dto.exception.ProductNotFoundException;
-import ua.cheesecake.dto.product.ProductResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,20 +29,19 @@ public class RequestConstructor {
     private final Convertor convertor;
     private final ProductRepository productRepository;
     private final ArchiveProductRepository archiveProductRepository;
+    private final DraftProductRepository draftProductRepository;
 
-    public Product addProductIfNotExist(ProductRequest productRequest) {
-        log.info("Saving product in database");
-        if (productRepository.existsProductByName(productRequest.getName())) throw new ProductAlreadyExistException();
-        Product product = productRepository.save(convertor.convert(productRequest));
-        convertor.convertToFileInUse(product);
-        return product;
+    public Product addProductIfNotExistByDraftProductId(DraftProduct draftProduct) {
+        log.info("Saving product in database by draft product id: {}", draftProduct.getId());
+        if (productRepository.existsProductByName(draftProduct.getName())) throw new ProductAlreadyExistException();
+        return productRepository.save(convertor.convertToProduct(draftProduct));
     }
 
     public Product sailMode(ModifyingProductRequest modifyingProductRequest) {
         log.info("Sail mode for product: {}", modifyingProductRequest.getVersionId());
         log.debug("Sail price is: {}", modifyingProductRequest.getSailPrice());
         Product product = productRepository.findProductByVersionId(modifyingProductRequest.getVersionId())
-                .orElseThrow(ProductNotFoundException::new);
+                .orElseThrow(() -> ProductNotFoundException.create(modifyingProductRequest.getVersionId()));
         product.setSalePrice(modifyingProductRequest.getSailPrice());
         return productRepository.save(product);
     }
@@ -67,13 +68,15 @@ public class RequestConstructor {
                 .toList();
     }
 
-    public ProductResponse updateProduct(String versionId, ProductRequest productRequest) {
-        log.info("Updating product from database by id: {}", versionId);
-        Product product = productRepository.findProductByVersionId(versionId)
-                .orElseThrow(() -> new ProductNotFoundException("unknown versionId" + versionId));
+    // FIXME: 4/19/2023 I need be checked
+    public ProductResponse updateProduct(DraftProduct draftProduct) {
+        log.info("Updating product from database by id: {}", draftProduct.getParentId());
+        if (archiveProductRepository.existsByVersionId(draftProduct.getParentId()))
+            return convertor.convert(productRepository.save(convertor.convertToProduct(draftProduct)));
+        Product product = productRepository.findProductByVersionId(draftProduct.getParentId())
+                .orElseThrow(() -> ProductNotFoundException.create(draftProduct.getParentId()));
         this.addArchiveProduct(product);
-        Product newProduct = convertor.updateConvert(product, productRequest);
-        return convertor.convert(productRepository.save(newProduct));
+        return convertor.convert(productRepository.save(convertor.updateConvert(product, draftProduct)));
     }
 
     public void deleteAll() {
@@ -110,10 +113,20 @@ public class RequestConstructor {
         log.info("Getting archive product from database by version id: {}", versionId);
         ArchiveProduct archiveProduct = archiveProductRepository
                 .findByVersionId(versionId)
-                .orElseThrow(() ->
-                        new ArchiveProductNotFoundException("Archive product not found by versionId: " + versionId));
+                .orElseThrow(() -> ArchiveProductNotFoundException.create(versionId));
         Product activeProduct = this.getProductById(archiveProduct.getActualProductId());
         archiveProduct.setActualProductId(activeProduct.getVersionId());
         return archiveProduct;
+    }
+
+    public DraftProduct draftFrom(String versionId) {
+        log.info("Making draft product by versionId: {}", versionId);
+        if (draftProductRepository.existsByParentId(versionId))
+            throw ProductAlreadyExistDraftException.create(versionId);
+        Optional<Product> product = productRepository.findProductByVersionId(versionId);
+        if (product.isPresent()) return draftProductRepository.save(convertor.toDraft(product.get()));
+        ArchiveProduct archiveProduct = archiveProductRepository.findByVersionId(versionId)
+                .orElseThrow(() -> ArchiveProductNotFoundException.create(versionId));
+        return draftProductRepository.save(convertor.toDraft(archiveProduct));
     }
 }

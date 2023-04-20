@@ -10,5 +10,4 @@ import lombok.extern.jackson.Jacksonized;
 public class PhotoResponse {
     private final String id;
     private final String realPhotoName;
-    private final byte[] photo;
 }

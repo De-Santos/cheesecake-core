@@ -1,14 +1,15 @@
 package com.product.service.controller.product;
 
+import com.product.service.dto.draft.DraftProductDto;
 import com.product.service.dto.product.ModifyingProductRequest;
-import com.product.service.dto.product.ProductRequest;
+import com.product.service.dto.product.ProductResponse;
+import com.product.service.service.DraftProductService;
 import com.product.service.service.ProductService;
-
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.cheesecake.dto.product.ProductResponse;
 
 import java.util.List;
 
@@ -18,22 +19,20 @@ import java.util.List;
 @RequestMapping("/api/v1/product")
 public class ProductController implements ProductApi {
     private final ProductService productService;
+    private final DraftProductService draftProductService;
 
     @Override
-    @PostMapping("/add")
-    public ResponseEntity<ProductResponse> addProduct(@RequestBody ProductRequest productRequest) {
-        log.info("Add product");
-        log.debug("ProductRequest is: {}", productRequest);
-        return ResponseEntity.ok(productService.addProduct(productRequest));
+    @PostMapping("/add/{draftId}")
+    public ResponseEntity<ProductResponse> addProduct(@PathVariable("draftId") @NotNull String draftId) {
+        log.info("Add product by draft product: {}", draftId);
+        return ResponseEntity.ok(productService.addProduct(draftId));
     }
 
     @Override
-    @PatchMapping("/update/{versionId}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable String versionId,
-            @RequestBody ProductRequest productRequest) {
-        log.info("Update product by id: {}", versionId);
-        log.debug("Updated product is: {}", productRequest);
-        return ResponseEntity.ok(productService.updateProduct(versionId, productRequest));
+    @PatchMapping("/update/{draftId}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable("draftId") String id) {
+        log.info("Update product by id: {}", id);
+        return ResponseEntity.ok(productService.updateProduct(id));
     }
 
     @Override
@@ -80,4 +79,34 @@ public class ProductController implements ProductApi {
         return ResponseEntity.ok(productService.sailMode(modifyingProductRequest));
     }
 
+    // TODO: 4/19/2023 test me
+    @Override
+    @GetMapping("/draft/of/{id}")
+    public ResponseEntity<DraftProductDto> toDraftProduct(@PathVariable("id") String versionId) {
+        log.info("Get draft from product by versionId: {}", versionId);
+        return ResponseEntity.ok(productService.toDraft(versionId));
+    }
+
+    @Override
+    @PostMapping("/draft")
+    public ResponseEntity<String> addDraftProduct() {
+        log.info("New draft");
+        return ResponseEntity.ok(draftProductService.newDraft());
+    }
+
+    // TODO: 4/16/2023 make method draft from, which will make draft from active product
+
+    @Override
+    @PostMapping("/draft/update")
+    public ResponseEntity<DraftProductDto> updateDraftProduct(@RequestBody DraftProductDto draftProductDto) {
+        log.info("Update draft product");
+        return ResponseEntity.ok(draftProductService.update(draftProductDto));
+    }
+
+    @Override
+    @DeleteMapping("/draft/{draftId}")
+    public ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") String id) {
+        log.info("Delete draft product by id: {}", id);
+        return ResponseEntity.ok(draftProductService.delete(id));
+    }
 }

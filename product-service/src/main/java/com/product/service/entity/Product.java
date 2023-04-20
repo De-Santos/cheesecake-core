@@ -1,27 +1,23 @@
 package com.product.service.entity;
 
-import lombok.AllArgsConstructor;
+import com.product.service.entity.additional.FileCollection;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Document(collection = "products")
 public final class Product {
     @Id
     private String id;
     private String versionId;
-    private List<String> imagesId;
+    private FileCollection images;
     private String descriptionImageId;
     private String name;
     private String description;

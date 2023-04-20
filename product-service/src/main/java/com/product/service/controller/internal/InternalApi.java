@@ -28,20 +28,4 @@ public interface InternalApi {
     @ResponseStatus(HttpStatus.OK)
     void isRealProductSequence(@RequestParam @NotNull List<String> versionIdList);
 
-    @Operation(summary = "Search in products and check the photoId",
-            description = "If photo in use return true else return false")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-    })
-    @ResponseStatus(HttpStatus.OK)
-    boolean isPhotoInUse(@RequestParam @NotNull String photoId);
-
-    @Operation(summary = "Search in products and check the List of photoIds",
-            description = "If any photo of List was return true else return false")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-    })
-    @ResponseStatus(HttpStatus.OK)
-    boolean isPhotoListInUse(@RequestParam @NotNull List<String> photoIds);
-
 }

@@ -29,6 +29,15 @@ public class PhotoController implements PhotoApi {
     }
 
     @Override
+    @PostMapping("/upload/description")
+    public ResponseEntity<String> uploadDescriptionFile(@RequestParam("file") MultipartFile file,
+                                                        @RequestParam("draftId") String draftId) {
+        log.debug(file);
+        log.info("Upload description file with real file name: {}", file.getOriginalFilename());
+        return ResponseEntity.ok(photoService.uploadDescription(file, draftId));
+    }
+
+    @Override
     @PostMapping("/upload/insert")
     public ResponseEntity<String> insertUploadFile(@RequestParam("file") MultipartFile fileRequest,
                                                    @RequestParam("draftId") String draftId,

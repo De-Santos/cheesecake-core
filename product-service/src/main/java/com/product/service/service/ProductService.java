@@ -1,15 +1,17 @@
 package com.product.service.service;
 
+import com.product.service.dto.draft.DraftProductDto;
 import com.product.service.dto.product.ModifyingProductRequest;
-import com.product.service.dto.product.ProductRequest;
+import com.product.service.dto.product.ProductResponse;
+import com.product.service.entity.DraftProduct;
 import com.product.service.entity.Product;
 import com.product.service.utils.additional.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
+import com.product.service.utils.request.DraftRequestConstructor;
 import com.product.service.utils.request.RequestConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import ua.cheesecake.dto.product.ProductResponse;
 
 import java.util.List;
 
@@ -21,12 +23,13 @@ public class ProductService {
     private final Convertor convertor;
     private final ProductChecker productChecker;
     private final RequestConstructor requestConstructor;
+    private final DraftRequestConstructor draftRequestConstructor;
 
-    public ProductResponse addProduct(ProductRequest productRequest) {
-        log.info("Add product");
-        productChecker.checkRequest(productRequest);
-        Product product = requestConstructor.addProductIfNotExist(productRequest);
-        log.info(productRequest);
+    public ProductResponse addProduct(String draftId) {
+        log.info("Add product by draft product id: {}", draftId);
+        DraftProduct draftProduct = draftRequestConstructor.get(draftId);
+        productChecker.checkDraftData(draftProduct);
+        Product product = requestConstructor.addProductIfNotExistByDraftProductId(draftProduct);
         return convertor.convert(product);
     }
 
@@ -41,16 +44,17 @@ public class ProductService {
         return requestConstructor.getAll();
     }
 
-    public ProductResponse updateProduct(String versionId, ProductRequest productRequest) {
-        log.info("Updating product by id: {}", versionId);
-        productChecker.check(versionId);
-        productChecker.checkRequest(productRequest);
-        return requestConstructor.updateProduct(versionId, productRequest);
+    public ProductResponse updateProduct(String id) {
+        log.info("Updating product by id: {}", id);
+        DraftProduct draftProduct = draftRequestConstructor.get(id);
+        productChecker.check(id);
+        productChecker.checkDraftData(draftProduct);
+        return requestConstructor.updateProduct(draftProduct);
     }
 
     public ProductResponse editProduct(String versionId) {
         log.info("Editing active product by id: {}", versionId);
-        productChecker.check(versionId);
+        productChecker.forceCheck(versionId);
         return requestConstructor.editActive(versionId);
     }
 
@@ -68,5 +72,11 @@ public class ProductService {
     public List<ProductResponse> getArchiveProducts() {
         log.info("Getting all archive products.");
         return requestConstructor.getArchive();
+    }
+
+    public DraftProductDto toDraft(String versionId) {
+        log.info("Making draft product from product by versionId: {}", versionId);
+        productChecker.checkGlobalExistence(versionId);
+        return convertor.convert(requestConstructor.draftFrom(versionId));
     }
 }

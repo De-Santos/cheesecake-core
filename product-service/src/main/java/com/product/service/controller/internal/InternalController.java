@@ -29,17 +29,4 @@ public class InternalController implements InternalApi {
         internalProductService.checkProductSequence(versionIdList);
     }
 
-    @Override
-    @GetMapping("/use/photo/{id}")
-    public boolean isPhotoInUse(@PathVariable("id") String photoId) {
-        // TODO: 4/3/2023 implement me please
-        return false;
-    }
-
-    @Override
-    @GetMapping("use/photos")
-    public boolean isPhotoListInUse(@RequestParam("photoIdList") List<String> photoIds) {
-        // TODO: 4/3/2023 implement me please
-        return false;
-    }
 }

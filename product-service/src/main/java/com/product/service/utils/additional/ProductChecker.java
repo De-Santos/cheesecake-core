@@ -5,7 +5,6 @@ import com.product.service.dao.DraftProductRepository;
 import com.product.service.dao.ProductRepository;
 import com.product.service.dto.draft.DraftProductDto;
 import com.product.service.dto.product.ModifyingProductRequest;
-import com.product.service.dto.product.ProductRequest;
 import com.product.service.entity.DraftProduct;
 import com.product.service.entity.additional.Photo;
 import com.product.service.exception.exceptions.product.empty.EmptyDescriptionException;
@@ -50,11 +49,23 @@ public class ProductChecker {
         return productRepository.existsProductByVersionIdAndActiveIsTrue(versionId);
     }
 
-    public void checkDraft(String id) {
-        if(draftProductRepository.existsById(id)) throw new DraftProductNotFoundException("Draft product not found by id: " + id);
+    public void forceCheck(String versionId) throws ProductNotFoundException {
+        if (!productRepository.existsProductByVersionIdAndActiveIsTrue(versionId))
+            throw new ProductNotFoundException();
     }
 
-    public void checkDraftRequest(DraftProduct draftProduct) {
+    public void checkGlobalExistence(String versionId) {
+        if (!productRepository.existsByVersionId(versionId) ||
+        !archiveProductRepository.existsByVersionId(versionId))
+            throw new ProductNotFoundException();
+    }
+
+    public void checkDraft(String id) {
+        if (draftProductRepository.existsById(id))
+            throw new DraftProductNotFoundException("Draft product not found by id: " + id);
+    }
+
+    public void checkDraftData(DraftProduct draftProduct) {
         this.checkName(draftProduct.getName());
         this.checkPhoto(draftProduct.getImages().getAll());
         this.checkPrice(draftProduct.getPrice());
@@ -116,7 +127,7 @@ public class ProductChecker {
     public void checkDraft(DraftProductDto draftProductDto) {
         this.checkName(draftProductDto.getName());
         // FIXME: 4/4/2023
-        this.checkPhoto(draftProductDto.getImages());
+        this.checkPhoto(draftProductDto.getImages().getAll());
         this.checkPrice(draftProductDto.getPrice());
         this.checkDescription(draftProductDto.getDescription());
     }
