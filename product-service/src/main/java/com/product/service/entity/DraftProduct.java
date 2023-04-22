@@ -25,4 +25,11 @@ public final class DraftProduct {
     private String description;
     private BigDecimal price;
     private LocalDateTime createDate;
+
+    public static DraftProduct create() {
+        DraftProduct draft = new DraftProduct();
+        draft.setImages(FileCollection.create());
+        draft.setCreateDate(LocalDateTime.now());
+        return draft;
+    }
 }

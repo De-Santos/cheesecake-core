@@ -68,7 +68,6 @@ public class RequestConstructor {
                 .toList();
     }
 
-    // FIXME: 4/19/2023 I need be checked
     public ProductResponse updateProduct(DraftProduct draftProduct) {
         log.info("Updating product from database by id: {}", draftProduct.getParentId());
         if (archiveProductRepository.existsByVersionId(draftProduct.getParentId()))
@@ -95,7 +94,7 @@ public class RequestConstructor {
     }
 
 
-    public void addArchiveProduct(Product product) {
+    private void addArchiveProduct(Product product) {
         log.info("Adding archive product in database by id {}", product.getId());
         archiveProductRepository.save(convertor.convertToArchive(product));
     }

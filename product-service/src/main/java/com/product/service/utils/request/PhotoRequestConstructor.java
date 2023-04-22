@@ -34,7 +34,7 @@ public class PhotoRequestConstructor {
     public String uploadFile(@NonNull MultipartFile file, String draftId) {
         log.info("Upload file in database with name: {}", file.getOriginalFilename());
         DraftProduct draftProduct = this.getDraftById(draftId);
-        fileChecker.checkFileOrder(draftProduct.getImages().getAll().size());
+        fileChecker.checkFileOrder(draftProduct);
         return this.addNewPhoto(file, draftProduct);
     }
 

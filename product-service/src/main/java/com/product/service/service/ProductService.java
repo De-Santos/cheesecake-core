@@ -1,6 +1,6 @@
 package com.product.service.service;
 
-import com.product.service.dto.draft.DraftProductDto;
+import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.dto.product.ModifyingProductRequest;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.entity.DraftProduct;

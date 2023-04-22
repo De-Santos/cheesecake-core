@@ -1,6 +1,6 @@
-package com.product.service.dto.draft;
+package com.product.service.dto.photo;
 
-import com.product.service.entity.additional.FileCollection;
+import com.product.service.dto.photo.additional.FileCollectionDto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Jacksonized
 public class DraftProductDto {
     private String id;
-    private FileCollection images;
+    private FileCollectionDto images;
     private String name;
     private String description;
     private BigDecimal price;

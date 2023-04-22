@@ -1,28 +1,32 @@
 package com.product.service.utils.convertor;
 
-import com.product.service.dto.draft.DraftProductDto;
+import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.dto.photo.PhotoResponse;
+import com.product.service.dto.photo.additional.FileCollectionDto;
+import com.product.service.dto.photo.additional.PhotoDto;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.entity.ArchiveProduct;
 import com.product.service.entity.DraftProduct;
 import com.product.service.entity.Product;
+import com.product.service.entity.additional.FileCollection;
 import com.product.service.entity.additional.Photo;
 import com.product.service.exception.exceptions.photo.invalid.InvalidFileException;
+import com.product.service.exception.exceptions.product.modifying.FileCollectionModifyingException;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.Binary;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ua.cheesecake.dto.additional.TimeMapper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -52,27 +56,37 @@ public class Convertor {
                 .build();
     }
 
-    public DraftProduct convert(@NonNull DraftProductDto draftProductDto) {
-        DraftProduct draftProduct = DraftProduct.builder()
-                .id(draftProductDto.getId())
-                .images(draftProductDto.getImages())
-                .name(draftProductDto.getName())
-                .description(draftProductDto.getDescription())
-                .price(draftProductDto.getPrice())
-                .createDate(draftProductDto.getCreateDate())
-                .build();
-        draftProduct.setCreateDate(draftProductDto.getCreateDate());
-        return draftProduct;
-    }
-
     public DraftProductDto convert(DraftProduct draftProduct) {
         return DraftProductDto.builder()
                 .id(draftProduct.getId())
-                .images(draftProduct.getImages())
+                .images(this.fileCollectionConvert(draftProduct.getImages()))
                 .name(draftProduct.getName())
                 .description(draftProduct.getDescription())
                 .price(draftProduct.getPrice())
                 .createDate(draftProduct.getCreateDate())
+                .build();
+    }
+
+    private FileCollectionDto fileCollectionConvert(FileCollection fileCollection) {
+        return FileCollectionDto.builder()
+                .bannerPhotos(this.photoListCovert(fileCollection.getBannerPhotos()))
+                .descriptionPhoto(this.photoConvert(fileCollection.getDescriptionPhoto()))
+                .build();
+    }
+
+    private List<PhotoDto> photoListCovert(List<Photo> photoList) {
+        if (Objects.isNull(photoList)) return Collections.emptyList();
+        return photoList.stream()
+                .map(this::photoConvert)
+                .toList();
+    }
+
+    private PhotoDto photoConvert(Photo photo) {
+        if (Objects.isNull(photo)) return null;
+        return PhotoDto.builder()
+                .hash(photo.getHash())
+                .order(photo.getOrder())
+                .realPhotoName(photo.getRealPhotoName())
                 .build();
     }
 
@@ -164,4 +178,31 @@ public class Convertor {
                 .createDate(LocalDateTime.now())
                 .build();
     }
+
+    public DraftProduct updateConvert(DraftProduct draftProduct, DraftProductDto draftProductDto) {
+        draftProduct.setImages(fileCollectionUpdate(draftProduct.getImages(), draftProductDto.getImages()));
+        draftProduct.setName(draftProductDto.getName());
+        draftProduct.setDescription(draftProductDto.getDescription());
+        draftProduct.setPrice(draftProductDto.getPrice());
+        return draftProduct;
+    }
+
+    private FileCollection fileCollectionUpdate(FileCollection fileCollection, FileCollectionDto fileCollectionDto) {
+        Map<UUID, Photo> map = fileCollection.getBannerPhotos().stream()
+                .collect(Collectors.toMap(Photo::getHash, Function.identity()));
+        fileCollectionDto.getBannerPhotos()
+                .forEach(
+                        it -> {
+                            Photo photo = map.get(it.getHash());
+                            if (Objects.nonNull(photo)) {
+                                photo.setOrder(it.getOrder());
+                                map.put(it.getHash(), photo);
+                            } else
+                                throw new FileCollectionModifyingException("Unknown product in supplied draftProductDto, productId: " + it.getHash());
+                        }
+                );
+        fileCollection.setBannerPhotos(new ArrayList<>(map.values()));
+        return fileCollection;
+    }
 }
+

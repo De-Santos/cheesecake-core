@@ -3,7 +3,7 @@ package com.product.service.utils.additional;
 import com.product.service.dao.ArchiveProductRepository;
 import com.product.service.dao.DraftProductRepository;
 import com.product.service.dao.ProductRepository;
-import com.product.service.dto.draft.DraftProductDto;
+import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.dto.product.ModifyingProductRequest;
 import com.product.service.entity.DraftProduct;
 import com.product.service.entity.additional.Photo;
@@ -11,8 +11,10 @@ import com.product.service.exception.exceptions.product.empty.EmptyDescriptionEx
 import com.product.service.exception.exceptions.product.empty.EmptyNameException;
 import com.product.service.exception.exceptions.product.empty.EmptyPhotosException;
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
+import com.product.service.exception.exceptions.product.invalid.FileCollectionOrderException;
 import com.product.service.exception.exceptions.product.invalid.ProductInvalidPriceException;
 import com.product.service.exception.exceptions.product.invalid.ProductInvalidSailPriceException;
+import com.product.service.exception.exceptions.product.nullable.DraftProductIsNullException;
 import com.product.service.exception.exceptions.product.nullable.NullArgumentException;
 import com.product.service.exception.exceptions.product.sintax.ProductNameOutOfBoundsException;
 import com.product.service.exception.exceptions.product.sintax.ProductPhotosLimitException;
@@ -22,8 +24,7 @@ import org.springframework.stereotype.Component;
 import ua.cheesecake.dto.exception.ProductNotFoundException;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Log4j2
 @Component
@@ -56,12 +57,12 @@ public class ProductChecker {
 
     public void checkGlobalExistence(String versionId) {
         if (!productRepository.existsByVersionId(versionId) ||
-        !archiveProductRepository.existsByVersionId(versionId))
+                !archiveProductRepository.existsByVersionId(versionId))
             throw new ProductNotFoundException();
     }
 
     public void checkDraft(String id) {
-        if (draftProductRepository.existsById(id))
+        if (Boolean.FALSE.equals(draftProductRepository.existsById(id)))
             throw new DraftProductNotFoundException("Draft product not found by id: " + id);
     }
 
@@ -123,17 +124,24 @@ public class ProductChecker {
         throw new ProductNotFoundException("Product not found by id: " + versionId);
     }
 
-    // think about it
     public void checkDraft(DraftProductDto draftProductDto) {
         this.checkName(draftProductDto.getName());
-        // FIXME: 4/4/2023
-        this.checkPhoto(draftProductDto.getImages().getAll());
+        this.checkDraftPhotoDto(draftProductDto);
         this.checkPrice(draftProductDto.getPrice());
         this.checkDescription(draftProductDto.getDescription());
     }
 
+    private void checkDraftPhotoDto(DraftProductDto draftProductDto) {
+        if (Objects.isNull(draftProductDto)) throw new DraftProductIsNullException("Draft product is null");
+        Set<Integer> set = new HashSet<>();
+        draftProductDto.getImages().getBannerPhotos().forEach(it -> {
+            if (set.contains(it.getOrder())) throw new FileCollectionOrderException("Invalid file order");
+            set.add(it.getOrder());
+        });
+    }
+
     public void checkDraftById(String id) {
         if (Boolean.FALSE.equals(draftProductRepository.existsById(id)))
-            throw new DraftProductNotFoundException("Draft product not found.");
+            throw new DraftProductNotFoundException("Draft product not found by id: " + id);
     }
 }

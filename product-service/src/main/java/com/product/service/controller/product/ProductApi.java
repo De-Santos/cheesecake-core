@@ -1,6 +1,6 @@
 package com.product.service.controller.product;
 
-import com.product.service.dto.draft.DraftProductDto;
+import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.dto.product.ModifyingProductRequest;
 import com.product.service.dto.product.ProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
+// TODO: 4/22/2023 add normal docs for apis
 public interface ProductApi {
     @Operation(summary = "Create new product", description = "Returns id of the created product")
     @ApiResponses(value = {
@@ -67,8 +68,6 @@ public interface ProductApi {
     @Operation(summary = "Find all products", description = "Returns list of products")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
-            @ApiResponse(responseCode = "404", description = "Post doesn't found")
     })
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<List<ProductResponse>> getAll();
@@ -100,7 +99,22 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Error in request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<String> addDraftProduct();
+    ResponseEntity<String> addDraft();
+
+    @Operation(summary = "Create new product", description = "Returns id of the created product")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in request body"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<DraftProductDto> getDraft(@PathVariable("draftId") String id);
+
+    @Operation(summary = "Returns all drafts", description = "Returns list of draft's ids")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<List<String>> getDrafts();
 
 
     @Operation(summary = "Create new product", description = "Returns id of the created product")

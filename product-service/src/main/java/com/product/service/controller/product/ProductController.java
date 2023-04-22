@@ -1,6 +1,6 @@
 package com.product.service.controller.product;
 
-import com.product.service.dto.draft.DraftProductDto;
+import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.dto.product.ModifyingProductRequest;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.service.DraftProductService;
@@ -87,15 +87,31 @@ public class ProductController implements ProductApi {
         return ResponseEntity.ok(productService.toDraft(versionId));
     }
 
+    // TODO: 4/22/2023 check logic
     @Override
     @PostMapping("/draft")
-    public ResponseEntity<String> addDraftProduct() {
+    public ResponseEntity<String> addDraft() {
         log.info("New draft");
         return ResponseEntity.ok(draftProductService.newDraft());
     }
 
-    // TODO: 4/16/2023 make method draft from, which will make draft from active product
+    // TODO: 4/22/2023 check logic
+    @Override
+    @GetMapping("/draft/{draftId}")
+    public ResponseEntity<DraftProductDto> getDraft(@PathVariable("draftId") String id) {
+        log.info("Get draft product by id: {}", id);
+        return ResponseEntity.ok(draftProductService.get(id));
+    }
 
+    // TODO: 4/22/2023 check logic
+    @Override
+    @GetMapping("/draft")
+    public ResponseEntity<List<String>> getDrafts() {
+        log.info("Get all drafts");
+        return ResponseEntity.ok(draftProductService.get());
+    }
+
+    // TODO: 4/22/2023 check logic
     @Override
     @PostMapping("/draft/update")
     public ResponseEntity<DraftProductDto> updateDraftProduct(@RequestBody DraftProductDto draftProductDto) {
@@ -103,6 +119,7 @@ public class ProductController implements ProductApi {
         return ResponseEntity.ok(draftProductService.update(draftProductDto));
     }
 
+    // TODO: 4/22/2023 check logic
     @Override
     @DeleteMapping("/draft/{draftId}")
     public ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") String id) {
