@@ -10,24 +10,21 @@ import com.product.service.entity.DraftProduct;
 import com.product.service.entity.Product;
 import com.product.service.entity.additional.FileCollection;
 import com.product.service.entity.additional.Photo;
-import com.product.service.exception.exceptions.photo.invalid.InvalidFileException;
-import com.product.service.exception.exceptions.product.modifying.FileCollectionModifyingException;
 import lombok.RequiredArgsConstructor;
-import org.bson.types.Binary;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ua.cheesecake.dto.additional.TimeMapper;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
+// FIXME: 4/22/2023
 @Component
 @RequiredArgsConstructor
 public class Convertor {
@@ -45,9 +42,10 @@ public class Convertor {
                 .build();
     }
 
+    // FIXME: 4/23/2023 
     public ProductResponse convert(ArchiveProduct archiveProduct) {
         return ProductResponse.builder()
-                .versionId(archiveProduct.getVersionId())
+//                .versionId(archiveProduct.getVersionId())
                 .name(archiveProduct.getName())
                 .description(archiveProduct.getDescription())
                 .price(archiveProduct.getPrice())
@@ -58,8 +56,8 @@ public class Convertor {
 
     public DraftProductDto convert(DraftProduct draftProduct) {
         return DraftProductDto.builder()
-                .id(draftProduct.getId())
-                .images(this.fileCollectionConvert(draftProduct.getImages()))
+//                .id(draftProduct.getId())
+//                .images(this.fileCollectionConvert(draftProduct.getImages()))
                 .name(draftProduct.getName())
                 .description(draftProduct.getDescription())
                 .price(draftProduct.getPrice())
@@ -69,7 +67,7 @@ public class Convertor {
 
     private FileCollectionDto fileCollectionConvert(FileCollection fileCollection) {
         return FileCollectionDto.builder()
-                .bannerPhotos(this.photoListCovert(fileCollection.getBannerPhotos()))
+//                .bannerPhotos(this.photoListCovert(fileCollection.getBannerPhotos()))
                 .descriptionPhoto(this.photoConvert(fileCollection.getDescriptionPhoto()))
                 .build();
     }
@@ -84,15 +82,15 @@ public class Convertor {
     private PhotoDto photoConvert(Photo photo) {
         if (Objects.isNull(photo)) return null;
         return PhotoDto.builder()
-                .hash(photo.getHash())
-                .order(photo.getOrder())
+                .id(photo.getId())
+                .order(photo.getPosition())
                 .realPhotoName(photo.getRealPhotoName())
                 .build();
     }
 
     public Product convertToProduct(DraftProduct draftProduct) {
         return Product.builder()
-                .images(draftProduct.getImages())
+//                .images(draftProduct.getImages())
                 .name(draftProduct.getName())
                 .description(draftProduct.getDescription())
                 .price(draftProduct.getPrice())
@@ -100,9 +98,10 @@ public class Convertor {
                 .build();
     }
 
+    // FIXME: 4/23/2023 
     public ArchiveProduct convertToArchive(Product product) {
         return ArchiveProduct.builder()
-                .versionId(product.getVersionId())
+//                .versionId(product.getVersionId())
                 .actualProductId(product.getId())
                 .images(product.getImages())
                 .name(product.getName())
@@ -113,8 +112,8 @@ public class Convertor {
     }
 
     public Product updateConvert(Product product, DraftProduct draftProduct) {
-        product.setVersionId(UUID.randomUUID().toString());
-        product.setImages(draftProduct.getImages());
+        product.setVersionId(UUID.randomUUID());
+//        product.setImages(draftProduct.getImages());
         product.setName(draftProduct.getName());
         product.setDescription(draftProduct.getDescription());
         product.setPrice(draftProduct.getPrice());
@@ -130,7 +129,8 @@ public class Convertor {
     public ResponseEntity<byte[]> mergeToPhotoResponse(Photo photo) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf(photo.getMediaType()));
-        return new ResponseEntity<>(photo.getImage().getData(), headers, HttpStatus.OK);
+//        return new ResponseEntity<>(photo.getImage().getData(), headers, HttpStatus.OK);
+        return null;
     }
 
     private PhotoResponse createPhotoResponse(Photo photo) {
@@ -141,26 +141,25 @@ public class Convertor {
 
     public Photo photoBuilder(MultipartFile file, Integer order) {
         return Photo.builder()
-                .hash(UUID.randomUUID())
-                .order(order)
+                .position(order)
                 .mediaType(MediaType.valueOf(Objects.requireNonNull(file.getContentType())).toString())
                 .realPhotoName(file.getOriginalFilename())
-                .image(this.getBinaryFromFile(file))
+//                .image(this.getBinaryFromFile(file))
                 .build();
     }
 
-    private Binary getBinaryFromFile(MultipartFile file) {
-        try {
-            return new Binary(file.getBytes());
-        } catch (IOException e) {
-            throw new InvalidFileException(e);
-        }
-    }
+//    private Binary getBinaryFromFile(MultipartFile file) {
+//        try {
+//            return new Binary(file.getBytes());
+//        } catch (IOException e) {
+//            throw new InvalidFileException(e);
+//        }
+//    }
 
     public DraftProduct toDraft(Product product) {
         return DraftProduct.builder()
-                .parentId(product.getVersionId())
-                .images(product.getImages())
+                .parentId(product.getId())
+//                .images(product.getImages())
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
@@ -168,10 +167,11 @@ public class Convertor {
                 .build();
     }
 
+    // FIXME: 4/23/2023
     public DraftProduct toDraft(ArchiveProduct archiveProduct) {
         return DraftProduct.builder()
-                .parentId(archiveProduct.getVersionId())
-                .images(archiveProduct.getImages())
+//                .parentId(archiveProduct.getVersionId())
+//                .images(archiveProduct.getImages())
                 .name(archiveProduct.getName())
                 .description(archiveProduct.getDescription())
                 .price(archiveProduct.getPrice())
@@ -180,29 +180,31 @@ public class Convertor {
     }
 
     public DraftProduct updateConvert(DraftProduct draftProduct, DraftProductDto draftProductDto) {
-        draftProduct.setImages(fileCollectionUpdate(draftProduct.getImages(), draftProductDto.getImages()));
+//        draftProduct.setImages(fileCollectionUpdate(draftProduct.getImages(), draftProductDto.getImages()));
         draftProduct.setName(draftProductDto.getName());
         draftProduct.setDescription(draftProductDto.getDescription());
         draftProduct.setPrice(draftProductDto.getPrice());
         return draftProduct;
     }
 
+    // FIXME: 4/23/2023
     private FileCollection fileCollectionUpdate(FileCollection fileCollection, FileCollectionDto fileCollectionDto) {
-        Map<UUID, Photo> map = fileCollection.getBannerPhotos().stream()
-                .collect(Collectors.toMap(Photo::getHash, Function.identity()));
-        fileCollectionDto.getBannerPhotos()
-                .forEach(
-                        it -> {
-                            Photo photo = map.get(it.getHash());
-                            if (Objects.nonNull(photo)) {
-                                photo.setOrder(it.getOrder());
-                                map.put(it.getHash(), photo);
-                            } else
-                                throw new FileCollectionModifyingException("Unknown product in supplied draftProductDto, productId: " + it.getHash());
-                        }
-                );
-        fileCollection.setBannerPhotos(new ArrayList<>(map.values()));
-        return fileCollection;
+//        Map<Long, Photo> map = fileCollection.getBannerPhotos().stream()
+//                .collect(Collectors.toMap(Photo::getId, Function.identity()));
+//        fileCollectionDto.getBannerPhotos()
+//                .forEach(
+//                        it -> {
+//                            Photo photo = map.get(it.getId());
+//                            if (Objects.nonNull(photo)) {
+//                                photo.setPosition(it.getOrder());
+//                                map.put(it.getId(), photo);
+//                            } else
+//                                throw new FileCollectionModifyingException("Unknown product in supplied draftProductDto, productId: " + it.getId());
+//                        }
+//                );
+//        fileCollection.setBannerPhotos(new ArrayList<>(map.values()));
+//        return fileCollection;
+        return null;
     }
 }
 

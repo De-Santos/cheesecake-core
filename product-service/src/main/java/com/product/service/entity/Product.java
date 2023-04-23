@@ -1,24 +1,30 @@
 package com.product.service.entity;
 
 import com.product.service.entity.additional.FileCollection;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Data
 @Builder
-@Document(collection = "products")
+@Entity
+@Table(name = "products")
+@NoArgsConstructor
+@AllArgsConstructor
 public final class Product {
     @Id
-    private String id;
-    private String versionId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private UUID versionId;
+    @OneToOne(mappedBy = "product")
     private FileCollection images;
-    private String descriptionImageId;
     private String name;
     private String description;
     private BigDecimal price;

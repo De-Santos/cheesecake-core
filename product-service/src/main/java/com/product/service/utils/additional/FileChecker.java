@@ -16,9 +16,10 @@ public class FileChecker {
         }
     }
 
+    // FIXME: 4/22/2023
     public void checkFileOrder(DraftProduct draftProduct) {
-        if (draftProduct.getImages().getAll().size() >= MAX_FILE_COUNT) {
-            throw new ProductFileLimitExceededException("Can't be more files than: " + MAX_FILE_COUNT);
-        }
+//        if (draftProduct.getImages().getAll().size() >= MAX_FILE_COUNT) {
+//            throw new ProductFileLimitExceededException("Can't be more files than: " + MAX_FILE_COUNT);
+//        }
     }
 }

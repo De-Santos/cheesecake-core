@@ -7,15 +7,22 @@ spring:
     multipart:
       max-file-size: 10000000MB
       max-request-size: 10000000MB
-  data:
-    mongodb:
-      host: mongo-svc
-      port: 27017
-      username: ${username}
-      password: ${password}
-      uri: ${mongo_uri}
-      database: product-db
-      authentication-database: admin
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        session:
+          events:
+            post_init: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${username}
+    password: ${password}
+    url: ${postgres_url}
   application:
     name: product-service
 server:

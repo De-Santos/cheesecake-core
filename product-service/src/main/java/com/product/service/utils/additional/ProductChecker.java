@@ -30,45 +30,51 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class ProductChecker {
-    private final ProductRepository productRepository;
-    private final ArchiveProductRepository archiveProductRepository;
+//    private final ProductRepository productRepository;
+//    private final ArchiveProductRepository archiveProductRepository;
     private final DraftProductRepository draftProductRepository;
     // TODO: 3/26/2023 create configuration from database
     private static final Integer MAX_PRODUCT_NAME_LENGTH = 100;
     private static final Integer MIN_PRODUCT_NAME_LENGTH = 0;
 
+    // FIXME: 4/22/2023
     public void checkProductList(List<String> products) {
-        List<String> unfoundedProducts = products.stream()
-                .filter(it -> !productRepository.existsProductByVersionIdAndActiveIsTrue(it))
-                .toList();
-        if (!unfoundedProducts.isEmpty()) {
-            throw new ProductNotFoundException(unfoundedProducts.toString());
-        }
+//        List<String> unfoundedProducts = products.stream()
+//                .filter(it -> !productRepository.existsProductByVersionIdAndActiveIsTrue(it))
+//                .toList();
+//        if (!unfoundedProducts.isEmpty()) {
+//            throw new ProductNotFoundException(unfoundedProducts.toString());
+//        }
     }
 
+    // FIXME: 4/22/2023
     public boolean check(String versionId) {
-        return productRepository.existsProductByVersionIdAndActiveIsTrue(versionId);
+//        return productRepository.existsProductByVersionIdAndActiveIsTrue(versionId);
+        return true;
     }
 
+    // FIXME: 4/22/2023
     public void forceCheck(String versionId) throws ProductNotFoundException {
-        if (!productRepository.existsProductByVersionIdAndActiveIsTrue(versionId))
-            throw new ProductNotFoundException();
+//        if (!productRepository.existsProductByVersionIdAndActiveIsTrue(versionId))
+//            throw new ProductNotFoundException();
     }
 
+    // FIXME: 4/22/2023
     public void checkGlobalExistence(String versionId) {
-        if (!productRepository.existsByVersionId(versionId) ||
-                !archiveProductRepository.existsByVersionId(versionId))
-            throw new ProductNotFoundException();
+//        if (!productRepository.existsByVersionId(versionId) ||
+//                !archiveProductRepository.existsByVersionId(versionId))
+//            throw new ProductNotFoundException();
     }
 
-    public void checkDraft(String id) {
+    public void checkDraft(Long id) {
         if (Boolean.FALSE.equals(draftProductRepository.existsById(id)))
             throw new DraftProductNotFoundException("Draft product not found by id: " + id);
     }
 
     public void checkDraftData(DraftProduct draftProduct) {
         this.checkName(draftProduct.getName());
-        this.checkPhoto(draftProduct.getImages().getAll());
+        // FIXME: 4/22/2023
+//        this.checkPhoto(draftProduct.getImages());
         this.checkPrice(draftProduct.getPrice());
         this.checkDescription(draftProduct.getDescription());
     }
@@ -101,26 +107,27 @@ public class ProductChecker {
         this.checkSail(modifyingProductRequest);
     }
 
+    // FIXME: 4/22/2023
     private void checkProduct(ModifyingProductRequest modifyingProductRequest) {
-        if (!productRepository.existsProductByVersionIdAndActiveIsTrue(modifyingProductRequest.getVersionId()))
-            throw new ProductNotFoundException("Product not found by id: " + modifyingProductRequest.getVersionId());
-
+//        if (!productRepository.existsProductByVersionIdAndActiveIsTrue(modifyingProductRequest.getVersionId()))
+//            throw new ProductNotFoundException("Product not found by id: " + modifyingProductRequest.getVersionId());
     }
 
+    // FIXME: 4/22/2023
     private void checkSail(ModifyingProductRequest modifyingProductRequest) {
-        BigDecimal price = productRepository.findProductByVersionId(modifyingProductRequest.getVersionId())
-                .orElseThrow(ProductNotFoundException::new)
-                .getPrice();
-        BigDecimal sailPrice = modifyingProductRequest.getSailPrice();
-        if (price == null || sailPrice == null) throw new NullArgumentException("Argument can't be null");
-        if (sailPrice.compareTo(price) >= 0 || sailPrice.compareTo(BigDecimal.ZERO) < 0)
-            throw new ProductInvalidSailPriceException("Sail price can't be less than zero and bugger than product price.");
+//        BigDecimal price = productRepository.findProductByVersionId(modifyingProductRequest.getVersionId())
+//                .orElseThrow(ProductNotFoundException::new)
+//                .getPrice();
+//        BigDecimal sailPrice = modifyingProductRequest.getSailPrice();
+//        if (price == null || sailPrice == null) throw new NullArgumentException("Argument can't be null");
+//        if (sailPrice.compareTo(price) >= 0 || sailPrice.compareTo(BigDecimal.ZERO) < 0)
+//            throw new ProductInvalidSailPriceException("Sail price can't be less than zero and bugger than product price.");
     }
 
     public void checkExistence(String versionId) {
         log.info("Checking versionId existence in product and archive product databases.");
-        if (productRepository.existsById(versionId)) return;
-        if (archiveProductRepository.existsById(versionId)) return;
+//        if (productRepository.existsById(versionId)) return;
+//        if (archiveProductRepository.existsById(versionId)) return;
         throw new ProductNotFoundException("Product not found by id: " + versionId);
     }
 
@@ -140,7 +147,7 @@ public class ProductChecker {
         });
     }
 
-    public void checkDraftById(String id) {
+    public void checkDraftById(Long id) {
         if (Boolean.FALSE.equals(draftProductRepository.existsById(id)))
             throw new DraftProductNotFoundException("Draft product not found by id: " + id);
     }

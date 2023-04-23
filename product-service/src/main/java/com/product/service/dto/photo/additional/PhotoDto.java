@@ -10,7 +10,7 @@ import java.util.UUID;
 @Builder
 @Jacksonized
 public class PhotoDto {
-    private UUID hash;
+    private Long id;
     private Integer order;
     private String realPhotoName;
 }

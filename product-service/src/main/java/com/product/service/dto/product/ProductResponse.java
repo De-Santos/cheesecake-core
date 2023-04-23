@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @Builder
 @Jacksonized
 public class ProductResponse {
-    private String versionId;
-    private String activeVersionId;
+    private UUID versionId;
+    private Long activeVersionId;
     private String name;
     private String description;
     private BigDecimal price;

@@ -24,31 +24,39 @@ public class PhotoService {
     private final Validator validator;
     private final Convertor convertor;
 
+    // FIXME: 4/22/2023
     public ResponseEntity<byte[]> getPhoto(String draftId, UUID id) {
-        log.info("Get photo by id: {}", id);
-        productChecker.checkDraft(draftId);
-        return convertor.mergeToPhotoResponse(photoRequestConstructor.getPhoto(draftId, id));
+//        log.info("Get photo by id: {}", id);
+//        productChecker.checkDraft(draftId);
+//        return convertor.mergeToPhotoResponse(photoRequestConstructor.getPhoto(draftId, id));
+        return null;
     }
 
+    // FIXME: 4/22/2023
     public String upload(@NonNull MultipartFile file, String draftId) {
-        log.info("Upload file with name: {}", file.getOriginalFilename());
-        validator.validateSuppliedFile(file);
-        productChecker.checkDraft(draftId);
-        return photoRequestConstructor.uploadFile(file, draftId);
+//        log.info("Upload file with name: {}", file.getOriginalFilename());
+//        validator.validateSuppliedFile(file);
+//        productChecker.checkDraft(draftId);
+//        return photoRequestConstructor.uploadFile(file, draftId);
+        return null;
     }
 
+    // FIXME: 4/22/2023
     public String uploadDescription(@NonNull MultipartFile file, String draftId) {
-        log.info("Upload file with name: {}", file.getOriginalFilename());
-        validator.validateSuppliedFile(file);
-        productChecker.checkDraft(draftId);
-        return photoRequestConstructor.uploadDescriptionFile(file, draftId);
+//        log.info("Upload file with name: {}", file.getOriginalFilename());
+//        validator.validateSuppliedFile(file);
+//        productChecker.checkDraft(draftId);
+//        return photoRequestConstructor.uploadDescriptionFile(file, draftId);
+        return null;
     }
 
+    // FIXME: 4/22/2023
     public String insert(@NonNull MultipartFile file, String draftId, Integer position) {
-        log.info("Upload file with position: {} for draft product by id: {}", position, draftId);
-        validator.validateSuppliedFile(file);
-        productChecker.checkDraft(draftId);
-        return photoRequestConstructor.uploadFile(file, draftId, position);
+//        log.info("Upload file with position: {} for draft product by id: {}", position, draftId);
+//        validator.validateSuppliedFile(file);
+//        productChecker.checkDraft(draftId);
+//        return photoRequestConstructor.uploadFile(file, draftId, position);
+        return null;
     }
 
     public PhotoResponse remove(String draftId, UUID id) {

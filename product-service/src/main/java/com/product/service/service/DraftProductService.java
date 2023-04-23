@@ -29,10 +29,12 @@ public class DraftProductService {
         return draftRequestConstructor.update(draftProductDto);
     }
 
+    // FIXME: 4/22/2023
     public DraftProductDto delete(String id) {
-        log.info("Delete draft product by id: {}", id);
-        productChecker.checkDraftById(id);
-        return draftRequestConstructor.delete(id);
+//        log.info("Delete draft product by id: {}", id);
+//        productChecker.checkDraftById(id);
+//        return draftRequestConstructor.delete(id);
+        return null;
     }
 
     public DraftProductDto get(String id){

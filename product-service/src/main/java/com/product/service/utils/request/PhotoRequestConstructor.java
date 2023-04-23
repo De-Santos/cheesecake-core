@@ -26,67 +26,83 @@ public class PhotoRequestConstructor {
     private final FileChecker fileChecker;
     private final Convertor convertor;
 
+    // FIXME: 4/22/2023
     public Photo getPhoto(String draftId, UUID hash) {
         log.info("Get photo by index: {} index product: {}", hash, draftId);
-        return this.getDraftById(draftId).getImages().getPhotoByHash(hash);
+//        return this.getDraftById(draftId).getImages().getPhotoByHash(hash);
+        return null;
     }
 
+    // FIXME: 4/22/2023
     public String uploadFile(@NonNull MultipartFile file, String draftId) {
-        log.info("Upload file in database with name: {}", file.getOriginalFilename());
-        DraftProduct draftProduct = this.getDraftById(draftId);
-        fileChecker.checkFileOrder(draftProduct);
-        return this.addNewPhoto(file, draftProduct);
+//        log.info("Upload file in database with name: {}", file.getOriginalFilename());
+//        DraftProduct draftProduct = this.getDraftById(draftId);
+//        fileChecker.checkFileOrder(draftProduct);
+//        return this.addNewPhoto(file, draftProduct);
+        return null;
     }
 
+    // FIXME: 4/22/2023
     public String uploadFile(@NonNull MultipartFile file, String draftId, Integer position) {
-        log.info("Upload file in database with name: {} in position: {}", file.getOriginalFilename(), position);
-        DraftProduct draftProduct = this.getDraftById(draftId);
-        fileChecker.checkFileOrder(position);
-        Optional<Photo> photo = draftProduct.getImages().getPhotoByOrder(position);
-        if (photo.isEmpty()) return this.addNewPhoto(file, draftProduct);
-        return updateExistingPhoto(file, photo.get(), draftProduct);
+//        log.info("Upload file in database with name: {} in position: {}", file.getOriginalFilename(), position);
+//        DraftProduct draftProduct = this.getDraftById(draftId);
+//        fileChecker.checkFileOrder(position);
+//        Optional<Photo> photo = draftProduct.getImages().getPhotoByOrder(position);
+//        if (photo.isEmpty()) return this.addNewPhoto(file, draftProduct);
+//        return updateExistingPhoto(file, photo.get(), draftProduct);
+        return null;
     }
 
+    // FIXME: 4/22/2023
     public String uploadDescriptionFile(@NonNull MultipartFile file, String draftId) {
-        log.info("Upload file in database with name: {}", file.getOriginalFilename());
-        DraftProduct draftProduct = this.getDraftById(draftId);
-        return this.setNewDescriptionPhoto(file, draftProduct);
+//        log.info("Upload file in database with name: {}", file.getOriginalFilename());
+//        DraftProduct draftProduct = this.getDraftById(draftId);
+//        return this.setNewDescriptionPhoto(file, draftProduct);
+        return null;
     }
 
+    // FIXME: 4/22/2023
     public PhotoResponse removeFile(String draftId, UUID id) {
-        log.info("Remove file by id: {}", id);
-        DraftProduct draftProduct = this.getDraftById(draftId);
-        Photo photo = draftProduct.getImages().remove(id);
-        draftProductRepository.save(draftProduct);
-        return convertor.convert(photo);
+//        log.info("Remove file by id: {}", id);
+//        DraftProduct draftProduct = this.getDraftById(draftId);
+//        Photo photo = draftProduct.getImages().remove(id);
+//        draftProductRepository.save(draftProduct);
+//        return convertor.convert(photo);
+        return null;
     }
 
+    // FIXME: 4/22/2023
     private String addNewPhoto(MultipartFile file, DraftProduct draftProduct) {
-        List<Photo> photoList = draftProduct.getImages().getBannerPhotos();
-        Photo newPhoto = convertor.photoBuilder(file, photoList.size() + 1);
-        photoList.add(newPhoto);
-        draftProductRepository.save(draftProduct);
-        return newPhoto.getHash().toString();
+//        List<Photo> photoList = draftProduct.getImages().getBannerPhotos();
+//        Photo newPhoto = convertor.photoBuilder(file, photoList.size() + 1);
+//        photoList.add(newPhoto);
+//        draftProductRepository.save(draftProduct);
+//        return newPhoto.getHash().toString();
+        return null;
     }
 
+    // FIXME: 4/22/2023
     private String setNewDescriptionPhoto(MultipartFile file, DraftProduct draftProduct) {
-        Photo newPhoto = convertor.photoBuilder(file, -1);
-        draftProduct.getImages().setDescriptionPhoto(newPhoto);
-        draftProductRepository.save(draftProduct);
-        return newPhoto.getHash().toString();
+//        Photo newPhoto = convertor.photoBuilder(file, -1);
+//        draftProduct.getImages().setDescriptionPhoto(newPhoto);
+//        draftProductRepository.save(draftProduct);
+//        return newPhoto.getHash().toString();
+        return null;
     }
 
+    // FIXME: 4/22/2023
     private String updateExistingPhoto(MultipartFile file, Photo existingPhoto, DraftProduct draftProduct) {
-        List<Photo> photoList = draftProduct.getImages().getBannerPhotos();
-        Photo newPhoto = convertor.photoBuilder(file, existingPhoto.getOrder());
-        photoList.remove(existingPhoto);
-        photoList.add(newPhoto);
-        draftProductRepository.save(draftProduct);
-        return newPhoto.getHash().toString();
+//        List<Photo> photoList = draftProduct.getImages().getBannerPhotos();
+//        Photo newPhoto = convertor.photoBuilder(file, existingPhoto.getOrder());
+//        photoList.remove(existingPhoto);
+//        photoList.add(newPhoto);
+//        draftProductRepository.save(draftProduct);
+//        return newPhoto.getHash().toString();
+        return null;
     }
 
     // TODO: 4/17/2023 refactor me please, better way make sub class we you make save method
-    private DraftProduct getDraftById(String draftId) {
+    private DraftProduct getDraftById(Long draftId) {
         return draftProductRepository.findById(draftId)
                 .orElseThrow(() -> new ProductNotFoundException(DRAFT_PRODUCT_NOT_FOUND_MESSAGE + draftId));
     }
