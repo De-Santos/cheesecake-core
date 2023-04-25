@@ -26,10 +26,12 @@ public class PhotoRequestExecutor implements JdbcExecutor<Photo, Long> {
 
     private static final String IDS_MUST_BE_NOT_NULL_MESSAGE = "Ids must be not null";
     private static final String ID_MUST_BE_NOT_NULL_MESSAGE = "Id must be not null";
-    private static final String ID_IN_OBTAINED_IDS_MUST_BE_NOT_NULL  = "Id in obtained ids must be not null";
+    private static final String ID_IN_OBTAINED_IDS_MUST_BE_NOT_NULL = "Id in obtained ids must be not null";
 
-    private static final String INSERT_ONE = "INSERT INTO photos (id, position, media_type, real_photo_name, image) VALUES (?, ?, ?, ?, ?) RETURNING id";
+    private static final String INSERT_ONE = "INSERT INTO photos (position, media_type, real_photo_name, image) VALUES (?, ?, ?, ?) RETURNING id";
+    private static final String UPDATE_BY_ID = "UPDATE photos SET position=?, media_type=?, real_photo_name=?, image=? WHERE id=?";
     private static final String SELECT_BY_ID = "SELECT * FROM photos WHERE id = ?";
+    private static final String SELECT_BY_ID_NO_DATA = "SELECT id, position, media_type, real_photo_name FROM photos WHERE id = ?";
     private static final String EXISTS_BY_ID = "SELECT EXISTS(SELECT 1 FROM photos WHERE id = ?)";
     private static final String SELECT_ALL = "SELECT * FROM photos";
     private static final String SELECT_ALL_BY_ID = "SELECT * FROM photos WHERE id IN (?)";
@@ -44,22 +46,39 @@ public class PhotoRequestExecutor implements JdbcExecutor<Photo, Long> {
     public <S extends Photo> S save(@NonNull S entity) {
         Assert.notNull(entity, "Entity must not be null");
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        template.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_ONE, new String[]{"id"});
-            ps.setInt(1, entity.getPosition());
-            ps.setString(2, entity.getMediaType());
-            ps.setString(3, entity.getRealPhotoName());
-            ps.setBytes(4, entity.getImage());
-            return ps;
-        }, keyHolder);
-        entity.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+        if (Objects.isNull(entity.getId())) {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(INSERT_ONE, new String[]{"id"});
+                ps.setInt(1, entity.getPosition());
+                ps.setString(2, entity.getMediaType());
+                ps.setString(3, entity.getRealPhotoName());
+                ps.setBytes(4, entity.getImage());
+                return ps;
+            }, keyHolder);
+            entity.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+        } else {
+            PreparedStatementCreator psc = new PreparedStatementCreator() {
+                @NonNull
+                @Override
+                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                    PreparedStatement ps = con.prepareStatement(UPDATE_BY_ID);
+                    ps.setLong(1, entity.getId());
+                    ps.setInt(2, entity.getPosition());
+                    ps.setString(3, entity.getMediaType());
+                    ps.setString(4, entity.getRealPhotoName());
+                    ps.setBytes(5, entity.getImage());
+                    return ps;
+                }
+            };
+            template.update(psc);
+        }
         return entity;
     }
 
     @NonNull
     @Transactional
     @Override
-    public <S extends Photo> Iterable<S> saveAll(@NonNull Iterable<S> entities) {
+    public <S extends Photo> List<S> saveAll(@NonNull Iterable<S> entities) {
         Assert.notNull(entities, "Entity must not be null");
         Collection<S> entityCollection = (Collection<S>) entities;
         Assert.noNullElements(entityCollection, "Collection cannot contain null elements");
@@ -129,13 +148,13 @@ public class PhotoRequestExecutor implements JdbcExecutor<Photo, Long> {
 
     @NonNull
     @Override
-    public Iterable<Photo> findAll() {
+    public List<Photo> findAll() {
         return template.query(SELECT_ALL, new PhotoRowMapper());
     }
 
     @NonNull
     @Override
-    public Iterable<Photo> findAllById(@NonNull Iterable<Long> ids) {
+    public List<Photo> findAllById(@NonNull Iterable<Long> ids) {
         Assert.notNull(ids, IDS_MUST_BE_NOT_NULL_MESSAGE);
         Assert.noNullElements(new Object[]{ids}, ID_IN_OBTAINED_IDS_MUST_BE_NOT_NULL);
         PreparedStatementCreator psc = new PreparedStatementCreator() {
@@ -209,5 +228,21 @@ public class PhotoRequestExecutor implements JdbcExecutor<Photo, Long> {
     @Override
     public void deleteAll() {
         template.update(DELETE_ALL);
+    }
+
+    @Override
+    public Optional<Photo> getWithNotData(Long id) {
+        Assert.notNull(id, ID_MUST_BE_NOT_NULL_MESSAGE);
+        PreparedStatementCreator psc = new PreparedStatementCreator() {
+            @NonNull
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement ps = con.prepareStatement(SELECT_BY_ID_NO_DATA);
+                ps.setLong(1, id);
+                return ps;
+            }
+        };
+        List<Photo> result = template.query(psc, new PhotoRowMapper());
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 }
