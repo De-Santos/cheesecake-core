@@ -1,6 +1,6 @@
 spring:
   application:
-    name: order-service
+    name: notification-service
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:develop}
   config:

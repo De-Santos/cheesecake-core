@@ -1,28 +1,7 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: http://eureka-server-svc:8761/eureka/
 spring:
-  servlet:
-    multipart:
-      max-file-size: 10000000MB
-      max-request-size: 10000000MB
-  data:
-    mongodb:
-      host: mongo-svc
-      port: 27017
-      username: ${username}
-      password: ${password}
-      uri: ${mongo_uri}
-      database: product-db
-      authentication-database: admin
   application:
     name: product-service
-server:
-  port: 8082
-
-logging:
-  level:
-    com.product.service: TRACE
-  pattern:
-    console: "%d{ISO8601} %highlight(%-5level{TRACE=blue, DEBUG=yellow}) [%green(%t)] %cyan(%C{1.}): %msg%n%throwable"
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:develop}
+  config:
+    import: ${CONFIG_IMPORT}
