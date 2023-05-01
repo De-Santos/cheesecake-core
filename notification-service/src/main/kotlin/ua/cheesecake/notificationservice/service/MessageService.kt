@@ -32,6 +32,12 @@ class MessageService(
     @Transactional
     suspend fun saveMessages(notification: NotificationRequest) {
         logger.info("Saving messages: $notification")
+        val messages = getMessagesForNotification(notification)
+        messageRepository.saveAll(messages)
+        logger.info("Messages saved: $notification")
+    }
+
+    private fun getMessagesForNotification(notification: NotificationRequest): MutableList<Message> {
         val subscription = subscriptionRepository.findByUserId(notification.userId!!)
         val messages = mutableListOf<Message>()
         subscription.messengers.forEach { messenger ->
@@ -42,25 +48,28 @@ class MessageService(
             )
             messages.add(message)
         }
-        messageRepository.saveAll(messages)
-        logger.info("Messages saved: $notification")
+        return messages
     }
 
     @Scheduled(fixedDelay = 1000 * 10)
     suspend fun sendMessages() {
         val messages: List<Message> = messageRepository.findAllNotSent()
-        messages.forEach { message ->
-            val notification = notificationsMap[message.notifyType]
-            if (notification != null) {
-                val notificationStatus = notification.notify(message)
-                message.sendStatus = notificationStatus.toSendStatus()
-                logger.info("Message sent: $message, status: $notificationStatus")
-            } else {
-                logger.error("Notification not found for type: ${message.notifyType}")
-                message.sendStatus = SendStatus.ERROR
-            }
+        messages.forEach {
+            sendMessage(it)
         }
         messageRepository.saveAll(messages)
+    }
+
+    private suspend fun sendMessage(message: Message) {
+        val notification = notificationsMap[message.notifyType]
+        if (notification != null) {
+            val notificationStatus = notification.notify(message)
+            message.sendStatus = notificationStatus.toSendStatus()
+            logger.info("Message sent: $message, status: $notificationStatus")
+        } else {
+            message.sendStatus = SendStatus.ERROR
+            logger.error("Message not sent: $message, status: ${message.sendStatus}")
+        }
     }
 
     @PostConstruct
