@@ -8,9 +8,9 @@ import ua.cheesecake.notificationservice.facade.NotificationData
 import ua.cheesecake.notificationservice.facade.Notifier
 
 fun MessageRequest.toMessage() = Message(
-    message = this.message,
-    notifyType = this.notifyType,
-    account = this.account,
+    message = this.message!!,
+    notifyType = this.notifyType!!,
+    account = this.account!!,
 )
 
 fun Message.toMessageRequest() = MessageRequest(

@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull
 import ua.cheesecake.notificationservice.facade.NotifyType
 
 class MessageRequest(
-    @NotNull val message: String,
-    @NotNull val notifyType: NotifyType,
-    @NotNull val account: String,
+    @NotNull val message: String? = null,
+    @NotNull val notifyType: NotifyType? = null,
+    @NotNull val account: String? = null,
 )
