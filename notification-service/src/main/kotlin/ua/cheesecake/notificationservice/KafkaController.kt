@@ -18,6 +18,7 @@ class KafkaController(
         logger.info("Message received: $message")
     }
 
+    @KafkaListener(topics = ["\${kafka.topic.notification}"], groupId = "\${kafka.group.id.notification}")
     suspend fun saveMessages(notification: NotificationRequest) {
         messageService.saveMessages(notification)
         logger.info("Messages received: $notification")
