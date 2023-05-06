@@ -1,0 +1,2 @@
+docker build -t localhost:5000/config-server -f config-dockerfile .
+docker push localhost:5000/config-server

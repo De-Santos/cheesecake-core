@@ -3,7 +3,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+      defaultZone: ${EUREKA_URL}
 spring:
   application:
     name: config-server
@@ -15,9 +15,15 @@ spring:
     config:
       server:
         git:
-          uri: ${CONFIG_GIT_URI}
-          password: ${CONFIG_GIT_PASSWORD}
-          username: ${CONFIG_GIT_USERNAME}
-          default-label: ${CONFIG_GIT_DEFAULT_LABEL}
+          uri: ${GIT_URI}
+          username: ${GIT_USERNAME}
+          password: ${GIT_PASSWORD}
+          default-label: ${GIT_DEFAULT_LABEL}
           clone-on-start: true
           search-paths: { application }
+
+logging:
+  level:
+    com.product.service: TRACE
+  pattern:
+    console: "%d{ISO8601} %highlight(%-5level{TRACE=blue, DEBUG=yellow}) [%green(%t)] %cyan(%C{1.}): %msg%n%throwable"

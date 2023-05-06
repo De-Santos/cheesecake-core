@@ -1,0 +1,11 @@
+{
+    "project_path": "C:/CodeFile/JavaProjects/cheesecake-core/config-server",
+    "gradle_build_command": "gradle bootJar",
+    "jar_name": "config-server-0.0.1-SNAPSHOT.jar",
+    "jar_file": "build/libs/config-server-0.0.1-SNAPSHOT.jar",
+    "docker_dir": "C:/CodeFile/JavaProjects/cheesecake-core/config-server/docker",
+    "target_dir": "C:/CodeFile/JavaProjects/cheesecake-core/config-server/docker/jar",
+    "build_command": "docker build -t localhost:5000/config-server -f config-dockerfile .",
+    "push_command": "docker push localhost:5000/config-server",
+    "kubernetes_update_command": "kubectl rollout restart deploy config-server"
+}
