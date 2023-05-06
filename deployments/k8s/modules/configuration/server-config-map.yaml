@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-config
+data:
+  eureka_url: http://localhost:8761/eureka
+  git_uri: https://github.com/De-Santos/config-prop.git
+  git_username: De-Santos
+  git_password: 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
+  git_default_label: master
+  

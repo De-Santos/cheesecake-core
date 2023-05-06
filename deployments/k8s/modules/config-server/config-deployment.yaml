@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-server
+  labels:
+    app: config
+spec:
+  selector:
+    matchLabels:
+      app: config-sever
+  replicas: 1
+  template:
+    metadata:
+      name: config
+      labels:
+        app: config-sever
+    spec:
+      containers:
+        - name: config-sever
+          image: localhost:5000/config-server
+          resources:
+            limits:
+              cpu: 100m
+              memory: 250Mi
+          env:
+            - name: EUREKA_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: server-config
+                  key: eureka_url
+            - name: GIT_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: server-config
+                  key: git_uri
+            - name: GIT_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: server-config
+                  key: git_username
+            - name: GIT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: server-config
+                  key: git_password
+            - name: GIT_DEFAULT_LABEL
+              valueFrom:
+                configMapKeyRef:
+                  name: server-config
+                  key: git_default_label
+          ports:
+            - containerPort: 9999
+      restartPolicy: Always
+      
