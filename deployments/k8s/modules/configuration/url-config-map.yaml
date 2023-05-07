@@ -3,7 +3,6 @@ kind: ConfigMap
 metadata:
   name: module-url
 data:
-  file-receiver: http://file-receiver-svc:8083/api/v2/file/photo
   order-service: http://order-service-svc:8084/
   product-service: http://product-service-svc:8082/api/v2/product
   user-service: link 

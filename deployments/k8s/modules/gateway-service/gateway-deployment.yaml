@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-service
+  namespace: default
+  labels:
+    app: gateway-service
+spec:
+  selector:
+    matchLabels:
+      app: gateway-service
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: gateway-service
+    spec:
+      containers:
+        - name: gateway
+          image: localhost:5000/gateway-service
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+          env:
+            - name: user-service-url
+              valueFrom:
+                configMapKeyRef:
+                  name: module-url
+                  key: user-service
+            
+            - name: product-service-url
+              valueFrom:
+                configMapKeyRef:
+                  name: module-url
+                  key: product-service
+            
+            - name: order-service-url
+              valueFrom:
+                configMapKeyRef:
+                  name: module-url
+                  key: order-service
+          ports:
+            - containerPort: 8085
+      restartPolicy: Always
