@@ -7,6 +7,7 @@ import ua.cheesecake.notificationservice.domain.Message
 
 @Repository
 interface MessageRepository : JpaRepository<Message, Long> {
+
     @Query("select m from Message m where m.sendStatus = 0")
-    fun findAllNotSent(): List<Message>
+    fun findAllUnsentMessages(): List<Message>
 }

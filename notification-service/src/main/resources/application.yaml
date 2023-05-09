@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: notification-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:develop}
+  config:
+    import: ${CONFIG_IMPORT}

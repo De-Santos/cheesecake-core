@@ -10,7 +10,6 @@ class Subscription(
     @Column(name = "id", nullable = false)
     var id: Long? = null,
 
-    //todo add a constraint in DB for table users on existence id
     @Column(name = "user_id", nullable = false)
     var userId: Long,
 

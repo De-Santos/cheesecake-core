@@ -41,6 +41,5 @@ data class Message(
     override fun toString(): String {
         return this::class.simpleName + "(id = $id , sendStatus = $sendStatus , message = $message , account = $account , notifyType = $notifyType )"
     }
-
 }
 

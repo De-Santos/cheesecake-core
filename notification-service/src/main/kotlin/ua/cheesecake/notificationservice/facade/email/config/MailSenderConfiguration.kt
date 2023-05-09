@@ -14,7 +14,7 @@ class MailSenderConfiguration {
         val mailSender = JavaMailSenderImpl()
         mailSender.host = "smtp.gmail.com"
         mailSender.port = 587
-        mailSender.username = "my.gmail@gmail.com"
+        mailSender.username = "maks.de.san.ul@gmail.com\n"
         mailSender.password = "password"
         val props: Properties = mailSender.javaMailProperties
         props["mail.transport.protocol"] = "smtp"

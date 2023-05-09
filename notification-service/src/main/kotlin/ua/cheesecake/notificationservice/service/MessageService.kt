@@ -6,54 +6,48 @@ import jakarta.transaction.Transactional
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import ua.cheesecake.notificationservice.dao.MessageRepository
-import ua.cheesecake.notificationservice.dao.SubscriptionRepository
 import ua.cheesecake.notificationservice.domain.Message
 import ua.cheesecake.notificationservice.domain.SendStatus
-import ua.cheesecake.notificationservice.dto.MessageRequest
-import ua.cheesecake.notificationservice.dto.NotificationRequest
+import ua.cheesecake.notificationservice.dto.MessageDto
+import ua.cheesecake.notificationservice.dto.NotificationDto
 import ua.cheesecake.notificationservice.facade.Notifier
 import ua.cheesecake.notificationservice.facade.NotifyType
 import ua.cheesecake.notificationservice.utils.mapper.toMessage
+import ua.cheesecake.notificationservice.utils.mapper.toDto
 import ua.cheesecake.notificationservice.utils.mapper.toSendStatus
 
 @Service
 class MessageService(
     private val messageRepository: MessageRepository,
-    private val subscriptionRepository: SubscriptionRepository
+    private val subscriptionService: SubscriptionService
 ) {
     private lateinit var notificationsMap: Map<NotifyType, Notifier>
 
-    suspend fun saveMessage(messageRequest: MessageRequest) {
-        val message = messageRequest.toMessage()
+    suspend fun saveMessage(messageDto: MessageDto) {
+        val message = messageDto.toMessage()
         messageRepository.save(message)
-        logger.info("Message saved: $message")
     }
 
     @Transactional
-    suspend fun saveMessages(notification: NotificationRequest) {
-        logger.info("Saving messages: $notification")
+    suspend fun saveMessages(notification: NotificationDto): List<MessageDto> {
         val messages = getMessagesForNotification(notification)
-        messageRepository.saveAll(messages)
-        logger.info("Messages saved: $notification")
+        return messageRepository.saveAll(messages).map { it.toDto() }
     }
 
-    private fun getMessagesForNotification(notification: NotificationRequest): MutableList<Message> {
-        val subscription = subscriptionRepository.findByUserId(notification.userId!!)
-        val messages = mutableListOf<Message>()
-        subscription.messengers.forEach { messenger ->
-            val message = Message(
+    private suspend fun getMessagesForNotification(notification: NotificationDto): List<Message> {
+        val subscription = subscriptionService.findByUserId(notification.userId!!)
+        return subscription.messengers.map { messenger ->
+            Message(
                 message = notification.message!!,
                 account = notification.account!!,
                 notifyType = messenger,
             )
-            messages.add(message)
         }
-        return messages
     }
 
     @Scheduled(fixedDelay = 1000 * 10)
     suspend fun sendMessages() {
-        val messages: List<Message> = messageRepository.findAllNotSent()
+        val messages: List<Message> = messageRepository.findAllUnsentMessages()
         messages.forEach {
             sendMessage(it)
         }
@@ -68,7 +62,7 @@ class MessageService(
             logger.info("Message sent: $message, status: $notificationStatus")
         } else {
             message.sendStatus = SendStatus.ERROR
-            logger.error("Message not sent: $message, status: ${message.sendStatus}")
+            throw IllegalStateException("Notifier not found: ${message.notifyType}")
         }
     }
 
