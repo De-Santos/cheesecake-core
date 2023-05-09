@@ -1,24 +1,17 @@
 package com.product.service.utils.request;
 
-import com.product.service.dao.ArchiveProductRepository;
 import com.product.service.dao.DraftProductRepository;
-import com.product.service.dao.ProductRepository;
 import com.product.service.dto.product.ModifyingProductRequest;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.entity.ArchiveProduct;
 import com.product.service.entity.DraftProduct;
 import com.product.service.entity.Product;
-import com.product.service.exception.exceptions.product.exist.ProductAlreadyExistDraftException;
-import com.product.service.exception.exceptions.product.exist.ProductAlreadyExistException;
-import com.product.service.exception.exceptions.product.found.ArchiveProductNotFoundException;
 import com.product.service.utils.convertor.Convertor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
-import ua.cheesecake.dto.exception.ProductNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Log4j2
@@ -27,7 +20,7 @@ import java.util.Optional;
 public class RequestConstructor {
 
     private final Convertor convertor;
-//    private final ProductRepository productRepository;
+    //    private final ProductRepository productRepository;
 //    private final ArchiveProductRepository archiveProductRepository;
     private final DraftProductRepository draftProductRepository;
 

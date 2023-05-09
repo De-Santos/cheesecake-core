@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 @Builder
 @Jacksonized
 public class DraftProductDto {
-    private String id;
+    private Long id;
     private FileCollectionDto images;
     private String name;
     private String description;
     private BigDecimal price;
-    private LocalDateTime createDate;
+    private String createDate;
 }

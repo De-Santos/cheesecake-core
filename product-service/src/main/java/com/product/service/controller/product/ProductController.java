@@ -6,6 +6,7 @@ import com.product.service.dto.product.ProductResponse;
 import com.product.service.service.DraftProductService;
 import com.product.service.service.ProductService;
 import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +24,14 @@ public class ProductController implements ProductApi {
 
     @Override
     @PostMapping("/add/{draftId}")
-    public ResponseEntity<ProductResponse> addProduct(@PathVariable("draftId") @NotNull String draftId) {
+    public ResponseEntity<ProductResponse> addProduct(@PathVariable("draftId") @NotNull Long draftId) {
         log.info("Add product by draft product: {}", draftId);
         return ResponseEntity.ok(productService.addProduct(draftId));
     }
 
     @Override
     @PatchMapping("/update/{draftId}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable("draftId") String id) {
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable("draftId") Long id) {
         log.info("Update product by id: {}", id);
         return ResponseEntity.ok(productService.updateProduct(id));
     }
@@ -90,7 +91,7 @@ public class ProductController implements ProductApi {
     // TODO: 4/22/2023 check logic
     @Override
     @PostMapping("/draft")
-    public ResponseEntity<String> addDraft() {
+    public ResponseEntity<Long> addDraft() {
         log.info("New draft");
         return ResponseEntity.ok(draftProductService.newDraft());
     }
@@ -98,7 +99,7 @@ public class ProductController implements ProductApi {
     // TODO: 4/22/2023 check logic
     @Override
     @GetMapping("/draft/{draftId}")
-    public ResponseEntity<DraftProductDto> getDraft(@PathVariable("draftId") String id) {
+    public ResponseEntity<DraftProductDto> getDraft(@PathVariable("draftId") Long id) {
         log.info("Get draft product by id: {}", id);
         return ResponseEntity.ok(draftProductService.get(id));
     }
@@ -106,14 +107,14 @@ public class ProductController implements ProductApi {
     // TODO: 4/22/2023 check logic
     @Override
     @GetMapping("/draft")
-    public ResponseEntity<List<String>> getDrafts() {
+    public ResponseEntity<List<Long>> getDrafts() {
         log.info("Get all drafts");
         return ResponseEntity.ok(draftProductService.get());
     }
 
     // TODO: 4/22/2023 check logic
     @Override
-    @PostMapping("/draft/update")
+    @PatchMapping("/draft/update")
     public ResponseEntity<DraftProductDto> updateDraftProduct(@RequestBody DraftProductDto draftProductDto) {
         log.info("Update draft product");
         return ResponseEntity.ok(draftProductService.update(draftProductDto));
@@ -122,7 +123,7 @@ public class ProductController implements ProductApi {
     // TODO: 4/22/2023 check logic
     @Override
     @DeleteMapping("/draft/{draftId}")
-    public ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") String id) {
+    public ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") Long id) {
         log.info("Delete draft product by id: {}", id);
         return ResponseEntity.ok(draftProductService.delete(id));
     }

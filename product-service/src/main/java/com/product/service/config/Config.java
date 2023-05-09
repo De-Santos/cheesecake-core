@@ -7,7 +7,7 @@ import ua.cheesecake.dto.additional.TimeMapper;
 @Configuration
 public class Config {
     @Bean
-    public TimeMapper timeMapper(){
+    public TimeMapper timeMapper() {
         return new TimeMapper();
     }
 }

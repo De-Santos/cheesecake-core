@@ -6,18 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "drafts")
+@NoArgsConstructor
+@AllArgsConstructor
 public final class DraftProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +23,7 @@ public final class DraftProduct {
 
     private Long parentId;
 
-    @OneToOne(mappedBy = "draftProduct")
+    @OneToOne(mappedBy = "draftProduct", cascade = CascadeType.REMOVE)
     private FileCollection images;
 
     private String name;
@@ -33,10 +31,8 @@ public final class DraftProduct {
     private BigDecimal price;
     private LocalDateTime createDate;
 
-    @Deprecated(forRemoval = true)
     public static DraftProduct create() {
         DraftProduct draft = new DraftProduct();
-//        draft.setImages(FileCollection.create());
         draft.setCreateDate(LocalDateTime.now());
         return draft;
     }

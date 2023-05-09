@@ -6,11 +6,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.UUID;
 
 public interface PhotoApi {
     @Operation(summary = "Upload photo in database",
@@ -22,8 +21,8 @@ public interface PhotoApi {
             @ApiResponse(responseCode = "406", description = "Supplied invalid `file` or `tagName` etc."),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile fileRequest,
-                                      @RequestParam("draftId") String draftId);
+    ResponseEntity<Long> uploadBannerFile(@RequestParam("file") MultipartFile fileRequest,
+                                          @RequestParam("draftId") Long draftId);
 
     @Operation(summary = "Upload photo in database",
             description = "Upload selected photo in database with tagName and return photo id." +
@@ -34,8 +33,8 @@ public interface PhotoApi {
             @ApiResponse(responseCode = "406", description = "Supplied invalid `file` or `tagName` etc."),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<String> uploadDescriptionFile(@RequestParam("file") MultipartFile fileRequest,
-                                      @RequestParam("draftId") String draftId);
+    ResponseEntity<Long> uploadDescriptionFile(@RequestParam("file") MultipartFile fileRequest,
+                                               @RequestParam("draftId") Long draftId);
 
     @Operation(summary = "Upload photo in database",
             description = "Upload selected photo in database with tagName and return photo id." +
@@ -46,9 +45,9 @@ public interface PhotoApi {
             @ApiResponse(responseCode = "406", description = "Supplied invalid `file` or `tagName` etc."),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<String> insertUploadFile(@RequestParam("file") MultipartFile fileRequest,
-                                            @RequestParam("draftId") String draftId,
-                                            @RequestParam("position") Integer position);
+    ResponseEntity<Long> insertUploadFile(@RequestParam("file") MultipartFile fileRequest,
+                                          @RequestParam("draftId") Long draftId,
+                                          @RequestParam("position") Integer position);
 
     @Operation(summary = "Return photo by id", description = "Return photo by id")
     @ApiResponses(value = {
@@ -56,8 +55,15 @@ public interface PhotoApi {
             @ApiResponse(responseCode = "400", description = "Error in supplied file id"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<byte[]> get(@RequestParam("id") UUID id,
-                               @RequestParam("versionId") String versionId);
+    ResponseEntity<byte[]> getBannerPhoto(@PathVariable("id") Long id);
+
+    @Operation(summary = "Return photo by id", description = "Return photo by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in supplied file id"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<byte[]> getDescriptionPhoto(@PathVariable("id") Long id);
 
     @Operation(summary = "Delete photo by id", description = "Delete photo from database by id")
     @ApiResponses(value = {
@@ -65,6 +71,16 @@ public interface PhotoApi {
             @ApiResponse(responseCode = "400", description = "Error in supplied file id"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<PhotoResponse> remove(@RequestParam("id") UUID id,
-                                         @RequestParam("versionId") String versionId);
+    ResponseEntity<PhotoResponse> removeBannerPhoto(@RequestParam("id") Long id,
+                                                    @RequestParam("draftId") Long draftId);
+
+    @Operation(summary = "Delete photo by id", description = "Delete photo from database by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in supplied file id"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<PhotoResponse> removeDescriptionPhoto(@RequestParam("id") Long id,
+                                                         @RequestParam("draftId") Long draftId);
+
 }

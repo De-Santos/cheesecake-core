@@ -3,6 +3,11 @@ package com.product.service.exception.exceptions.product.found;
 import com.product.service.exception.exceptions.product.main.DraftRequestException;
 
 public class DraftProductNotFoundException extends DraftRequestException {
+
+    public static DraftProductNotFoundException create(Long id) {
+        return new DraftProductNotFoundException("Draft product not found: " + id);
+    }
+
     public DraftProductNotFoundException() {
     }
 

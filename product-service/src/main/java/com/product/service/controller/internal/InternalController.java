@@ -17,7 +17,7 @@ public class InternalController implements InternalApi {
 
     @Override
     @GetMapping("/is/{versionId}")
-    public ResponseEntity<Boolean> isRealProduct(@PathVariable String versionId) {
+    public ResponseEntity<Boolean> isRealProduct(@PathVariable Long versionId) {
         log.debug("Check product by id: {}", versionId);
         return ResponseEntity.ok(internalProductService.checkProduct(versionId));
     }

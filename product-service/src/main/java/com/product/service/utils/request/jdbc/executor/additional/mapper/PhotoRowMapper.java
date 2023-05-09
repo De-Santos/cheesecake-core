@@ -1,15 +1,15 @@
 package com.product.service.utils.request.jdbc.executor.additional.mapper;
 
-import com.product.service.entity.additional.Photo;
+import com.product.service.entity.additional.BannerPhoto;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class PhotoRowMapper implements RowMapper<Photo> {
+public class PhotoRowMapper implements RowMapper<BannerPhoto> {
     @Override
-    public Photo mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return Photo.builder()
+    public BannerPhoto mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return BannerPhoto.builder()
                 .id(rs.getLong("id"))
                 .position(rs.getInt("position"))
                 .mediaType(rs.getString("media_type"))

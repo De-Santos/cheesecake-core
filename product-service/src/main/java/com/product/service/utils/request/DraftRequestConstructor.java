@@ -3,12 +3,13 @@ package com.product.service.utils.request;
 import com.product.service.dao.DraftProductRepository;
 import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.entity.DraftProduct;
+import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
+import com.product.service.utils.additional.FileChecker;
+import com.product.service.utils.additional.FileCollectionChecker;
 import com.product.service.utils.additional.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,51 +18,47 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class DraftRequestConstructor {
-    private final JdbcTemplate template;
     private final DraftProductRepository draftProductRepository;
+    private final FileCollectionRequestConstructor fileCollectionRequestConstructor;
+    private final FileCollectionChecker fileCollectionChecker;
+    private final FileChecker fileChecker;
     private final ProductChecker productChecker;
     private final Convertor convertor;
 
     // FIXME: 4/22/2023
-    public String newDraft() {
-//        log.info("Creating new product draft in database");
-//        return draftProductRepository.save(DraftProduct.create()).getId();
-        return null;
+    public Long newDraft() {
+        log.info("Creating new product draft in database");
+        DraftProduct draftProduct = draftProductRepository.save(DraftProduct.create());
+        fileCollectionRequestConstructor.create(draftProduct);
+        return draftProduct.getId();
     }
 
     // FIXME: 4/22/2023
     public DraftProductDto update(DraftProductDto draftProductDto) {
-//        log.info("Update draft product in database");
-//        productChecker.checkDraftById(draftProductDto.getId());
-//        DraftProduct draftProduct = this.get(draftProductDto.getId());
-//        return convertor.convert(draftProductRepository.save(convertor.updateConvert(draftProduct, draftProductDto)));
-        return null;
+        log.info("Update draft product in database");
+        productChecker.checkDraftById(draftProductDto.getId());
+        DraftProduct draftProduct = this.get(draftProductDto.getId());
+        fileCollectionChecker.checkFileCollectionIdentity(draftProduct.getImages(), draftProductDto.getImages());
+        return convertor.convert(draftProductRepository.save(convertor.updateConvert(draftProduct, draftProductDto)));
     }
 
-    // FIXME: 4/22/2023
-    public DraftProductDto delete(String id) {
-//        log.info("Delete draft product from database by id: {}", id);
-//        DraftProduct draftProduct = draftProductRepository.findById(id)
-//                .orElseThrow(() -> new DraftProductNotFoundException("Draft product not found."));
-//        draftProductRepository.delete(draftProduct);
-//        return convertor.convert(draftProduct);
-        return null;
+    // FIXME: 5/1/2023
+    public DraftProductDto delete(Long id) {
+        log.info("Delete draft product from database by id: {}", id);
+        DraftProduct draftProduct = draftProductRepository.findById(id)
+                .orElseThrow(() -> DraftProductNotFoundException.create(id));
+        draftProductRepository.delete(draftProduct);
+        return convertor.convert(draftProduct);
     }
 
-    // FIXME: 4/22/2023
-    public DraftProduct get(String id) {
-//        log.info("Get draft product from database by id: {}", id);
-//        return draftProductRepository.findById(id)
-//                .orElseThrow(() -> new DraftProductNotFoundException("Draft product not found."));
-        return null;
+    public DraftProduct get(Long id) {
+        log.info("Get draft product from database by id: {}", id);
+        return  draftProductRepository.findById(id)
+                .orElseThrow(() -> DraftProductNotFoundException.create(id));
     }
 
-    // FIXME: 4/22/2023
-    public List<String> get() {
-//        log.info("Getting all draft products from database");
-//        return draftProductRepository.findAll().stream()
-//                .map(DraftProduct::getId)
-//                .toList();
-        return null;
+    public List<Long> get() {
+        log.info("Getting all draft products from database");
+        return draftProductRepository.getAllIds();
     }
 }

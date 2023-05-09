@@ -1,9 +1,9 @@
 package com.product.service.exception.controller;
 
 import com.product.service.exception.dto.ExceptionDto;
-import com.product.service.exception.exceptions.photo.file.FileException;
-import com.product.service.exception.exceptions.photo.file.NullFileException;
-import com.product.service.exception.exceptions.photo.found.FileNotFoundException;
+import com.product.service.exception.exceptions.file.photo.main.FileException;
+import com.product.service.exception.exceptions.file.photo.main.NullFileException;
+import com.product.service.exception.exceptions.file.photo.found.FileNotFoundException;
 import com.product.service.exception.exceptions.product.main.ModifyingRequestException;
 import com.product.service.exception.exceptions.product.main.ProductRequestException;
 import lombok.extern.log4j.Log4j2;
@@ -59,6 +59,7 @@ public class ExceptionHandlingController {
     }
 
     private static final String DEFAULT_EXCEPTION_LOG = "Exception: {} with message: {}";
+
     @ExceptionHandler(FileNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> handleException(FileNotFoundException e) {

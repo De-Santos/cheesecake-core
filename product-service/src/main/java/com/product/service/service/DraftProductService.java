@@ -7,6 +7,7 @@ import com.product.service.utils.request.DraftRequestConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class DraftProductService {
     private final ProductChecker productChecker;
     private final Convertor convertor;
 
-    public String newDraft() {
+    public Long newDraft() {
         log.info("Creating new product draft");
         return draftRequestConstructor.newDraft();
     }
@@ -30,19 +31,19 @@ public class DraftProductService {
     }
 
     // FIXME: 4/22/2023
-    public DraftProductDto delete(String id) {
-//        log.info("Delete draft product by id: {}", id);
-//        productChecker.checkDraftById(id);
-//        return draftRequestConstructor.delete(id);
-        return null;
+    @Transactional
+    public DraftProductDto delete(Long id) {
+        log.info("Delete draft product by id: {}", id);
+        productChecker.checkDraftById(id);
+        return draftRequestConstructor.delete(id);
     }
 
-    public DraftProductDto get(String id){
+    public DraftProductDto get(Long id) {
         log.info("Get draft by id: {}", id);
         return convertor.convert(draftRequestConstructor.get(id));
     }
 
-    public List<String> get(){
+    public List<Long> get() {
         log.info("Get all draft products");
         return draftRequestConstructor.get();
     }

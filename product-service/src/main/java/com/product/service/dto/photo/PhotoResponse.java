@@ -8,6 +8,6 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class PhotoResponse {
-    private final String id;
+    private final Long id;
     private final String realPhotoName;
 }

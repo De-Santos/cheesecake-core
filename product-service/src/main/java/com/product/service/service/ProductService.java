@@ -25,7 +25,7 @@ public class ProductService {
     private final RequestConstructor requestConstructor;
     private final DraftRequestConstructor draftRequestConstructor;
 
-    public ProductResponse addProduct(String draftId) {
+    public ProductResponse addProduct(Long draftId) {
         log.info("Add product by draft product id: {}", draftId);
         DraftProduct draftProduct = draftRequestConstructor.get(draftId);
         productChecker.checkDraftData(draftProduct);
@@ -44,7 +44,7 @@ public class ProductService {
         return requestConstructor.getAll();
     }
 
-    public ProductResponse updateProduct(String id) {
+    public ProductResponse updateProduct(Long id) {
         log.info("Updating product by id: {}", id);
         DraftProduct draftProduct = draftRequestConstructor.get(id);
         productChecker.check(id);

@@ -23,7 +23,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Error in request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<ProductResponse> addProduct(@PathVariable("draftId") @NotNull String draftId);
+    ResponseEntity<ProductResponse> addProduct(@PathVariable("draftId") @NotNull Long draftId);
 
     @Operation(summary = "Get all archived products", description = "ONLY FOR DEVELOPERS")
     @ApiResponses(value = {
@@ -39,7 +39,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "404", description = "Post doesn't found")
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<ProductResponse> updateProduct(@PathVariable("draftId") String id);
+    ResponseEntity<ProductResponse> updateProduct(@PathVariable("draftId") Long id);
 
     @Operation(summary = "Set off/on product by id", description = "Change field active/inactive, return product")
     @ApiResponses(value = {
@@ -99,7 +99,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Error in request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<String> addDraft();
+    ResponseEntity<Long> addDraft();
 
     @Operation(summary = "Create new product", description = "Returns id of the created product")
     @ApiResponses(value = {
@@ -107,14 +107,14 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Error in request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<DraftProductDto> getDraft(@PathVariable("draftId") String id);
+    ResponseEntity<DraftProductDto> getDraft(@PathVariable("draftId") Long id);
 
     @Operation(summary = "Returns all drafts", description = "Returns list of draft's ids")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<List<String>> getDrafts();
+    ResponseEntity<List<Long>> getDrafts();
 
 
     @Operation(summary = "Create new product", description = "Returns id of the created product")
@@ -131,5 +131,5 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Error in request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") String id);
+    ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") Long id);
 }

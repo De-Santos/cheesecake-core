@@ -19,7 +19,7 @@ public interface InternalApi {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<Boolean> isRealProduct(@PathVariable @NotNull String versionId);
+    ResponseEntity<Boolean> isRealProduct(@PathVariable @NotNull Long versionId);
 
     @Operation(summary = "Check product list.", description = "Check product and filed active.")
     @ApiResponses(value = {

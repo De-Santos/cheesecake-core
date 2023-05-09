@@ -10,10 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -27,13 +24,11 @@ public class FileCollection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection
-    @CollectionTable(name = "banner_photos", joinColumns = @JoinColumn(name = "file_collection_id"))
-    @Column(name = "photo_id")
-    private List<Long> bannerPhotos;
+    @OneToMany(mappedBy = "fileCollection", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<BannerPhoto> bannerPhotos;
 
-    @OneToOne
-    private Photo descriptionPhoto;
+    @OneToOne(mappedBy = "fileCollection", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private DescriptionPhoto descriptionPhoto;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "draft_id", referencedColumnName = "id")
@@ -47,53 +42,31 @@ public class FileCollection {
     @JoinColumn(name = "archive_id", referencedColumnName = "versionId")
     private ArchiveProduct archiveProduct;
 
-    public static FileCollection create() {
+    public static FileCollection create(Product product) {
         return FileCollection.builder()
-                .bannerPhotos(new ArrayList<>())
-                .descriptionPhoto(null)
+                .product(product)
                 .build();
     }
 
-    // FIXME: 4/23/2023
-    public List<Photo> getAll() {
-//        List<Photo> allPhotos = new ArrayList<>(bannerPhotos);
-//        if (Objects.nonNull(descriptionPhoto)) allPhotos.add(descriptionPhoto);
-//        return allPhotos;
-        return null;
+    public static FileCollection create(DraftProduct draftProduct) {
+        return FileCollection.builder()
+                .draftProduct(draftProduct)
+                .build();
     }
 
-    // FIXME: 4/22/2023
-    public Photo getPhotoByHash(UUID hash) {
-//        if (Objects.nonNull(descriptionPhoto) && descriptionPhoto.getHash().equals(hash)) return descriptionPhoto;
-//        return bannerPhotos.stream()
-//                .filter(photo -> Objects.equals(photo.getHash(), hash))
-//                .findFirst()
-//                .orElseThrow(() -> new FileNotFoundException("File not found by id: " + hash));
-        return null;
+    public static FileCollection create(ArchiveProduct archiveProduct) {
+        return FileCollection.builder()
+                .archiveProduct(archiveProduct)
+                .build();
     }
 
-    // FIXME: 4/22/2023
-    public Optional<Photo> getPhotoByOrder(Integer position) {
-//        return bannerPhotos.stream()
-//                .filter(photo -> Objects.equals(photo.getOrder(), position))
-//                .findFirst();
-        return null;
-    }
-
-    // FIXME: 4/22/2023
-    public Photo remove(UUID hash) {
-//        if (Objects.nonNull(descriptionPhoto) && descriptionPhoto.getHash().equals(hash)) {
-//            Photo temp = descriptionPhoto;
-//            descriptionPhoto = null;
-//            return temp;
-//        }
-//        Photo photo = bannerPhotos.stream()
-//                .filter(it -> it.getHash().equals(hash))
-//                .findFirst()
-//                .orElseThrow(() -> new FileNotFoundException("File not found by id: " + hash));
-//        bannerPhotos.remove(photo);
-//        return photo;
-        return null;
+    @Override
+    public String toString() {
+        return "FileCollection{" +
+                "id=" + id +
+                ", bannerPhotos=" + bannerPhotos +
+                ", descriptionPhoto=" + descriptionPhoto +
+                '}';
     }
 }
 

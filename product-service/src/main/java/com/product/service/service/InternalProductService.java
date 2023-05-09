@@ -14,7 +14,7 @@ public class InternalProductService {
 
     private final ProductChecker productChecker;
 
-    public Boolean checkProduct(String versionId) {
+    public Boolean checkProduct(Long versionId) {
         return productChecker.check(versionId);
     }
 

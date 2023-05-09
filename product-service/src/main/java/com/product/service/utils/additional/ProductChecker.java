@@ -1,23 +1,20 @@
 package com.product.service.utils.additional;
 
-import com.product.service.dao.ArchiveProductRepository;
 import com.product.service.dao.DraftProductRepository;
-import com.product.service.dao.ProductRepository;
 import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.dto.product.ModifyingProductRequest;
 import com.product.service.entity.DraftProduct;
-import com.product.service.entity.additional.Photo;
+import com.product.service.entity.additional.BannerPhoto;
 import com.product.service.exception.exceptions.product.empty.EmptyDescriptionException;
 import com.product.service.exception.exceptions.product.empty.EmptyNameException;
 import com.product.service.exception.exceptions.product.empty.EmptyPhotosException;
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
 import com.product.service.exception.exceptions.product.invalid.FileCollectionOrderException;
 import com.product.service.exception.exceptions.product.invalid.ProductInvalidPriceException;
-import com.product.service.exception.exceptions.product.invalid.ProductInvalidSailPriceException;
 import com.product.service.exception.exceptions.product.nullable.DraftProductIsNullException;
-import com.product.service.exception.exceptions.product.nullable.NullArgumentException;
 import com.product.service.exception.exceptions.product.sintax.ProductNameOutOfBoundsException;
 import com.product.service.exception.exceptions.product.sintax.ProductPhotosLimitException;
+import com.product.service.utils.protector.Protector;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -30,7 +27,7 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class ProductChecker {
-//    private final ProductRepository productRepository;
+    //    private final ProductRepository productRepository;
 //    private final ArchiveProductRepository archiveProductRepository;
     private final DraftProductRepository draftProductRepository;
     // TODO: 3/26/2023 create configuration from database
@@ -48,7 +45,7 @@ public class ProductChecker {
     }
 
     // FIXME: 4/22/2023
-    public boolean check(String versionId) {
+    public boolean check(Long versionId) {
 //        return productRepository.existsProductByVersionIdAndActiveIsTrue(versionId);
         return true;
     }
@@ -90,10 +87,10 @@ public class ProductChecker {
         if (description.isEmpty()) throw new EmptyDescriptionException();
     }
 
-    private void checkPhoto(List<Photo> photos) {
-        if (photos == null) throw new NoSuchElementException();
-        if (photos.isEmpty()) throw new EmptyPhotosException();
-        if (photos.size() > 10) throw new ProductPhotosLimitException();
+    private void checkPhoto(List<BannerPhoto> bannerPhotos) {
+        if (bannerPhotos == null) throw new NoSuchElementException();
+        if (bannerPhotos.isEmpty()) throw new EmptyPhotosException();
+        if (bannerPhotos.size() > 10) throw new ProductPhotosLimitException();
     }
 
     private void checkPrice(BigDecimal price) {
@@ -139,16 +136,16 @@ public class ProductChecker {
     }
 
     private void checkDraftPhotoDto(DraftProductDto draftProductDto) {
-        if (Objects.isNull(draftProductDto)) throw new DraftProductIsNullException("Draft product is null");
+        Protector.notNullRequired(new DraftProductIsNullException("Draft product is null"), draftProductDto);
         Set<Integer> set = new HashSet<>();
         draftProductDto.getImages().getBannerPhotos().forEach(it -> {
-            if (set.contains(it.getOrder())) throw new FileCollectionOrderException("Invalid file order");
-            set.add(it.getOrder());
+            if (set.contains(it.getPosition())) throw new FileCollectionOrderException("Invalid file order");
+            set.add(it.getPosition());
         });
     }
 
     public void checkDraftById(Long id) {
         if (Boolean.FALSE.equals(draftProductRepository.existsById(id)))
-            throw new DraftProductNotFoundException("Draft product not found by id: " + id);
+            throw DraftProductNotFoundException.create(id);
     }
 }
