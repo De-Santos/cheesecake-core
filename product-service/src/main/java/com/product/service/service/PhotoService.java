@@ -2,6 +2,7 @@ package com.product.service.service;
 
 
 import com.product.service.dto.photo.PhotoResponse;
+import com.product.service.entity.additional.BannerPhoto;
 import com.product.service.utils.additional.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
 import com.product.service.utils.request.PhotoRequestConstructor;
@@ -58,18 +59,19 @@ public class PhotoService {
         return photoRequestConstructor.uploadFile(file, draftId, position);
     }
 
-    @Transactional
     public PhotoResponse removeBannerPhoto(Long draftId, Long id) {
         log.info("Remove banner photo by id: {}", id);
         productChecker.checkDraftById(draftId);
-        return photoRequestConstructor.removeBannerPhoto(id);
+        BannerPhoto removedPhoto = photoRequestConstructor.removeBannerPhoto(id);
+        photoRequestConstructor.fileCollectionNormalization(draftId);
+        return convertor.convert(removedPhoto);
     }
 
     @Transactional
     public PhotoResponse removeDescriptionPhoto(Long draftId, Long id) {
         log.info("Remove description photo by id: {}", id);
         productChecker.checkDraftById(draftId);
-        return photoRequestConstructor.removeDescriptionPhoto(id);
+        return convertor.convert(photoRequestConstructor.removeDescriptionPhoto(id));
     }
 
 }

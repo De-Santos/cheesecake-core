@@ -1,10 +1,10 @@
 package com.product.service.utils.request;
 
 import com.product.service.dao.DraftProductRepository;
+import com.product.service.dao.FileCollectionRepository;
 import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.entity.DraftProduct;
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
-import com.product.service.utils.additional.FileChecker;
 import com.product.service.utils.additional.FileCollectionChecker;
 import com.product.service.utils.additional.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
@@ -20,8 +20,8 @@ import java.util.List;
 public class DraftRequestConstructor {
     private final DraftProductRepository draftProductRepository;
     private final FileCollectionRequestConstructor fileCollectionRequestConstructor;
+    private final FileCollectionRepository fileCollectionRepository;
     private final FileCollectionChecker fileCollectionChecker;
-    private final FileChecker fileChecker;
     private final ProductChecker productChecker;
     private final Convertor convertor;
 
@@ -48,12 +48,13 @@ public class DraftRequestConstructor {
         DraftProduct draftProduct = draftProductRepository.findById(id)
                 .orElseThrow(() -> DraftProductNotFoundException.create(id));
         draftProductRepository.delete(draftProduct);
+        fileCollectionRepository.delete(draftProduct.getImages());
         return convertor.convert(draftProduct);
     }
 
     public DraftProduct get(Long id) {
         log.info("Get draft product from database by id: {}", id);
-        return  draftProductRepository.findById(id)
+        return draftProductRepository.findById(id)
                 .orElseThrow(() -> DraftProductNotFoundException.create(id));
     }
 

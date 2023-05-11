@@ -1,19 +1,27 @@
 package com.product.service.utils.additional;
 
+import com.product.service.dao.ArchiveProductRepository;
 import com.product.service.dao.DraftProductRepository;
+import com.product.service.dao.ProductRepository;
 import com.product.service.dto.photo.DraftProductDto;
-import com.product.service.dto.product.ModifyingProductRequest;
+import com.product.service.dto.product.SailProductRequest;
 import com.product.service.entity.DraftProduct;
-import com.product.service.entity.additional.BannerPhoto;
+import com.product.service.entity.additional.FileCollection;
 import com.product.service.exception.exceptions.product.empty.EmptyDescriptionException;
 import com.product.service.exception.exceptions.product.empty.EmptyNameException;
 import com.product.service.exception.exceptions.product.empty.EmptyPhotosException;
+import com.product.service.exception.exceptions.product.exist.ProductAlreadyExistDraftException;
+import com.product.service.exception.exceptions.product.exist.ProductAlreadyExistException;
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
 import com.product.service.exception.exceptions.product.invalid.FileCollectionOrderException;
+import com.product.service.exception.exceptions.product.invalid.InvalidProductNameException;
 import com.product.service.exception.exceptions.product.invalid.ProductInvalidPriceException;
+import com.product.service.exception.exceptions.product.invalid.ProductInvalidSailPriceException;
+import com.product.service.exception.exceptions.product.nullable.BannerPhotosIsNullException;
 import com.product.service.exception.exceptions.product.nullable.DraftProductIsNullException;
+import com.product.service.exception.exceptions.product.nullable.FileCollectionIsNullException;
+import com.product.service.exception.exceptions.product.nullable.NullArgumentException;
 import com.product.service.exception.exceptions.product.sintax.ProductNameOutOfBoundsException;
-import com.product.service.exception.exceptions.product.sintax.ProductPhotosLimitException;
 import com.product.service.utils.protector.Protector;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,8 +35,8 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class ProductChecker {
-    //    private final ProductRepository productRepository;
-//    private final ArchiveProductRepository archiveProductRepository;
+    private final ProductRepository productRepository;
+    private final ArchiveProductRepository archiveProductRepository;
     private final DraftProductRepository draftProductRepository;
     // TODO: 3/26/2023 create configuration from database
     private static final Integer MAX_PRODUCT_NAME_LENGTH = 100;
@@ -44,6 +52,11 @@ public class ProductChecker {
 //        }
     }
 
+    public void checkProductNameExistence(String name) {
+        if (productRepository.existsProductByName(name))
+            throw ProductAlreadyExistException.create(name);
+    }
+
     // FIXME: 4/22/2023
     public boolean check(Long versionId) {
 //        return productRepository.existsProductByVersionIdAndActiveIsTrue(versionId);
@@ -51,16 +64,21 @@ public class ProductChecker {
     }
 
     // FIXME: 4/22/2023
-    public void forceCheck(String versionId) throws ProductNotFoundException {
-//        if (!productRepository.existsProductByVersionIdAndActiveIsTrue(versionId))
-//            throw new ProductNotFoundException();
+    public void forceCheck(UUID versionId) throws ProductNotFoundException {
+        if (!productRepository.existsProductByVersionIdAndActiveIsTrue(versionId))
+            throw new ProductNotFoundException();
+    }
+
+    public void forceCheckExistence(UUID versionId) throws ProductNotFoundException {
+        if (!productRepository.existsByVersionId(versionId))
+            throw ProductNotFoundException.create(versionId.toString());
     }
 
     // FIXME: 4/22/2023
-    public void checkGlobalExistence(String versionId) {
-//        if (!productRepository.existsByVersionId(versionId) ||
-//                !archiveProductRepository.existsByVersionId(versionId))
-//            throw new ProductNotFoundException();
+    public void forceCheckGlobalExistence(UUID versionId) {
+        if (!productRepository.existsByVersionId(versionId) ||
+                !archiveProductRepository.existsByVersionId(versionId))
+            throw new ProductNotFoundException();
     }
 
     public void checkDraft(Long id) {
@@ -69,28 +87,29 @@ public class ProductChecker {
     }
 
     public void checkDraftData(DraftProduct draftProduct) {
+        Protector.safeNull(draftProduct);
         this.checkName(draftProduct.getName());
-        // FIXME: 4/22/2023
-//        this.checkPhoto(draftProduct.getImages());
+        this.checkPhoto(draftProduct);
         this.checkPrice(draftProduct.getPrice());
         this.checkDescription(draftProduct.getDescription());
     }
 
     private void checkName(String name) {
-        if (name == null) throw new NoSuchElementException();
+        if (name == null) throw InvalidProductNameException.create(null);
         if (name.isEmpty()) throw new EmptyNameException();
-        if (name.length() > MAX_PRODUCT_NAME_LENGTH
-                || name.length() <= MIN_PRODUCT_NAME_LENGTH) throw new ProductNameOutOfBoundsException();
+        if (name.length() > MAX_PRODUCT_NAME_LENGTH || name.length() <= MIN_PRODUCT_NAME_LENGTH)
+            throw new ProductNameOutOfBoundsException();
     }
 
     private void checkDescription(String description) {
         if (description.isEmpty()) throw new EmptyDescriptionException();
     }
 
-    private void checkPhoto(List<BannerPhoto> bannerPhotos) {
-        if (bannerPhotos == null) throw new NoSuchElementException();
-        if (bannerPhotos.isEmpty()) throw new EmptyPhotosException();
-        if (bannerPhotos.size() > 10) throw new ProductPhotosLimitException();
+    private void checkPhoto(DraftProduct draftProduct) {
+        FileCollection fileCollection = Protector
+                .nonNull(FileCollectionIsNullException.create(), draftProduct.getImages());
+        if (fileCollection.getBannerPhotos() == null) throw BannerPhotosIsNullException.create();
+        if (fileCollection.getBannerPhotos().isEmpty()) throw new EmptyPhotosException();
     }
 
     private void checkPrice(BigDecimal price) {
@@ -99,33 +118,33 @@ public class ProductChecker {
             throw new ProductInvalidPriceException("Price can't be less than zero.");
     }
 
-    public void check(ModifyingProductRequest modifyingProductRequest) {
-        this.checkProduct(modifyingProductRequest);
-        this.checkSail(modifyingProductRequest);
+    public void check(SailProductRequest sailProductRequest) {
+        this.checkProduct(sailProductRequest);
+        this.checkSail(sailProductRequest);
     }
 
     // FIXME: 4/22/2023
-    private void checkProduct(ModifyingProductRequest modifyingProductRequest) {
+    private void checkProduct(SailProductRequest sailProductRequest) {
 //        if (!productRepository.existsProductByVersionIdAndActiveIsTrue(modifyingProductRequest.getVersionId()))
 //            throw new ProductNotFoundException("Product not found by id: " + modifyingProductRequest.getVersionId());
     }
 
     // FIXME: 4/22/2023
-    private void checkSail(ModifyingProductRequest modifyingProductRequest) {
-//        BigDecimal price = productRepository.findProductByVersionId(modifyingProductRequest.getVersionId())
-//                .orElseThrow(ProductNotFoundException::new)
-//                .getPrice();
-//        BigDecimal sailPrice = modifyingProductRequest.getSailPrice();
-//        if (price == null || sailPrice == null) throw new NullArgumentException("Argument can't be null");
-//        if (sailPrice.compareTo(price) >= 0 || sailPrice.compareTo(BigDecimal.ZERO) < 0)
-//            throw new ProductInvalidSailPriceException("Sail price can't be less than zero and bugger than product price.");
+    private void checkSail(SailProductRequest sailProductRequest) {
+        BigDecimal price = productRepository.findProductByVersionId(sailProductRequest.getVersionId())
+                .orElseThrow(() -> ProductNotFoundException.create(sailProductRequest.getVersionId().toString()))
+                .getPrice();
+        BigDecimal sailPrice = sailProductRequest.getSailPrice();
+        if (price == null || sailPrice == null) throw new NullArgumentException("Argument can't be null");
+        if (sailPrice.compareTo(price) >= 0 || sailPrice.compareTo(BigDecimal.ZERO) < 0)
+            throw new ProductInvalidSailPriceException("Sail price can't be less than zero and bugger than product price.");
     }
 
-    public void checkExistence(String versionId) {
+    public void checkExistence(UUID versionId) {
         log.info("Checking versionId existence in product and archive product databases.");
-//        if (productRepository.existsById(versionId)) return;
-//        if (archiveProductRepository.existsById(versionId)) return;
-        throw new ProductNotFoundException("Product not found by id: " + versionId);
+        if (productRepository.existsByVersionId(versionId)) return;
+        if (archiveProductRepository.existsByVersionId(versionId)) return;
+        throw ProductNotFoundException.create(versionId.toString());
     }
 
     public void checkDraft(DraftProductDto draftProductDto) {
@@ -136,7 +155,7 @@ public class ProductChecker {
     }
 
     private void checkDraftPhotoDto(DraftProductDto draftProductDto) {
-        Protector.notNullRequired(new DraftProductIsNullException("Draft product is null"), draftProductDto);
+        Protector.notNullRequired(DraftProductIsNullException.create(), draftProductDto);
         Set<Integer> set = new HashSet<>();
         draftProductDto.getImages().getBannerPhotos().forEach(it -> {
             if (set.contains(it.getPosition())) throw new FileCollectionOrderException("Invalid file order");
@@ -147,5 +166,10 @@ public class ProductChecker {
     public void checkDraftById(Long id) {
         if (Boolean.FALSE.equals(draftProductRepository.existsById(id)))
             throw DraftProductNotFoundException.create(id);
+    }
+
+    public void forceCheckDraftExistenceByParentId(UUID versionId) {
+        if (draftProductRepository.existsByParentVersionId(versionId))
+            throw ProductAlreadyExistDraftException.create(versionId);
     }
 }

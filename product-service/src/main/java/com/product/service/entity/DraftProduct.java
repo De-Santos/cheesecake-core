@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -21,9 +22,9 @@ public final class DraftProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long parentId;
+    private UUID parentVersionId;
 
-    @OneToOne(mappedBy = "draftProduct", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "draftProduct")
     private FileCollection images;
 
     private String name;

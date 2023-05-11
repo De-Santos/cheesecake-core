@@ -23,7 +23,7 @@ public final class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private UUID versionId;
-    @OneToOne(mappedBy = "product")
+    @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
     private FileCollection images;
     private String name;
     private String description;

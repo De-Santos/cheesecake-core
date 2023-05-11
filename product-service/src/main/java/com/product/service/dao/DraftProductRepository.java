@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface DraftProductRepository extends JpaRepository<DraftProduct, Long> {
-    boolean existsByParentId(String parentId);
+    boolean existsByParentVersionId(UUID parentId);
 
     @Query("SELECT dp.id FROM DraftProduct dp")
     List<Long> getAllIds();

@@ -1,8 +1,8 @@
 package com.product.service.controller.product;
 
 import com.product.service.dto.photo.DraftProductDto;
-import com.product.service.dto.product.ModifyingProductRequest;
 import com.product.service.dto.product.ProductResponse;
+import com.product.service.dto.product.SailProductRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
+import java.util.UUID;
 
 // TODO: 4/22/2023 add normal docs for apis
 public interface ProductApi {
@@ -48,7 +49,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "404", description = "Post doesn't found")
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<ProductResponse> editProduct(@PathVariable String id);
+    ResponseEntity<ProductResponse> editProduct(@PathVariable UUID id);
 
     @Operation(summary = "Delete all product DEVELOP", description = "ONLY FOR DEVELOPERS")
     @ApiResponses(value = {
@@ -63,7 +64,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "404", description = "Post doesn't found")
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<ProductResponse> getProduct(@PathVariable String id);
+    ResponseEntity<ProductResponse> getProduct(@PathVariable("versionId") UUID versionId);
 
     @Operation(summary = "Find all products", description = "Returns list of products")
     @ApiResponses(value = {
@@ -81,7 +82,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "404", description = "Post doesn't found")
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<ProductResponse> sailMode(@RequestBody ModifyingProductRequest modifyingProductRequest);
+    ResponseEntity<ProductResponse> sailMode(@RequestBody SailProductRequest sailProductRequest);
 
     @Operation(summary = "Crate new draft from product",
             description = "Crate new draft product with data from product by versionId")
@@ -91,7 +92,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "404", description = "Post doesn't found")
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<DraftProductDto> toDraftProduct(@PathVariable("id") String versionId);
+    ResponseEntity<DraftProductDto> toDraftProduct(@PathVariable("id") UUID versionId);
 
     @Operation(summary = "Create new product", description = "Returns id of the created product")
     @ApiResponses(value = {

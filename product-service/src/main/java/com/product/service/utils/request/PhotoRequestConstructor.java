@@ -3,7 +3,6 @@ package com.product.service.utils.request;
 import com.product.service.dao.BannerPhotoRepository;
 import com.product.service.dao.DescriptionPhotoRepository;
 import com.product.service.dao.FileCollectionRepository;
-import com.product.service.dto.photo.PhotoResponse;
 import com.product.service.entity.additional.BannerPhoto;
 import com.product.service.entity.additional.DescriptionPhoto;
 import com.product.service.entity.additional.FileCollection;
@@ -18,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
@@ -46,14 +46,14 @@ public class PhotoRequestConstructor {
     public Long uploadFile(@NonNull MultipartFile file, Long draftId) {
         log.info("Upload file in database with name: {}", file.getOriginalFilename());
         Validator.validateObtainFile(file);
-        FileCollection fileCollection = this.safeGetFileCollection(draftId);
+        FileCollection fileCollection = this.safeGetFileCollectionByDraftId(draftId);
         fileCollectionChecker.checkFileOrder(fileCollection);
         return this.addNewPhoto(file, fileCollection);
     }
 
     public Long uploadFile(@NonNull MultipartFile file, Long draftId, Integer position) {
         log.info("Upload file in database with name: {} in position: {}", file.getOriginalFilename(), position);
-        FileCollection fileCollection = this.safeGetFileCollection(draftId);
+        FileCollection fileCollection = this.safeGetFileCollectionByDraftId(draftId);
         fileCollectionChecker.checkFileCollectionBounds(position);
         Optional<Long> photoId = bannerPhotoRepository.findPhotoIdByFileCollectionAndPosition(fileCollection, position);
         if (photoId.isEmpty()) return this.addNewPhoto(file, fileCollection);
@@ -62,26 +62,25 @@ public class PhotoRequestConstructor {
 
     public Long uploadDescriptionFile(@NonNull MultipartFile file, Long draftId) {
         log.info("Upload file in database with name: {}", file.getOriginalFilename());
-        FileCollection fileCollection = this.safeGetFileCollection(draftId);
+        FileCollection fileCollection = this.safeGetFileCollectionByDraftId(draftId);
         return this.setDescriptionPhoto(file, fileCollection);
     }
 
     // FIXME: 4/22/2023
-    public PhotoResponse removeBannerPhoto(Long id) {
+    @Transactional
+    public BannerPhoto removeBannerPhoto(Long id) {
         log.info("Remove banner photo by id: {}", id);
         BannerPhoto bannerPhoto = this.safeGetBannerPhoto(id);
         bannerPhotoRepository.deleteById(id);
-        this.optimizeFileCollection(bannerPhoto.getFileCollection().getId());
-        return convertor.convert(bannerPhoto);
+        return bannerPhoto;
     }
 
     // FIXME: 4/22/2023
-    public PhotoResponse removeDescriptionPhoto(Long id) {
-        log.info("Remove banner photo by id: {}", id);
+    public DescriptionPhoto removeDescriptionPhoto(Long id) {
+        log.info("Remove description photo by id: {}", id);
         DescriptionPhoto descriptionPhoto = this.safeGetDescriptionPhoto(id);
-        bannerPhotoRepository.deleteById(id);
-        this.optimizeFileCollection(descriptionPhoto.getFileCollection().getId());
-        return convertor.convert(descriptionPhoto);
+        descriptionPhotoRepository.deleteById(id);
+        return descriptionPhoto;
     }
 
     // FIXME: 4/22/2023
@@ -108,10 +107,12 @@ public class PhotoRequestConstructor {
         return bannerPhotoRepository.save(bannerPhoto).getId();
     }
 
-    private void optimizeFileCollection(long id) {
-        FileCollection fileCollection= this.safeGetFileCollection(id);
-        fileCollectionRepository.save(FileCollectionUtils.positionNormalization(fileCollection));
+    public void fileCollectionNormalization(long draftId) {
+        FileCollection fileCollection = this.safeGetFileCollectionByDraftId(draftId);
+        FileCollectionUtils.positionNormalization(fileCollection);
+        fileCollectionRepository.saveAndFlush(FileCollectionUtils.positionNormalization(fileCollection));
     }
+
     private BannerPhoto safeGetBannerPhoto(Long id) {
         return bannerPhotoRepository.findById(id)
                 .orElseThrow(() -> BannerPhotoNotFoundException.create(id));
@@ -121,7 +122,8 @@ public class PhotoRequestConstructor {
         return descriptionPhotoRepository.findById(id)
                 .orElseThrow(() -> DescriptionPhotoNotFoundException.create(id));
     }
-    private FileCollection safeGetFileCollection(Long draftId) {
+
+    private FileCollection safeGetFileCollectionByDraftId(Long draftId) {
         return fileCollectionRepository.findFileCollectionByDraftProductId(draftId)
                 .orElseThrow(() -> new FileCollectionNotFoundException("File collection not found by draft id: " + draftId));
     }

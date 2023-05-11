@@ -1,18 +1,18 @@
 package com.product.service.controller.product;
 
 import com.product.service.dto.photo.DraftProductDto;
-import com.product.service.dto.product.ModifyingProductRequest;
 import com.product.service.dto.product.ProductResponse;
+import com.product.service.dto.product.SailProductRequest;
 import com.product.service.service.DraftProductService;
 import com.product.service.service.ProductService;
 import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Log4j2
 @RestController
@@ -38,7 +38,7 @@ public class ProductController implements ProductApi {
 
     @Override
     @PatchMapping("edit/{id}")
-    public ResponseEntity<ProductResponse> editProduct(@PathVariable String id) {
+    public ResponseEntity<ProductResponse> editProduct(@PathVariable("id") UUID id) {
         log.info("Edit(active/inactive) product by id: {}", id);
         return ResponseEntity.ok(productService.editProduct(id));
     }
@@ -60,7 +60,7 @@ public class ProductController implements ProductApi {
 
     @Override
     @GetMapping("/{versionId}")
-    public ResponseEntity<ProductResponse> getProduct(@PathVariable String versionId) {
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable("versionId") UUID versionId) {
         log.info("Get product by version id: {}", versionId);
         return ResponseEntity.ok(productService.getById(versionId));
     }
@@ -74,16 +74,16 @@ public class ProductController implements ProductApi {
 
     @Override
     @PatchMapping("/mode")
-    public ResponseEntity<ProductResponse> sailMode(@RequestBody ModifyingProductRequest modifyingProductRequest) {
-        log.info("Set sail price: {} for product: {}", modifyingProductRequest.getSailPrice(),
-                modifyingProductRequest.getVersionId());
-        return ResponseEntity.ok(productService.sailMode(modifyingProductRequest));
+    public ResponseEntity<ProductResponse> sailMode(@RequestBody SailProductRequest sailProductRequest) {
+        log.info("Set sail price: {} for product: {}", sailProductRequest.getSailPrice(),
+                sailProductRequest.getVersionId());
+        return ResponseEntity.ok(productService.sailMode(sailProductRequest));
     }
 
     // TODO: 4/19/2023 test me
     @Override
     @GetMapping("/draft/of/{id}")
-    public ResponseEntity<DraftProductDto> toDraftProduct(@PathVariable("id") String versionId) {
+    public ResponseEntity<DraftProductDto> toDraftProduct(@PathVariable("id") UUID versionId) {
         log.info("Get draft from product by versionId: {}", versionId);
         return ResponseEntity.ok(productService.toDraft(versionId));
     }

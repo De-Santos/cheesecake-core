@@ -2,9 +2,11 @@ package com.product.service.exception.exceptions.product.exist;
 
 import com.product.service.exception.exceptions.product.main.ProductRequestException;
 
+import java.util.UUID;
+
 public class ProductAlreadyExistDraftException extends ProductRequestException {
-    public static ProductAlreadyExistDraftException create(String versionId) {
-        return new ProductAlreadyExistDraftException("Already exist draft product by versionId: " + versionId);
+    public static ProductAlreadyExistDraftException create(UUID versionId) {
+        return new ProductAlreadyExistDraftException("Product already has draft, product versionId: " + versionId);
     }
 
     public ProductAlreadyExistDraftException() {

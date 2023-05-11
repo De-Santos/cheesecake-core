@@ -2,8 +2,8 @@ package com.product.service.utils.additional;
 
 import com.product.service.dto.photo.additional.FileCollectionDto;
 import com.product.service.dto.photo.additional.PhotoDto;
-import com.product.service.entity.additional.FileCollection;
 import com.product.service.entity.additional.BannerPhoto;
+import com.product.service.entity.additional.FileCollection;
 import com.product.service.exception.exceptions.file.collection.update.FileCollectionNotIdentityUpdateException;
 import com.product.service.exception.exceptions.file.photo.bounds.FileOutOfBoundsException;
 import com.product.service.exception.exceptions.file.photo.illegal.IllegalFilePositionUpdateException;
@@ -51,7 +51,7 @@ public class FileCollectionChecker {
         Set<Integer> positionSet = new HashSet<>();
         for (PhotoDto photoDto : fileCollectionDto.getBannerPhotos()) {
             int pos = photoDto.getPosition();
-            if (pos <=0 || pos > MAX_FILE_COUNT || positionSet.contains(pos))
+            if (pos <= 0 || pos > MAX_FILE_COUNT || positionSet.contains(pos))
                 throw IllegalFilePositionUpdateException.create(pos);
             positionSet.add(pos);
             Long id = photoDto.getId();
@@ -71,7 +71,7 @@ public class FileCollectionChecker {
     private void checkDescriptionPhotoIdentity(FileCollection fileCollection, FileCollectionDto fileCollectionDto) {
         if (Objects.isNull(fileCollection.getDescriptionPhoto()) != Objects.isNull(fileCollectionDto.getDescriptionPhoto()))
             throw new FileCollectionNotIdentityUpdateException("Description photo id must be identity");
-
+        if (Objects.isNull(fileCollection.getDescriptionPhoto())) return;
         if (!Objects.equals(fileCollection.getDescriptionPhoto().getId(), fileCollectionDto.getDescriptionPhoto().getId()))
             throw new FileCollectionNotIdentityUpdateException("Description photo id must be identity");
     }

@@ -7,13 +7,13 @@ import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Protector {
-    public static <T extends Throwable> void notNullRequired(Object o, T e) throws T {
+    public static <E extends Throwable> void notNullRequired(Object o, E e) throws E {
         if (Objects.isNull(o)) {
             throw e;
         }
     }
 
-    public static <T extends Throwable> void notNullRequired(T e, Object... o) throws T {
+    public static <E extends Throwable> void notNullRequired(E e, Object... o) throws E {
         for (Object obj : o) {
             if (Objects.isNull(obj)) {
                 throw e;
@@ -48,12 +48,37 @@ public class Protector {
         if (Objects.isNull(iterable)) {
             throw new NullPointerException();
         }
-        iterable.forEach(item -> {
+        for (O item : iterable) {
             if (Objects.isNull(item)) {
                 throw new NullPointerException();
             }
-        });
+        }
         return iterable;
+    }
+
+    public static <T, E extends Throwable> T nonNull(E e, T obj) throws E {
+        if (Objects.isNull(obj))
+            throw e;
+        return obj;
+    }
+
+    public static <T extends Iterable<O>, O, E extends Throwable> T nonNull(E e, T iterable) throws E {
+        if (Objects.isNull(iterable)) {
+            throw e;
+        }
+        for (O item : iterable) {
+            if (Objects.isNull(item)) {
+                throw e;
+            }
+        }
+        return iterable;
+    }
+
+    public static boolean anyNull(Object... objects) {
+        for (Object o : objects) {
+            if (Objects.isNull(o)) return true;
+        }
+        return false;
     }
 
 }

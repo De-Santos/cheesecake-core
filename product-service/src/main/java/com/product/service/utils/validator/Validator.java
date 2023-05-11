@@ -3,18 +3,19 @@ package com.product.service.utils.validator;
 
 import com.product.service.exception.exceptions.file.photo.empty.EmptyFileException;
 import com.product.service.exception.exceptions.file.photo.exceeded.FileSizeExceededException;
-import com.product.service.exception.exceptions.file.photo.main.NullFileException;
 import com.product.service.exception.exceptions.file.photo.invalid.InvalidFileTypeException;
+import com.product.service.exception.exceptions.file.photo.main.NullFileException;
 import com.product.service.exception.exceptions.file.photo.nullable.NullFileContentTypeException;
 import com.product.service.exception.exceptions.file.photo.nullable.NullFileNameException;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 
 @Component
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Validator {
     // TODO: 3/29/2023 make configuration from database
     private static final Long MAX_FILE_SIZE = 100L; // MB

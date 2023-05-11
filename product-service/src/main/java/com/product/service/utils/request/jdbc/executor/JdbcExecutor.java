@@ -2,7 +2,6 @@ package com.product.service.utils.request.jdbc.executor;
 
 import org.springframework.data.repository.ListCrudRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 

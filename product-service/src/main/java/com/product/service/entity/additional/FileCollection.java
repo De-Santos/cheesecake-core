@@ -60,6 +60,27 @@ public class FileCollection {
                 .build();
     }
 
+    public FileCollection draftProduct(DraftProduct newDraftProduct) {
+        draftProduct = newDraftProduct;
+        product = null;
+        archiveProduct = null;
+        return this;
+    }
+
+    public FileCollection product(Product newProduct) {
+        draftProduct = null;
+        product = newProduct;
+        archiveProduct = null;
+        return this;
+    }
+
+    public FileCollection archiveProduct(ArchiveProduct newArchiveProduct) {
+        draftProduct = null;
+        product = null;
+        archiveProduct = newArchiveProduct;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "FileCollection{" +

@@ -1,5 +1,6 @@
 package com.product.service.utils.convertor;
 
+import com.product.service.dao.ProductRepository;
 import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.dto.photo.PhotoResponse;
 import com.product.service.dto.photo.additional.FileCollectionDto;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class Convertor {
     private final TimeMapper timeMapper;
+    private final ProductRepository productRepository;
 
     public ProductResponse convert(Product product) {
         return ProductResponse.builder()
@@ -48,14 +50,14 @@ public class Convertor {
     }
 
     // FIXME: 4/23/2023 
-    public ProductResponse convert(ArchiveProduct archiveProduct) {
+    public ProductResponse convert(ArchiveProduct archiveProduct, UUID actualVersionId) {
         return ProductResponse.builder()
                 .versionId(archiveProduct.getVersionId())
                 .name(archiveProduct.getName())
                 .description(archiveProduct.getDescription())
                 .price(archiveProduct.getPrice())
                 .createDate(timeMapper.toTime(archiveProduct.getCreateDate()))
-                .activeVersionId(archiveProduct.getActualProductId())
+                .activeVersionId(actualVersionId)
                 .build();
     }
 
@@ -104,7 +106,8 @@ public class Convertor {
 
     public Product convertToProduct(DraftProduct draftProduct) {
         return Product.builder()
-//                .images(draftProduct.getImages())
+                .versionId(UUID.randomUUID())
+                .images(draftProduct.getImages())
                 .name(draftProduct.getName())
                 .description(draftProduct.getDescription())
                 .price(draftProduct.getPrice())
@@ -112,22 +115,8 @@ public class Convertor {
                 .build();
     }
 
-    // FIXME: 4/23/2023 
-    public ArchiveProduct convertToArchive(Product product) {
-        return ArchiveProduct.builder()
-//                .versionId(product.getVersionId())
-                .actualProductId(product.getId())
-                .images(product.getImages())
-                .name(product.getName())
-                .description(product.getDescription())
-                .price(product.getPrice())
-                .createDate(product.getCreateDate())
-                .build();
-    }
-
     public Product updateConvert(Product product, DraftProduct draftProduct) {
         product.setVersionId(UUID.randomUUID());
-//        product.setImages(draftProduct.getImages());
         product.setName(draftProduct.getName());
         product.setDescription(draftProduct.getDescription());
         product.setPrice(draftProduct.getPrice());
@@ -136,9 +125,23 @@ public class Convertor {
         return product;
     }
 
+    public ProductResponse convert(ArchiveProduct archiveProduct) {
+        return ProductResponse.builder()
+                .versionId(archiveProduct.getVersionId())
+                .activeVersionId(productRepository.getVersionIdById(archiveProduct.getActualProductId()))
+                .name(archiveProduct.getName())
+                .description(archiveProduct.getDescription())
+                .price(archiveProduct.getPrice())
+                .createDate(timeMapper.toTime(archiveProduct.getCreateDate()))
+                .active(false)
+                .build();
+
+    }
+
     public PhotoResponse convert(BannerPhoto bannerPhoto) {
         return this.createBannerPhotoResponse(bannerPhoto);
     }
+
     public PhotoResponse convert(DescriptionPhoto descriptionPhoto) {
         return this.createDescriptionPhotoResponse(descriptionPhoto);
     }
@@ -198,29 +201,6 @@ public class Convertor {
         }
     }
 
-    public DraftProduct toDraft(Product product) {
-        return DraftProduct.builder()
-                .parentId(product.getId())
-//                .images(product.getImages())
-                .name(product.getName())
-                .description(product.getDescription())
-                .price(product.getPrice())
-                .createDate(LocalDateTime.now())
-                .build();
-    }
-
-    // FIXME: 4/23/2023
-    public DraftProduct toDraft(ArchiveProduct archiveProduct) {
-        return DraftProduct.builder()
-//                .parentId(archiveProduct.getVersionId())
-//                .images(archiveProduct.getImages())
-                .name(archiveProduct.getName())
-                .description(archiveProduct.getDescription())
-                .price(archiveProduct.getPrice())
-                .createDate(LocalDateTime.now())
-                .build();
-    }
-
     public DraftProduct updateConvert(DraftProduct draftProduct, DraftProductDto draftProductDto) {
         draftProduct.setImages(fileCollectionUpdate(draftProduct.getImages(), draftProductDto.getImages()));
         draftProduct.setName(draftProductDto.getName());
@@ -231,6 +211,7 @@ public class Convertor {
 
     // FIXME: 4/23/2023
     private FileCollection fileCollectionUpdate(FileCollection fileCollection, FileCollectionDto fileCollectionDto) {
+        if (Protector.anyNull(fileCollection, fileCollection.getBannerPhotos())) return fileCollection;
         Map<Long, BannerPhoto> map = fileCollection.getBannerPhotos().stream()
                 .collect(Collectors.toMap(BannerPhoto::getId, Function.identity()));
         fileCollectionDto.getBannerPhotos()

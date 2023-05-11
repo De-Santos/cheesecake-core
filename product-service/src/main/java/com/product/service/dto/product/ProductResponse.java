@@ -12,7 +12,7 @@ import java.util.UUID;
 @Jacksonized
 public class ProductResponse {
     private UUID versionId;
-    private Long activeVersionId;
+    private UUID activeVersionId;
     private String name;
     private String description;
     private BigDecimal price;
