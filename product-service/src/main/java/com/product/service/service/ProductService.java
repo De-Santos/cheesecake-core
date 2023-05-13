@@ -28,12 +28,11 @@ public class ProductService {
     private final DraftRequestConstructor draftRequestConstructor;
 
     @Transactional
-    public ProductResponse addProduct(Long draftId) {
+    public UUID addProduct(Long draftId) {
         log.info("Add product by draft product id: {}", draftId);
         DraftProduct draftProduct = draftRequestConstructor.get(draftId);
         productChecker.checkDraftData(draftProduct);
-        Product product = productRequestConstructor.addProductByDraftId(draftProduct);
-        return convertor.convert(product);
+        return productRequestConstructor.addProductByDraftId(draftProduct);
     }
 
     public ProductResponse getById(UUID versionId) {
@@ -47,10 +46,10 @@ public class ProductService {
         return productRequestConstructor.getAll();
     }
 
-    public ProductResponse updateProduct(Long id) {
+    public UUID updateProduct(Long id) {
         log.info("Updating product by id: {}", id);
-        productChecker.check(id);
-        return convertor.convert(productRequestConstructor.updateProduct(id));
+        productChecker.forceCheckDraftExistence(id);
+        return productRequestConstructor.updateProduct(id);
     }
 
     public ProductResponse editProduct(UUID versionId) {
@@ -76,9 +75,9 @@ public class ProductService {
         return productRequestConstructor.getArchive();
     }
 
-    public DraftProductDto toDraft(UUID versionId) {
+    public Long toDraft(UUID versionId) {
         log.info("Making draft product from product by versionId: {}", versionId);
         productChecker.forceCheckGlobalExistence(versionId);
-        return convertor.convert(productRequestConstructor.draftFrom(versionId));
+        return productRequestConstructor.draftFrom(versionId);
     }
 }

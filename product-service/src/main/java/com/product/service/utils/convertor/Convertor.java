@@ -30,7 +30,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-// FIXME: 4/22/2023
 @Component
 @RequiredArgsConstructor
 public class Convertor {
@@ -49,7 +48,6 @@ public class Convertor {
                 .build();
     }
 
-    // FIXME: 4/23/2023 
     public ProductResponse convert(ArchiveProduct archiveProduct, UUID actualVersionId) {
         return ProductResponse.builder()
                 .versionId(archiveProduct.getVersionId())
@@ -209,7 +207,6 @@ public class Convertor {
         return draftProduct;
     }
 
-    // FIXME: 4/23/2023
     private FileCollection fileCollectionUpdate(FileCollection fileCollection, FileCollectionDto fileCollectionDto) {
         if (Protector.anyNull(fileCollection, fileCollection.getBannerPhotos())) return fileCollection;
         Map<Long, BannerPhoto> map = fileCollection.getBannerPhotos().stream()
@@ -229,4 +226,3 @@ public class Convertor {
         return fileCollection;
     }
 }
-

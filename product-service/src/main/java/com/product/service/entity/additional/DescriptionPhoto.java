@@ -14,7 +14,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @Entity
 @Table(name = "description_photos")
-public class DescriptionPhoto {
+public final class DescriptionPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

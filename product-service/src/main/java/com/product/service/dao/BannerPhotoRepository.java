@@ -20,8 +20,7 @@ public interface BannerPhotoRepository extends JpaRepository<BannerPhoto, Long> 
             "INSERT INTO banner_photos (image, media_type, position, real_photo_name, file_collection_id) " +
                     "SELECT image, media_type, position, real_photo_name, :fileCollection " +
                     "FROM banner_photos " +
-                    "WHERE id = :photoId " +
-                    "RETURNING id",
+                    "WHERE id = :photoId ",
             nativeQuery = true)
-    Long duplicateById(@Param("photoId") Long photoId, @Param("fileCollection") Long fileCollectionId);
+    void duplicateById(@Param("photoId") Long photoId, @Param("fileCollection") Long fileCollectionId);
 }

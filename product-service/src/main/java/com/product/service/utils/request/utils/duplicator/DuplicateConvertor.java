@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 @Component
 public class DuplicateConvertor {
-
     public DraftProduct convert(@NotNull Product product) {
         return DraftProduct.builder()
                 .parentVersionId(product.getVersionId())
@@ -44,5 +43,4 @@ public class DuplicateConvertor {
                 .createDate(product.getCreateDate())
                 .build();
     }
-
 }

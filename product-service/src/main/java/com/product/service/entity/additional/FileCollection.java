@@ -19,7 +19,7 @@ import java.util.List;
 @Jacksonized
 @Entity
 @Table(name = "file_collection")
-public class FileCollection {
+public final class FileCollection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,7 +39,7 @@ public class FileCollection {
     private Product product;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "archive_id", referencedColumnName = "versionId")
+    @JoinColumn(name = "archive_id", referencedColumnName = "version_id")
     private ArchiveProduct archiveProduct;
 
     public static FileCollection create(Product product) {

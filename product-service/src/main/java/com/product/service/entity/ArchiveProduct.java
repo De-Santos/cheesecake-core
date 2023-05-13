@@ -17,7 +17,7 @@ import java.util.UUID;
 @Data
 @Builder
 @Entity
-@Table(name = "archiveProduct")
+@Table(name = "archive_products")
 @NoArgsConstructor
 @AllArgsConstructor
 public final class ArchiveProduct {

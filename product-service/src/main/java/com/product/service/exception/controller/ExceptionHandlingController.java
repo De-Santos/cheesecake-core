@@ -21,10 +21,12 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class ExceptionHandlingController {
     private static final String DEFAULT_EXCEPTION_MESSAGE = "Exception {}, exception message: {}";
+    private static final String DEFAULT_EXCEPTION_LOG = "Exception: {} with message: {}";
 
     @ExceptionHandler(PhotoNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> handlePhotoNotFoundException(PhotoNotFoundException e) {
+        e.printStackTrace();
         log.error(DEFAULT_EXCEPTION_MESSAGE, e.getClass().getName(), e.getMessage());
         return new ResponseEntity<>(
                 new ExceptionDto(e.getClass().getSimpleName(), e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
@@ -34,6 +36,7 @@ public class ExceptionHandlingController {
     @ExceptionHandler(ProductNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> handleProductNotFoundException(ProductNotFoundException e) {
+        e.printStackTrace();
         log.error(DEFAULT_EXCEPTION_MESSAGE, e.getClass().getName(), e.getMessage());
         return new ResponseEntity<>(
                 new ExceptionDto(e.getClass().getSimpleName(), e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
@@ -43,6 +46,7 @@ public class ExceptionHandlingController {
     @ExceptionHandler(ProductRequestException.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ResponseEntity<ExceptionDto> handleProductRequestException(final ProductRequestException e) {
+        e.printStackTrace();
         log.error(DEFAULT_EXCEPTION_MESSAGE, e.getClass().getName(), e.getMessage());
         return new ResponseEntity<>(
                 new ExceptionDto(e.getClass().getSimpleName(), e.getMessage(), HttpStatus.NOT_ACCEPTABLE, LocalDateTime.now()),
@@ -52,17 +56,17 @@ public class ExceptionHandlingController {
     @ExceptionHandler(ModifyingRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> handleProductRequestException(ModifyingRequestException e) {
+        e.printStackTrace();
         log.error(DEFAULT_EXCEPTION_MESSAGE, e.getClass().getName(), e.getMessage());
         return new ResponseEntity<>(
                 new ExceptionDto(e.getClass().getSimpleName(), e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
                 HttpStatus.BAD_REQUEST);
     }
 
-    private static final String DEFAULT_EXCEPTION_LOG = "Exception: {} with message: {}";
-
     @ExceptionHandler(FileNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> handleException(FileNotFoundException e) {
+        e.printStackTrace();
         log.error(DEFAULT_EXCEPTION_LOG, e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(
                 new ExceptionDto(e.getClass().getSimpleName(), e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()),
@@ -72,6 +76,7 @@ public class ExceptionHandlingController {
     @ExceptionHandler(FileException.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ResponseEntity<ExceptionDto> handleException(FileException e) {
+        e.printStackTrace();
         log.error(DEFAULT_EXCEPTION_LOG, e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(
                 new ExceptionDto(e.getClass().getSimpleName(), e.getMessage(), HttpStatus.NOT_ACCEPTABLE, LocalDateTime.now()),
@@ -81,6 +86,7 @@ public class ExceptionHandlingController {
     @ExceptionHandler(NullFileException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> handleException(NullFileException e) {
+        e.printStackTrace();
         log.error(DEFAULT_EXCEPTION_LOG, e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(
                 new ExceptionDto(e.getClass().getSimpleName(), e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),

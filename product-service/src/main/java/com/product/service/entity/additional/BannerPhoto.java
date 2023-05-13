@@ -15,12 +15,12 @@ import lombok.extern.jackson.Jacksonized;
 @NoArgsConstructor
 @Entity
 @Table(name = "banner_photos")
-public class BannerPhoto {
+public final class BannerPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "file_collection_id", referencedColumnName = "id")
     private FileCollection fileCollection;
 

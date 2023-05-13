@@ -38,17 +38,14 @@ public class ProductRequestConstructor {
     private final DraftProductRepository draftProductRepository;
     private final EntityDuplicator entityDuplicator;
 
-    // FIXME: 4/22/2023
-    public Product addProductByDraftId(DraftProduct draftProduct) {
+    @Transactional
+    public UUID addProductByDraftId(DraftProduct draftProduct) {
         log.info("Saving product in database by draft product id: {}", draftProduct.getId());
         productChecker.checkProductNameExistence(draftProduct.getName());
         draftProductRepository.delete(draftProduct);
-        Product saveProduct = productRepository.save(convertor.convertToProduct(draftProduct));
-        fileCollectionRepository.saveAndFlush(saveProduct.getImages().product(saveProduct));
-        return saveProduct;
+        return this.createProductFromDraft(draftProduct).getVersionId();
     }
 
-    // FIXME: 4/22/2023
     public Product sailMode(SailProductRequest sailProductRequest) {
         log.info("Sail mode for product: {}", sailProductRequest.getVersionId());
         log.debug("Sail price is: {}", sailProductRequest.getSailPrice());
@@ -57,8 +54,6 @@ public class ProductRequestConstructor {
         return productRepository.save(product);
     }
 
-    // FIXME: 4/22/2023
-    // TODO: 5/10/2023 I have a problem
     public ProductResponse getProductById(UUID versionId) {
         log.info("Getting product from database by id: {}", versionId);
         Optional<Product> product = productRepository.findProductByVersionId(versionId);
@@ -66,15 +61,6 @@ public class ProductRequestConstructor {
         return this.getArchiveProductByVersionId(versionId);
     }
 
-    // FIXME: 4/22/2023
-    public Product getProductById(String id) {
-        log.info("Getting product from database by id: {}", id);
-//        return productRepository.findById(id)
-//                .orElseThrow(() -> new ProductNotFoundException("Product not found by id: " + id));
-        return null;
-    }
-
-    // FIXME: 4/22/2023
     public List<ProductResponse> getAll() {
         log.info("Getting all products from database.");
         return productRepository
@@ -84,25 +70,32 @@ public class ProductRequestConstructor {
                 .toList();
     }
 
-    // FIXME: 4/22/2023
     @Transactional
-    public Product updateProduct(Long draftProductId) {
+    public UUID updateProduct(Long draftProductId) {
         DraftProduct draftProduct = this.safeGetDraftProduct(draftProductId);
         log.info("Updating product from database by version id: {}", draftProduct.getParentVersionId());
-        Product product = this.safeGetProduct(draftProduct.getParentVersionId());
-        entityDuplicator.copyToArchive(product);
-        return this.mergeUpdate(product, draftProduct);
+        draftProductRepository.delete(draftProduct);
+        Optional<Product> product = productRepository.findProductByVersionId(draftProduct.getParentVersionId());
+        if (product.isPresent()) {
+            entityDuplicator.copyToArchive(product.get());
+            return this.productMergeUpdate(product.get(), draftProduct).getVersionId();
+        }
+        return this.createProductFromDraft(draftProduct).getVersionId();
     }
 
-    private Product mergeUpdate(Product product, DraftProduct draftProduct) {
-        Product newProduct = convertor.updateConvert(product, draftProduct);
-        Product savedProduct = productRepository.save(newProduct);
-        fileCollectionRepository.save(draftProduct.getImages().product(savedProduct));
-        return savedProduct;
+    private Product createProductFromDraft(DraftProduct draftProduct) {
+        Product newProduct = productRepository.save(convertor.convertToProduct(draftProduct));
+        fileCollectionRepository.save(draftProduct.getImages().product(newProduct));
+        return newProduct;
     }
 
+    private Product productMergeUpdate(Product product, DraftProduct draftProduct) {
+        Product updatedProduct = productRepository.save(convertor.updateConvert(product, draftProduct));
+        fileCollectionRepository.save(draftProduct.getImages().product(updatedProduct));
+        draftProductRepository.delete(draftProduct);
+        return updatedProduct;
+    }
 
-    // FIXME: 4/22/2023
     @Transactional
     public void deleteAll() {
         log.info("Deleting all products from database.");
@@ -111,7 +104,6 @@ public class ProductRequestConstructor {
         archiveProductRepository.deleteAll();
     }
 
-    // FIXME: 4/22/2023
     public ProductResponse editActive(UUID versionId) {
         log.info("Activate/Deactivate product by versionId: {}", versionId);
         Product product = this.safeGetProduct(versionId);
@@ -119,7 +111,6 @@ public class ProductRequestConstructor {
         return convertor.convert(productRepository.save(product));
     }
 
-    // FIXME: 4/22/2023
     public List<ProductResponse> getArchive() {
         log.info("Getting all archive products from database.");
         return archiveProductRepository
@@ -129,7 +120,6 @@ public class ProductRequestConstructor {
                 .toList();
     }
 
-    // FIXME: 4/22/2023
     public ProductResponse getArchiveProductByVersionId(UUID versionId) {
         log.info("Getting archive product from database by version id: {}", versionId);
         ArchiveProduct archiveProduct = this.safeGetArchiveProduct(versionId);
@@ -142,14 +132,14 @@ public class ProductRequestConstructor {
                 .getVersionId();
     }
 
-    // TODO: 5/11/2023 test me
-    public DraftProduct draftFrom(UUID versionId) {
+    @Transactional
+    public Long draftFrom(UUID versionId) {
         log.info("Making draft product by versionId: {}", versionId);
         productChecker.forceCheckDraftExistenceByParentId(versionId);
         Optional<Product> product = productRepository.findProductByVersionId(versionId);
-        if (product.isPresent()) return entityDuplicator.copyToDraft(product.get());
+        if (product.isPresent()) return entityDuplicator.copyToDraft(product.get()).getId();
         ArchiveProduct archiveProduct = this.safeGetArchiveProduct(versionId);
-        return draftProductRepository.save(entityDuplicator.copyToDraft(archiveProduct));
+        return entityDuplicator.copyToDraft(archiveProduct).getId();
     }
 
     private Product safeGetProduct(UUID versionId) {

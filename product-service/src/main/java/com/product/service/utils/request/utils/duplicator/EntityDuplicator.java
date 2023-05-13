@@ -22,33 +22,29 @@ public class EntityDuplicator {
     private final ArchiveProductRepository archiveProductRepository;
     private final DraftProductRepository draftProductRepository;
     private final DuplicateConvertor duplicateConvertor;
-    private final ProductRepository productRepository;
 
     @Transactional
     public DraftProduct copyToDraft(Product product) {
-        DraftProduct draftProduct = duplicateConvertor.convert(product);
+        DraftProduct draftProduct = draftProductRepository.save(duplicateConvertor.convert(product));
         FileCollection newfileCollection = fileCollectionRepository.save(FileCollection.create(draftProduct));
         FileCollection obtainedFileCollection = product.getImages();
         this.fileCollectionDuplicator(newfileCollection, obtainedFileCollection);
-        return draftProductRepository.save(draftProduct);
+        return draftProduct;
     }
 
     @Transactional
     public DraftProduct copyToDraft(ArchiveProduct archiveProduct) {
-        DraftProduct draftProduct = duplicateConvertor.convert(archiveProduct);
+        DraftProduct draftProduct = draftProductRepository.save(duplicateConvertor.convert(archiveProduct));
         FileCollection newfileCollection = fileCollectionRepository.save(FileCollection.create(draftProduct));
         FileCollection obtainedFileCollection = archiveProduct.getImages();
         this.fileCollectionDuplicator(newfileCollection, obtainedFileCollection);
-        return draftProductRepository.save(draftProduct);
+        return draftProduct;
     }
 
     @Transactional
-    public ArchiveProduct copyToArchive(Product product) {
-        ArchiveProduct archive = duplicateConvertor.convertToArchive(product);
-        FileCollection newfileCollection = fileCollectionRepository.save(FileCollection.create(archive));
-        FileCollection obtainedFileCollection = product.getImages();
-        this.fileCollectionDuplicator(newfileCollection, obtainedFileCollection);
-        return archiveProductRepository.save(archive);
+    public void copyToArchive(Product product) {
+        ArchiveProduct archive = archiveProductRepository.save(duplicateConvertor.convertToArchive(product));
+        fileCollectionRepository.save(product.getImages().archiveProduct(archive));
     }
 
     private void fileCollectionDuplicator(FileCollection newFileCollection, FileCollection oldFileCollection) {
@@ -60,6 +56,5 @@ public class EntityDuplicator {
         descriptionPhotoRepository.duplicateById(oldFileCollection.getDescriptionPhoto().getId(),
                 newFileCollection.getId());
     }
-
 
 }
