@@ -13,12 +13,16 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findProductByVersionId(UUID versionId);
 
+    @Deprecated(forRemoval = true)
     boolean existsProductByVersionIdAndActiveIsTrue(UUID versionId);
 
+    @Deprecated(forRemoval = true)
     boolean existsProductByName(String name);
 
+    @Deprecated(forRemoval = true)
     boolean existsByVersionId(UUID versionId);
 
+    @Deprecated(forRemoval = true)
     @Query(value = "SELECT version_id FROM products WHERE id = :id", nativeQuery = true)
     UUID getVersionIdById(@Param("id") Long id);
 }

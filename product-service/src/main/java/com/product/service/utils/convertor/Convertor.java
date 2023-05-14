@@ -15,6 +15,7 @@ import com.product.service.entity.additional.FileCollection;
 import com.product.service.exception.exceptions.file.photo.invalid.InvalidFileException;
 import com.product.service.exception.exceptions.product.modifying.FileCollectionModifyingException;
 import com.product.service.utils.protector.Protector;
+import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class Convertor {
     private final TimeMapper timeMapper;
+    private final JdbcAccelerator accelerator;
     private final ProductRepository productRepository;
 
     public ProductResponse convert(Product product) {
@@ -126,7 +128,7 @@ public class Convertor {
     public ProductResponse convert(ArchiveProduct archiveProduct) {
         return ProductResponse.builder()
                 .versionId(archiveProduct.getVersionId())
-                .activeVersionId(productRepository.getVersionIdById(archiveProduct.getActualProductId()))
+                .activeVersionId(accelerator.getProductVersionIdById(archiveProduct.getActualProductId()))
                 .name(archiveProduct.getName())
                 .description(archiveProduct.getDescription())
                 .price(archiveProduct.getPrice())

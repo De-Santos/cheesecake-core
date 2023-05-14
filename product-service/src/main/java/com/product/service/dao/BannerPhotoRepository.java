@@ -14,6 +14,7 @@ public interface BannerPhotoRepository extends JpaRepository<BannerPhoto, Long> 
     Optional<Long> findPhotoIdByFileCollectionAndPosition(FileCollection fileCollection, Integer position);
 
     // TODO: 5/11/2023 move to jdbc
+    @Deprecated(forRemoval = true)
     @Transactional
     @Modifying
     @Query(value =

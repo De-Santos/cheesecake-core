@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface DescriptionPhotoRepository extends JpaRepository<DescriptionPhoto, Long> {
 
     // TODO: 5/11/2023 move to jdbc
+    @Deprecated(forRemoval = true)
     @Transactional
     @Modifying
     @Query(value = "INSERT INTO description_photos (image, media_type, real_photo_name, file_collection_id) " +

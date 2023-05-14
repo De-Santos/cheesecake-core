@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface InternalApi {
 
@@ -19,13 +20,13 @@ public interface InternalApi {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<Boolean> isRealProduct(@PathVariable @NotNull Long versionId);
+    ResponseEntity<Boolean> isRealProduct(@PathVariable @NotNull UUID versionId);
 
     @Operation(summary = "Check product list.", description = "Check product and filed active.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
     })
     @ResponseStatus(HttpStatus.OK)
-    void isRealProductSequence(@RequestParam @NotNull List<String> versionIdList);
+    void isRealProductSequence(@RequestParam @NotNull List<Long> versionIdList);
 
 }

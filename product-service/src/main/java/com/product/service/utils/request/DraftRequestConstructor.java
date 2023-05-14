@@ -8,6 +8,7 @@ import com.product.service.exception.exceptions.product.found.DraftProductNotFou
 import com.product.service.utils.additional.FileCollectionChecker;
 import com.product.service.utils.additional.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
+import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ public class DraftRequestConstructor {
     private final FileCollectionRepository fileCollectionRepository;
     private final FileCollectionChecker fileCollectionChecker;
     private final ProductChecker productChecker;
+    private final JdbcAccelerator accelerator;
     private final Convertor convertor;
 
     // FIXME: 4/22/2023
@@ -60,6 +62,6 @@ public class DraftRequestConstructor {
 
     public List<Long> get() {
         log.info("Getting all draft products from database");
-        return draftProductRepository.getAllIds();
+        return accelerator.getAllDraftIds();
     }
 }

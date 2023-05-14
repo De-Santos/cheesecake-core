@@ -11,5 +11,6 @@ import java.util.UUID;
 public interface ArchiveProductRepository extends JpaRepository<ArchiveProduct, Long> {
     Optional<ArchiveProduct> findByVersionId(UUID versionId);
 
+    @Deprecated(forRemoval = true)
     boolean existsByVersionId(UUID versionId);
 }

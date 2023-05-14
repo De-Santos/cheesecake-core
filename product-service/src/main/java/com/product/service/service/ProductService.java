@@ -1,10 +1,8 @@
 package com.product.service.service;
 
-import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.dto.product.SailProductRequest;
 import com.product.service.entity.DraftProduct;
-import com.product.service.entity.Product;
 import com.product.service.utils.additional.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
 import com.product.service.utils.request.DraftRequestConstructor;
@@ -54,7 +52,7 @@ public class ProductService {
 
     public ProductResponse editProduct(UUID versionId) {
         log.info("Editing active product by id: {}", versionId);
-        productChecker.forceCheckExistence(versionId);
+        productChecker.forceCheckProductExistence(versionId);
         return productRequestConstructor.editActive(versionId);
     }
 

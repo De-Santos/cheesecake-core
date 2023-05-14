@@ -1,7 +1,5 @@
 package com.product.service.utils.additional;
 
-import com.product.service.dao.ArchiveProductRepository;
-import com.product.service.dao.DraftProductRepository;
 import com.product.service.dao.ProductRepository;
 import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.dto.product.SailProductRequest;
@@ -23,6 +21,7 @@ import com.product.service.exception.exceptions.product.nullable.FileCollectionI
 import com.product.service.exception.exceptions.product.nullable.NullArgumentException;
 import com.product.service.exception.exceptions.product.sintax.ProductNameOutOfBoundsException;
 import com.product.service.utils.protector.Protector;
+import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -36,8 +35,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ProductChecker {
     private final ProductRepository productRepository;
-    private final ArchiveProductRepository archiveProductRepository;
-    private final DraftProductRepository draftProductRepository;
+    private final JdbcAccelerator accelerator;
     // TODO: 3/26/2023 create configuration from database
     private static final Integer MAX_PRODUCT_NAME_LENGTH = 100;
     private static final Integer MIN_PRODUCT_NAME_LENGTH = 0;
@@ -53,25 +51,29 @@ public class ProductChecker {
     }
 
     public void checkProductNameExistence(String name) {
-        if (productRepository.existsProductByName(name))
+        if (accelerator.existProductByName(name))
             throw ProductAlreadyExistException.create(name);
     }
 
 
-    public void forceCheckExistence(UUID versionId) throws ProductNotFoundException {
-        if (productRepository.existsByVersionId(versionId)) return;
+    public void forceCheckProductExistence(UUID versionId) throws ProductNotFoundException {
+        if (accelerator.existProductByVersionId(versionId)) return;
         throw ProductNotFoundException.create(versionId.toString());
     }
 
+    public boolean checkProductExistence(UUID versionId) {
+        return accelerator.existProductByVersionId(versionId);
+    }
+
     public void forceCheckGlobalExistence(UUID versionId) {
-        if (productRepository.existsByVersionId(versionId)) return;
-        if (archiveProductRepository.existsByVersionId(versionId)) return;
+        if (accelerator.existProductByVersionId(versionId)) return;
+        if (accelerator.existArchiveByVersionId(versionId)) return;
         throw new ProductNotFoundException();
     }
 
     public void checkDraft(Long id) {
-        if (Boolean.FALSE.equals(draftProductRepository.existsById(id)))
-            throw new DraftProductNotFoundException("Draft product not found by id: " + id);
+        if (accelerator.existDraftById(id)) return;
+        throw new DraftProductNotFoundException("Draft product not found by id: " + id);
     }
 
     public void checkDraftData(DraftProduct draftProduct) {
@@ -107,14 +109,10 @@ public class ProductChecker {
     }
 
     public void check(SailProductRequest sailProductRequest) {
-        this.checkProduct(sailProductRequest);
+        this.forceCheckProductExistence(sailProductRequest.getVersionId());
         this.checkSail(sailProductRequest);
     }
 
-    private void checkProduct(SailProductRequest sailProductRequest) {
-        if (!productRepository.existsProductByVersionIdAndActiveIsTrue(sailProductRequest.getVersionId()))
-            throw ProductNotFoundException.create(sailProductRequest.getVersionId().toString());
-    }
 
     private void checkSail(SailProductRequest sailProductRequest) {
         BigDecimal price = productRepository.findProductByVersionId(sailProductRequest.getVersionId())
@@ -128,8 +126,8 @@ public class ProductChecker {
 
     public void checkExistence(UUID versionId) {
         log.info("Checking versionId existence in product and archive product databases.");
-        if (productRepository.existsByVersionId(versionId)) return;
-        if (archiveProductRepository.existsByVersionId(versionId)) return;
+        if (accelerator.existProductByVersionId(versionId)) return;
+        if (accelerator.existArchiveByVersionId(versionId)) return;
         throw ProductNotFoundException.create(versionId.toString());
     }
 
@@ -150,17 +148,17 @@ public class ProductChecker {
     }
 
     public void checkDraftById(Long id) {
-        if (Boolean.FALSE.equals(draftProductRepository.existsById(id)))
+        if (Boolean.FALSE.equals(accelerator.existDraftById(id)))
             throw DraftProductNotFoundException.create(id);
     }
 
     public void forceCheckDraftExistenceByParentId(UUID versionId) {
-        if (draftProductRepository.existsByParentVersionId(versionId))
+        if (accelerator.existDraftByParentVersionId(versionId))
             throw ProductAlreadyExistDraftException.create(versionId);
     }
 
     public void forceCheckDraftExistence(Long draftId) throws DraftProductNotFoundException {
-        if (draftProductRepository.existsById(draftId)) return;
+        if (accelerator.existDraftById(draftId)) return;
         throw DraftProductNotFoundException.create(draftId);
     }
 }

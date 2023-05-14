@@ -1,10 +1,7 @@
 package com.product.service.entity;
 
 import com.product.service.entity.additional.FileCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public final class ArchiveProduct {
     @Id
+    @Column(name = "version_id")
     private UUID versionId;
     private Long actualProductId;
     @OneToOne(mappedBy = "archiveProduct")

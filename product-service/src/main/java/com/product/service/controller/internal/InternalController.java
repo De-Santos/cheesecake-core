@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Log4j2
 @RestController
@@ -17,14 +18,14 @@ public class InternalController implements InternalApi {
 
     @Override
     @GetMapping("/is/{versionId}")
-    public ResponseEntity<Boolean> isRealProduct(@PathVariable Long versionId) {
+    public ResponseEntity<Boolean> isRealProduct(@PathVariable UUID versionId) {
         log.debug("Check product by id: {}", versionId);
         return ResponseEntity.ok(internalProductService.checkProduct(versionId));
     }
 
     @Override
     @PostMapping("/sequence")
-    public void isRealProductSequence(@RequestParam List<String> versionIdList) {
+    public void isRealProductSequence(@RequestParam List<Long> versionIdList) {
         log.debug("Check product sequence: {}", versionIdList);
         internalProductService.checkProductSequence(versionIdList);
     }
