@@ -5,7 +5,7 @@
   "jar_file": "build/libs/product-service-0.0.1-SNAPSHOT.jar",
   "docker_dir": "C:/CodeFile/JavaProjects/cheesecake-core/product-service/docker",
   "target_dir": "C:/CodeFile/JavaProjects/cheesecake-core/product-service/docker/jar",
-  "build_command": "docker build -t localhost:5000/product-service -f product-dockerfile .",
-  "push_command": "docker push localhost:5000/product-service",
+  "build_command": "docker build -t eu.gcr.io/cheesecake-core/product-service -f product-dockerfile .",
+  "push_command": "docker push eu.gcr.io/cheesecake-core/product-service:latest",
   "kubernetes_update_command": "kubectl rollout restart deploy product-service"
 }

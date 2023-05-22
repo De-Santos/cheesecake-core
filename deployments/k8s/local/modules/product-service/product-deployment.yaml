@@ -21,8 +21,8 @@ spec:
           image: localhost:5000/product-service
           resources:
             limits:
-              cpu: 500m
-              memory: 250Mi
+              cpu: 1000m
+              memory: 1000Mi
           env:
             - name: username
               valueFrom:

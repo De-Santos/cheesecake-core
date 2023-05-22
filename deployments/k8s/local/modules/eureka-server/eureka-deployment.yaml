@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eureka-server
+  namespace: default
+  labels:
+    app: eureka-server
+spec:
+  selector:
+    matchLabels:
+      app: eureka-server
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: eureka-server
+    spec:
+      containers:
+        - name: eureka-server
+          image: localhost:5000/eureka-server
+          resources:
+            limits:
+              cpu: 100m
+              memory: 250Mi
+          ports:
+            - containerPort: 8761
+      restartPolicy: Always

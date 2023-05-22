@@ -1,7 +1,7 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: http://eureka-server-svc:8761/eureka/
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://eureka-server-svc:8761/eureka/
 spring:
   servlet:
     multipart:
@@ -23,6 +23,9 @@ spring:
     username: ${username}
     password: ${password}
     url: ${postgres_url}
+#    username: ${username}
+#    password: ${password}
+#    url: ${postgres_url}
   application:
     name: product-service
 server:
