@@ -66,7 +66,6 @@ public class PhotoRequestConstructor {
         return this.setDescriptionPhoto(file, fileCollection);
     }
 
-    // FIXME: 4/22/2023
     @Transactional
     public BannerPhoto removeBannerPhoto(Long id) {
         log.info("Remove banner photo by id: {}", id);
@@ -75,7 +74,7 @@ public class PhotoRequestConstructor {
         return bannerPhoto;
     }
 
-    // FIXME: 4/22/2023
+    @Transactional
     public DescriptionPhoto removeDescriptionPhoto(Long id) {
         log.info("Remove description photo by id: {}", id);
         DescriptionPhoto descriptionPhoto = this.safeGetDescriptionPhoto(id);
@@ -83,7 +82,6 @@ public class PhotoRequestConstructor {
         return descriptionPhoto;
     }
 
-    // FIXME: 4/22/2023
     private Long addNewPhoto(MultipartFile file, FileCollection fileCollection) {
         BannerPhoto newBannerPhoto = convertor.bannerPhotoBuilder(file, fileCollection);
         BannerPhoto bannerPhoto = bannerPhotoRepository.save(newBannerPhoto);

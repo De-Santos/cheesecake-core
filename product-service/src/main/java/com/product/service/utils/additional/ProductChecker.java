@@ -2,7 +2,7 @@ package com.product.service.utils.additional;
 
 import com.product.service.dao.ProductRepository;
 import com.product.service.dto.photo.DraftProductDto;
-import com.product.service.dto.product.SailProductRequest;
+import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.entity.DraftProduct;
 import com.product.service.entity.additional.FileCollection;
 import com.product.service.exception.exceptions.product.empty.EmptyDescriptionException;
@@ -108,17 +108,17 @@ public class ProductChecker {
             throw new ProductInvalidPriceException("Price can't be less than zero.");
     }
 
-    public void check(SailProductRequest sailProductRequest) {
-        this.forceCheckProductExistence(sailProductRequest.getVersionId());
-        this.checkSail(sailProductRequest);
+    public void check(SaleProductRequest saleProductRequest) {
+        this.forceCheckProductExistence(saleProductRequest.getVersionId());
+        this.checkSail(saleProductRequest);
     }
 
 
-    private void checkSail(SailProductRequest sailProductRequest) {
-        BigDecimal price = productRepository.findProductByVersionId(sailProductRequest.getVersionId())
-                .orElseThrow(() -> ProductNotFoundException.create(sailProductRequest.getVersionId().toString()))
+    private void checkSail(SaleProductRequest saleProductRequest) {
+        BigDecimal price = productRepository.findProductByVersionId(saleProductRequest.getVersionId())
+                .orElseThrow(() -> ProductNotFoundException.create(saleProductRequest.getVersionId().toString()))
                 .getPrice();
-        BigDecimal sailPrice = sailProductRequest.getSailPrice();
+        BigDecimal sailPrice = saleProductRequest.getSailPrice();
         if (price == null || sailPrice == null) throw new NullArgumentException("Argument can't be null");
         if (sailPrice.compareTo(price) >= 0 || sailPrice.compareTo(BigDecimal.ZERO) < 0)
             throw new ProductInvalidSailPriceException("Sail price can't be less than zero and bugger than product price.");

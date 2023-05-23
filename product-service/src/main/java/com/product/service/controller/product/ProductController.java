@@ -2,7 +2,7 @@ package com.product.service.controller.product;
 
 import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.dto.product.ProductResponse;
-import com.product.service.dto.product.SailProductRequest;
+import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.service.DraftProductService;
 import com.product.service.service.ProductService;
 import jakarta.validation.constraints.NotNull;
@@ -67,17 +67,17 @@ public class ProductController implements ProductApi {
 
     @Override
     @GetMapping()
-    public ResponseEntity<List<ProductResponse>> getAll() {
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
         log.info("Get all products");
         return ResponseEntity.ok(productService.getProducts());
     }
 
     @Override
     @PatchMapping("/mode")
-    public ResponseEntity<ProductResponse> sailMode(@RequestBody SailProductRequest sailProductRequest) {
-        log.info("Set sail price: {} for product: {}", sailProductRequest.getSailPrice(),
-                sailProductRequest.getVersionId());
-        return ResponseEntity.ok(productService.sailMode(sailProductRequest));
+    public ResponseEntity<ProductResponse> saleMode(@RequestBody SaleProductRequest saleProductRequest) {
+        log.info("Set sail price: {} for product: {}", saleProductRequest.getSailPrice(),
+                saleProductRequest.getVersionId());
+        return ResponseEntity.ok(productService.sailMode(saleProductRequest));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.product.service.service;
 
 import com.product.service.dto.product.ProductResponse;
-import com.product.service.dto.product.SailProductRequest;
+import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.entity.DraftProduct;
 import com.product.service.utils.additional.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
@@ -62,10 +62,10 @@ public class ProductService {
         productRequestConstructor.deleteAll();
     }
 
-    public ProductResponse sailMode(SailProductRequest sailProductRequest) {
-        log.info("Sail mode for product by versionId: {}", sailProductRequest.getVersionId());
-        productChecker.check(sailProductRequest);
-        return convertor.convert(productRequestConstructor.sailMode(sailProductRequest));
+    public ProductResponse sailMode(SaleProductRequest saleProductRequest) {
+        log.info("Sail mode for product by versionId: {}", saleProductRequest.getVersionId());
+        productChecker.check(saleProductRequest);
+        return convertor.convert(productRequestConstructor.sailMode(saleProductRequest));
     }
 
     public List<ProductResponse> getArchiveProducts() {

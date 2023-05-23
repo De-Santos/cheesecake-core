@@ -5,7 +5,7 @@ import com.product.service.dao.DraftProductRepository;
 import com.product.service.dao.FileCollectionRepository;
 import com.product.service.dao.ProductRepository;
 import com.product.service.dto.product.ProductResponse;
-import com.product.service.dto.product.SailProductRequest;
+import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.entity.ArchiveProduct;
 import com.product.service.entity.DraftProduct;
 import com.product.service.entity.Product;
@@ -46,11 +46,11 @@ public class ProductRequestConstructor {
         return this.createProductFromDraft(draftProduct).getVersionId();
     }
 
-    public Product sailMode(SailProductRequest sailProductRequest) {
-        log.info("Sail mode for product: {}", sailProductRequest.getVersionId());
-        log.debug("Sail price is: {}", sailProductRequest.getSailPrice());
-        Product product = this.safeGetProduct(sailProductRequest.getVersionId());
-        product.setSalePrice(sailProductRequest.getSailPrice());
+    public Product sailMode(SaleProductRequest saleProductRequest) {
+        log.info("Sail mode for product: {}", saleProductRequest.getVersionId());
+        log.debug("Sail price is: {}", saleProductRequest.getSailPrice());
+        Product product = this.safeGetProduct(saleProductRequest.getVersionId());
+        product.setSalePrice(saleProductRequest.getSailPrice());
         return productRepository.save(product);
     }
 

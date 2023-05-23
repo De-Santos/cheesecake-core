@@ -41,7 +41,6 @@ public class PhotoService {
         return photoRequestConstructor.uploadFile(file, draftId);
     }
 
-    // FIXME: 4/22/2023
     @Transactional
     public Long uploadDescription(@NonNull MultipartFile file, Long draftId) {
         log.info("Upload file with name: {}", file.getOriginalFilename());
@@ -50,7 +49,6 @@ public class PhotoService {
         return photoRequestConstructor.uploadDescriptionFile(file, draftId);
     }
 
-    // FIXME: 4/22/2023
     @Transactional
     public Long insert(@NonNull MultipartFile file, Long draftId, Integer position) {
         log.info("Upload file with position: {} for draft product by id: {}", position, draftId);
