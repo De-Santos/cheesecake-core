@@ -10,7 +10,7 @@ data class Message(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "send_status", nullable = false)
