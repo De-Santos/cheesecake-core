@@ -4,5 +4,5 @@ metadata:
   name: postgres-config
 data:
   postgres_url:
-    "jdbc:postgresql://34.65.51.249:5432/cheesecake_db"
+    "jdbc:postgresql://10.27.80.4:5432/cheesecake_db"
 #    "jdbc:postgresql://postgres-svc:5432/cheesecake_db"
