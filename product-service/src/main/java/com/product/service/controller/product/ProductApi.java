@@ -101,13 +101,13 @@ public interface ProductApi {
 
     @Operation(summary = "Get a product",
             description = """
-                Returns a product.
-                Get the product by version_id.
-                If the product is archived, the 'active_version_id' field will contain the `UUID` of the active product.
-                                    
-                Rules:
-                   - If the product is not found, an exception will be thrown.
-                """)
+                    Returns a product.
+                    Get the product by version_id.
+                    If the product is archived, the 'active_version_id' field will contain the `UUID` of the active product.
+                                        
+                    Rules:
+                       - If the product is not found, an exception will be thrown.
+                    """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
@@ -126,12 +126,12 @@ public interface ProductApi {
 
     @Operation(summary = "Sale mode for a product",
             description = """
-                Returns the product with the sale price.
-                                    
-                Rules:
-                   - If the product is not found by version_id, an exception will be thrown.
-                   - If the sale price is outside the allowed bounds, an exception will be thrown.
-                """)
+                    Returns the product with the sale price.
+                                        
+                    Rules:
+                       - If the product is not found by version_id, an exception will be thrown.
+                       - If the sale price is outside the allowed bounds, an exception will be thrown.
+                    """)
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
@@ -143,18 +143,18 @@ public interface ProductApi {
 
     @Operation(summary = "Create a new draft from a product",
             description = """
-                Returns the ID of the new draft product.
+                    Returns the ID of the new draft product.
+                                        
+                    Process:
+                       - Copy data from the product using `version_id`.
+                       - Save a new draft product with the copied data.
+                       - Copy photos from the product.
+                       - Associate photos with the draft product.
+                       - Return the ID of the draft product.
                                     
-                Process:
-                   - Copy data from the product using `version_id`.
-                   - Save a new draft product with the copied data.
-                   - Copy photos from the product.
-                   - Associate photos with the draft product.
-                   - Return the ID of the draft product.
-                
-                Rules:
-                   - If the product is not found by `version_id`, an exception will be thrown.
-                """)
+                    Rules:
+                       - If the product is not found by `version_id`, an exception will be thrown.
+                    """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
@@ -165,11 +165,11 @@ public interface ProductApi {
 
     @Operation(summary = "Create a new empty draft",
             description = """
-                Returns the `ID` of the new draft.
-                                    
-                Description:
-                   - Create a new draft without any data.
-                """)
+                    Returns the `ID` of the new draft.
+                                        
+                    Description:
+                       - Create a new draft without any data.
+                    """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
     })
@@ -178,11 +178,11 @@ public interface ProductApi {
 
     @Operation(summary = "Get a draft",
             description = """
-                Returns a draft product by `ID`.
-                                    
-                Rules:
-                   - If the draft product is not found by `ID`, an exception will be thrown.
-                """)
+                    Returns a draft product by `ID`.
+                                        
+                    Rules:
+                       - If the draft product is not found by `ID`, an exception will be thrown.
+                    """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Error in request body"),
@@ -200,11 +200,11 @@ public interface ProductApi {
 
     @Operation(summary = "Update a draft",
             description = """
-                Returns the updated draft.
-                                    
-                Rules:
-                   - If the draft product is not found by ID, an exception will be thrown.
-                """)
+                    Returns the updated draft.
+                                        
+                    Rules:
+                       - If the draft product is not found by ID, an exception will be thrown.
+                    """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Invalid request body"),
@@ -214,11 +214,11 @@ public interface ProductApi {
 
     @Operation(summary = "Delete a draft",
             description = """
-                Returns the deleted draft product.
-                                    
-                Rules:
-                   - If the draft product is not found by ID, an exception will be thrown.
-                """)
+                    Returns the deleted draft product.
+                                        
+                    Rules:
+                       - If the draft product is not found by ID, an exception will be thrown.
+                    """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Error in request body"),

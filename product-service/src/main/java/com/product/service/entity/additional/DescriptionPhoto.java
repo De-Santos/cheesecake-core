@@ -23,8 +23,13 @@ public final class DescriptionPhoto {
     @JoinColumn(name = "file_collection_id", referencedColumnName = "id")
     private FileCollection fileCollection;
 
+    @Column(name = "media_type")
     private String mediaType;
+
+    @Column(name = "real_photo_name")
     private String realPhotoName;
+
+    @Column(name = "image")
     @Basic(fetch = FetchType.LAZY)
     private byte[] image;
 

@@ -36,7 +36,6 @@ public class PhotoService {
     @Transactional
     public Long upload(@NonNull MultipartFile file, Long draftId) {
         log.info("Upload file with name: {}", file.getOriginalFilename());
-        Validator.validateObtainFile(file);
         productChecker.checkDraft(draftId);
         return photoRequestConstructor.uploadFile(file, draftId);
     }
@@ -44,7 +43,6 @@ public class PhotoService {
     @Transactional
     public Long uploadDescription(@NonNull MultipartFile file, Long draftId) {
         log.info("Upload file with name: {}", file.getOriginalFilename());
-        Validator.validateObtainFile(file);
         productChecker.checkDraft(draftId);
         return photoRequestConstructor.uploadDescriptionFile(file, draftId);
     }

@@ -21,7 +21,6 @@ public class PhotoController implements PhotoApi {
     @PostMapping("/upload")
     public ResponseEntity<Long> uploadBannerFile(@RequestParam("file") MultipartFile file,
                                                  @RequestParam("draftId") Long draftId) {
-        log.debug(file);
         log.info("Upload file with real file name: {}", file.getOriginalFilename());
         return ResponseEntity.ok(photoService.upload(file, draftId));
     }
@@ -30,7 +29,6 @@ public class PhotoController implements PhotoApi {
     @PostMapping("/upload/description")
     public ResponseEntity<Long> uploadDescriptionFile(@RequestParam("file") MultipartFile file,
                                                       @RequestParam("draftId") Long draftId) {
-        log.debug(file);
         log.info("Upload description file with real file name: {}", file.getOriginalFilename());
         return ResponseEntity.ok(photoService.uploadDescription(file, draftId));
     }

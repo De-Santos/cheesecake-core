@@ -7,7 +7,7 @@ import com.product.service.entity.additional.FileCollection;
 import com.product.service.exception.exceptions.file.collection.update.FileCollectionNotIdentityUpdateException;
 import com.product.service.exception.exceptions.file.photo.bounds.FileOutOfBoundsException;
 import com.product.service.exception.exceptions.file.photo.illegal.IllegalFilePositionUpdateException;
-import com.product.service.exception.exceptions.product.exceeded.ProductFileLimitExceededException;
+import com.product.service.exception.exceptions.product.exceeded.FileLimitExceededException;
 import com.product.service.utils.protector.Protector;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +24,7 @@ public class FileCollectionChecker {
 
     public void checkFileOrder(FileCollection fileCollection) {
         if (fileCollection.getBannerPhotos().size() >= MAX_FILE_COUNT) {
-            throw new ProductFileLimitExceededException("Can't be more files than: " + MAX_FILE_COUNT);
+            throw new FileLimitExceededException("Can't be more files than: " + MAX_FILE_COUNT);
         }
     }
 
@@ -34,7 +34,6 @@ public class FileCollectionChecker {
         }
     }
 
-    // TODO: 4/26/2023 test me
     public void checkFileCollectionIdentity(FileCollection fileCollection, FileCollectionDto fileCollectionDto) {
         Protector.notNullRequired(fileCollection, fileCollectionDto);
         this.checkDescriptionPhotoIdentity(fileCollection, fileCollectionDto);

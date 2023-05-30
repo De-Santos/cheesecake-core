@@ -11,6 +11,7 @@ import com.product.service.exception.exceptions.file.photo.found.BannerPhotoNotF
 import com.product.service.exception.exceptions.file.photo.found.DescriptionPhotoNotFoundException;
 import com.product.service.utils.additional.FileCollectionChecker;
 import com.product.service.utils.convertor.Convertor;
+import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import com.product.service.utils.request.utils.FileCollectionUtils;
 import com.product.service.utils.validator.Validator;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class PhotoRequestConstructor {
     private final FileCollectionChecker fileCollectionChecker;
     private final BannerPhotoRepository bannerPhotoRepository;
     private final DescriptionPhotoRepository descriptionPhotoRepository;
+    private final JdbcAccelerator accelerator;
     private final Convertor convertor;
 
     public BannerPhoto getBannerPhoto(Long id) {
@@ -84,9 +86,7 @@ public class PhotoRequestConstructor {
 
     private Long addNewPhoto(MultipartFile file, FileCollection fileCollection) {
         BannerPhoto newBannerPhoto = convertor.bannerPhotoBuilder(file, fileCollection);
-        BannerPhoto bannerPhoto = bannerPhotoRepository.save(newBannerPhoto);
-        fileCollection.getBannerPhotos().add(bannerPhoto);
-        fileCollectionRepository.save(fileCollection);
+        BannerPhoto bannerPhoto = accelerator.saveBannerPhoto(newBannerPhoto);
         return bannerPhoto.getId();
     }
 
@@ -94,7 +94,7 @@ public class PhotoRequestConstructor {
         DescriptionPhoto descriptionPhoto = convertor.descriptionPhotoBuilder(file, fileCollection);
         if (Objects.nonNull(fileCollection.getDescriptionPhoto()))
             descriptionPhoto.setId(fileCollection.getDescriptionPhoto().getId());
-        return descriptionPhotoRepository.save(descriptionPhoto).getId();
+        return accelerator.saveDescriptionPhoto(descriptionPhoto).getId();
     }
 
     private Long updateExistingPhoto(MultipartFile file, Long existingPhotoId, FileCollection fileCollection) {
@@ -112,12 +112,12 @@ public class PhotoRequestConstructor {
     }
 
     private BannerPhoto safeGetBannerPhoto(Long id) {
-        return bannerPhotoRepository.findById(id)
+        return accelerator.findBannerPhoto(id)
                 .orElseThrow(() -> BannerPhotoNotFoundException.create(id));
     }
 
     private DescriptionPhoto safeGetDescriptionPhoto(Long id) {
-        return descriptionPhotoRepository.findById(id)
+        return accelerator.findDescriptionPhoto(id)
                 .orElseThrow(() -> DescriptionPhotoNotFoundException.create(id));
     }
 

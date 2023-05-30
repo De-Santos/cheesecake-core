@@ -16,7 +16,7 @@ public interface PhotoApi {
     @Operation(summary = "Upload a banner photo in database",
             description = """
                     Upload the selected photo in the database as the banner photo and match it to the draft product by ID.
-                    
+                                        
                     Some rules:
                        - If the photo is larger than 20 MB, an exception will be thrown.
                        - If the photo's type is not `jpeg` or `png`, an exception will be thrown.
@@ -37,7 +37,7 @@ public interface PhotoApi {
     @Operation(summary = "Upload a description photo in database",
             description = """
                     Upload the selected photo in the database as the description photo and match it to the draft product by ID.
-                    
+                                        
                     Some rules:
                        - If the photo is larger than 20 MB, an exception will be thrown.
                        - If the photo's type is not `jpeg` or `png`, an exception will be thrown.
@@ -57,7 +57,7 @@ public interface PhotoApi {
     @Operation(summary = "Insert a file at position",
             description = """
                     Insert and change old file to new file at position in banner photos list.
-                    
+                                        
                     Some rules:
                        - If photo is larger than 20 MB, throws an exception.
                        - If photo's type is not `jpeg` or `png`, throws an exception.
@@ -98,7 +98,7 @@ public interface PhotoApi {
     @Operation(summary = "Delete the banner photo by id",
             description = """
                     Delete a photo from the database by its ID.
-                    
+                                        
                     Some rules:
                        - If the photo is not found, an exception is thrown.
                        - If the photo is successfully deleted, the backend will automatically normalize positions.
@@ -114,7 +114,7 @@ public interface PhotoApi {
     @Operation(summary = "Delete the description photo by id",
             description = """
                     Delete a photo from the database by its ID.
-                    
+                                        
                     Some rules:
                        - If the photo is not found, an exception is thrown.
                        - If the photo is successfully deleted, the backend will automatically normalize positions.
