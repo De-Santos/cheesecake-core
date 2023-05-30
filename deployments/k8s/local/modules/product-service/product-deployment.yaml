@@ -28,22 +28,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: database-secret
-                  key: mongo-user
+                  key: postgres-user
             - name: password
               valueFrom:
                 secretKeyRef:
                   name: database-secret
-                  key: mongo-password
-            - name: mongo_uri
+                  key: postgres-password
+            - name: postgres_url
               valueFrom:
                 configMapKeyRef:
-                  name: mongo-config
-                  key: mongo_uri
-            - name: file_receiver_url
-              valueFrom:
-                configMapKeyRef:
-                  name: module-url
-                  key: file-receiver
+                  name: postgres-config
+                  key: postgres_url
           ports:
             - containerPort: 8082
       restartPolicy: Always

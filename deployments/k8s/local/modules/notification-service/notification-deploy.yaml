@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: default
+  labels:
+    app: notification-service
+spec:
+  selector:
+    matchLabels:
+      app: notification-service
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: localhost:5000/notification-service
+          resources:
+            limits:
+              cpu: 300m
+              memory: 500Mi
+          env:
+            - name: username
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit-secret
+                  key: username
+            - name: password
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit-secret
+                  key: password
+            - name: rabbitmq_url
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbit-config
+                  key: rabbit_url
+          ports:
+            - containerPort: 8086
+      restartPolicy: Always
