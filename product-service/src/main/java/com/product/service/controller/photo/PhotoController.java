@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
-
 @Log4j2
 @RestController
 @RequiredArgsConstructor
@@ -21,45 +19,57 @@ public class PhotoController implements PhotoApi {
 
     @Override
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
-                                             @RequestParam("draftId") String draftId) {
-        log.debug(file);
+    public ResponseEntity<Long> uploadBannerFile(@RequestParam("file") MultipartFile file,
+                                                 @RequestParam("draftId") Long draftId) {
         log.info("Upload file with real file name: {}", file.getOriginalFilename());
         return ResponseEntity.ok(photoService.upload(file, draftId));
     }
 
     @Override
     @PostMapping("/upload/description")
-    public ResponseEntity<String> uploadDescriptionFile(@RequestParam("file") MultipartFile file,
-                                                        @RequestParam("draftId") String draftId) {
-        log.debug(file);
+    public ResponseEntity<Long> uploadDescriptionFile(@RequestParam("file") MultipartFile file,
+                                                      @RequestParam("draftId") Long draftId) {
         log.info("Upload description file with real file name: {}", file.getOriginalFilename());
         return ResponseEntity.ok(photoService.uploadDescription(file, draftId));
     }
 
     @Override
     @PostMapping("/upload/insert")
-    public ResponseEntity<String> insertUploadFile(@RequestParam("file") MultipartFile fileRequest,
-                                                   @RequestParam("draftId") String draftId,
-                                                   @RequestParam("position") Integer position) {
+    public ResponseEntity<Long> insertUploadFile(@RequestParam("file") MultipartFile fileRequest,
+                                                 @RequestParam("draftId") Long draftId,
+                                                 @RequestParam("position") Integer position) {
         log.info("Upload fil with real file name: {}, in position: {}, for draft product: {}",
                 fileRequest.getOriginalFilename(), position, draftId);
         return ResponseEntity.ok(photoService.insert(fileRequest, draftId, position));
     }
 
     @Override
-    @GetMapping("/")
-    public ResponseEntity<byte[]> get(@RequestParam("id") UUID id,
-                                      @RequestParam("draftId") String draftId) {
-        log.info("Get photo by id: {}", id);
-        return photoService.getPhoto(draftId, id);
+    @GetMapping("/banner/{id}")
+    public ResponseEntity<byte[]> getBannerPhoto(@PathVariable("id") Long id) {
+        log.info("Get banner photo by id: {}", id);
+        return photoService.getBannerPhoto(id);
     }
 
     @Override
-    @DeleteMapping("/")
-    public ResponseEntity<PhotoResponse> remove(@RequestParam("id") UUID id,
-                                                @RequestParam("draftId") String draftId) {
-        log.info("Remove photo by id: {}", id);
-        return ResponseEntity.ok(photoService.remove(draftId, id));
+    @GetMapping("/description/{id}")
+    public ResponseEntity<byte[]> getDescriptionPhoto(@PathVariable("id") Long id) {
+        log.info("Get description photo by id: {}", id);
+        return photoService.getDescriptionPhoto(id);
+    }
+
+    @Override
+    @DeleteMapping("/banner")
+    public ResponseEntity<PhotoResponse> removeBannerPhoto(@RequestParam("id") Long id,
+                                                           @RequestParam("draftId") Long draftId) {
+        log.info("Remove banner photo by id: {}", id);
+        return ResponseEntity.ok(photoService.removeBannerPhoto(draftId, id));
+    }
+
+    @Override
+    @DeleteMapping("/description")
+    public ResponseEntity<PhotoResponse> removeDescriptionPhoto(@RequestParam("id") Long id,
+                                                                @RequestParam("draftId") Long draftId) {
+        log.info("Remove description photo by id: {}", id);
+        return ResponseEntity.ok(photoService.removeDescriptionPhoto(draftId, id));
     }
 }

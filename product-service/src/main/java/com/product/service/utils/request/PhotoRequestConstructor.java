@@ -1,93 +1,129 @@
 package com.product.service.utils.request;
 
-import com.product.service.dao.DraftProductRepository;
-import com.product.service.dto.photo.PhotoResponse;
-import com.product.service.entity.DraftProduct;
-import com.product.service.entity.additional.Photo;
-import com.product.service.utils.additional.FileChecker;
+import com.product.service.dao.BannerPhotoRepository;
+import com.product.service.dao.DescriptionPhotoRepository;
+import com.product.service.dao.FileCollectionRepository;
+import com.product.service.entity.additional.BannerPhoto;
+import com.product.service.entity.additional.DescriptionPhoto;
+import com.product.service.entity.additional.FileCollection;
+import com.product.service.exception.exceptions.file.collection.found.FileCollectionNotFoundException;
+import com.product.service.exception.exceptions.file.photo.found.BannerPhotoNotFoundException;
+import com.product.service.exception.exceptions.file.photo.found.DescriptionPhotoNotFoundException;
+import com.product.service.utils.additional.FileCollectionChecker;
 import com.product.service.utils.convertor.Convertor;
+import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
+import com.product.service.utils.request.utils.FileCollectionUtils;
+import com.product.service.utils.validator.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import ua.cheesecake.dto.exception.ProductNotFoundException;
 
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 @Log4j2
 @Component
 @RequiredArgsConstructor
 public class PhotoRequestConstructor {
-    private static final String DRAFT_PRODUCT_NOT_FOUND_MESSAGE = "Draft product not found by id: ";
-    private final DraftProductRepository draftProductRepository;
-    private final FileChecker fileChecker;
+    private final FileCollectionRepository fileCollectionRepository;
+    private final FileCollectionChecker fileCollectionChecker;
+    private final BannerPhotoRepository bannerPhotoRepository;
+    private final DescriptionPhotoRepository descriptionPhotoRepository;
+    private final JdbcAccelerator accelerator;
     private final Convertor convertor;
 
-    public Photo getPhoto(String draftId, UUID hash) {
-        log.info("Get photo by index: {} index product: {}", hash, draftId);
-        return this.getDraftById(draftId).getImages().getPhotoByHash(hash);
+    public BannerPhoto getBannerPhoto(Long id) {
+        log.info("Get photo by index: {}", id);
+        return this.safeGetBannerPhoto(id);
     }
 
-    public String uploadFile(@NonNull MultipartFile file, String draftId) {
+    public DescriptionPhoto getDescriptionPhoto(Long id) {
+        log.info("Get photo by index: {}", id);
+        return this.safeGetDescriptionPhoto(id);
+    }
+
+    public Long uploadFile(@NonNull MultipartFile file, Long draftId) {
         log.info("Upload file in database with name: {}", file.getOriginalFilename());
-        DraftProduct draftProduct = this.getDraftById(draftId);
-        fileChecker.checkFileOrder(draftProduct);
-        return this.addNewPhoto(file, draftProduct);
+        Validator.validateObtainFile(file);
+        FileCollection fileCollection = this.safeGetFileCollectionByDraftId(draftId);
+        fileCollectionChecker.checkFileOrder(fileCollection);
+        return this.addNewPhoto(file, fileCollection);
     }
 
-    public String uploadFile(@NonNull MultipartFile file, String draftId, Integer position) {
+    public Long uploadFile(@NonNull MultipartFile file, Long draftId, Integer position) {
         log.info("Upload file in database with name: {} in position: {}", file.getOriginalFilename(), position);
-        DraftProduct draftProduct = this.getDraftById(draftId);
-        fileChecker.checkFileOrder(position);
-        Optional<Photo> photo = draftProduct.getImages().getPhotoByOrder(position);
-        if (photo.isEmpty()) return this.addNewPhoto(file, draftProduct);
-        return updateExistingPhoto(file, photo.get(), draftProduct);
+        FileCollection fileCollection = this.safeGetFileCollectionByDraftId(draftId);
+        fileCollectionChecker.checkFileCollectionBounds(position);
+        Optional<Long> photoId = bannerPhotoRepository.findPhotoIdByFileCollectionAndPosition(fileCollection, position);
+        if (photoId.isEmpty()) return this.addNewPhoto(file, fileCollection);
+        return this.updateExistingPhoto(file, photoId.get(), fileCollection);
     }
 
-    public String uploadDescriptionFile(@NonNull MultipartFile file, String draftId) {
+    public Long uploadDescriptionFile(@NonNull MultipartFile file, Long draftId) {
         log.info("Upload file in database with name: {}", file.getOriginalFilename());
-        DraftProduct draftProduct = this.getDraftById(draftId);
-        return this.setNewDescriptionPhoto(file, draftProduct);
+        FileCollection fileCollection = this.safeGetFileCollectionByDraftId(draftId);
+        return this.setDescriptionPhoto(file, fileCollection);
     }
 
-    public PhotoResponse removeFile(String draftId, UUID id) {
-        log.info("Remove file by id: {}", id);
-        DraftProduct draftProduct = this.getDraftById(draftId);
-        Photo photo = draftProduct.getImages().remove(id);
-        draftProductRepository.save(draftProduct);
-        return convertor.convert(photo);
+    @Transactional
+    public BannerPhoto removeBannerPhoto(Long id) {
+        log.info("Remove banner photo by id: {}", id);
+        BannerPhoto bannerPhoto = this.safeGetBannerPhoto(id);
+        bannerPhotoRepository.deleteById(id);
+        return bannerPhoto;
     }
 
-    private String addNewPhoto(MultipartFile file, DraftProduct draftProduct) {
-        List<Photo> photoList = draftProduct.getImages().getBannerPhotos();
-        Photo newPhoto = convertor.photoBuilder(file, photoList.size() + 1);
-        photoList.add(newPhoto);
-        draftProductRepository.save(draftProduct);
-        return newPhoto.getHash().toString();
+    @Transactional
+    public DescriptionPhoto removeDescriptionPhoto(Long id) {
+        log.info("Remove description photo by id: {}", id);
+        DescriptionPhoto descriptionPhoto = this.safeGetDescriptionPhoto(id);
+        descriptionPhotoRepository.deleteById(id);
+        return descriptionPhoto;
     }
 
-    private String setNewDescriptionPhoto(MultipartFile file, DraftProduct draftProduct) {
-        Photo newPhoto = convertor.photoBuilder(file, -1);
-        draftProduct.getImages().setDescriptionPhoto(newPhoto);
-        draftProductRepository.save(draftProduct);
-        return newPhoto.getHash().toString();
+    private Long addNewPhoto(MultipartFile file, FileCollection fileCollection) {
+        BannerPhoto newBannerPhoto = convertor.bannerPhotoBuilder(file, fileCollection);
+        BannerPhoto bannerPhoto = accelerator.saveBannerPhoto(newBannerPhoto);
+        return bannerPhoto.getId();
     }
 
-    private String updateExistingPhoto(MultipartFile file, Photo existingPhoto, DraftProduct draftProduct) {
-        List<Photo> photoList = draftProduct.getImages().getBannerPhotos();
-        Photo newPhoto = convertor.photoBuilder(file, existingPhoto.getOrder());
-        photoList.remove(existingPhoto);
-        photoList.add(newPhoto);
-        draftProductRepository.save(draftProduct);
-        return newPhoto.getHash().toString();
+    private Long setDescriptionPhoto(MultipartFile file, FileCollection fileCollection) {
+        DescriptionPhoto descriptionPhoto = convertor.descriptionPhotoBuilder(file, fileCollection);
+        if (Objects.nonNull(fileCollection.getDescriptionPhoto()))
+            descriptionPhoto.setId(fileCollection.getDescriptionPhoto().getId());
+        return accelerator.saveDescriptionPhoto(descriptionPhoto).getId();
     }
 
-    // TODO: 4/17/2023 refactor me please, better way make sub class we you make save method
-    private DraftProduct getDraftById(String draftId) {
-        return draftProductRepository.findById(draftId)
-                .orElseThrow(() -> new ProductNotFoundException(DRAFT_PRODUCT_NOT_FOUND_MESSAGE + draftId));
+    private Long updateExistingPhoto(MultipartFile file, Long existingPhotoId, FileCollection fileCollection) {
+        BannerPhoto bannerPhoto = convertor.bannerPhotoBuilder(file, fileCollection);
+        bannerPhoto.setId(existingPhotoId);
+        BannerPhoto oldBannerPhoto = this.safeGetBannerPhoto(existingPhotoId);
+        bannerPhoto.setPosition(oldBannerPhoto.getPosition());
+        return bannerPhotoRepository.save(bannerPhoto).getId();
     }
+
+    public void fileCollectionNormalization(long draftId) {
+        FileCollection fileCollection = this.safeGetFileCollectionByDraftId(draftId);
+        FileCollectionUtils.positionNormalization(fileCollection);
+        fileCollectionRepository.saveAndFlush(FileCollectionUtils.positionNormalization(fileCollection));
+    }
+
+    private BannerPhoto safeGetBannerPhoto(Long id) {
+        return accelerator.findBannerPhoto(id)
+                .orElseThrow(() -> BannerPhotoNotFoundException.create(id));
+    }
+
+    private DescriptionPhoto safeGetDescriptionPhoto(Long id) {
+        return accelerator.findDescriptionPhoto(id)
+                .orElseThrow(() -> DescriptionPhotoNotFoundException.create(id));
+    }
+
+    private FileCollection safeGetFileCollectionByDraftId(Long draftId) {
+        return fileCollectionRepository.findFileCollectionByDraftProductId(draftId)
+                .orElseThrow(() -> new FileCollectionNotFoundException("File collection not found by draft id: " + draftId));
+    }
+
 }

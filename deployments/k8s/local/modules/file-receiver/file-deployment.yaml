@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: file-receiver
+  namespace: default
+  labels:
+    app: file-receiver
+spec:
+  selector:
+    matchLabels:
+      app: file-receiver
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: file-receiver
+    spec:
+      containers:
+        - name: file-receiver
+          image: localhost:5000/file-receiver
+          resources:
+            limits:
+              cpu: 100m
+              memory: 250Mi
+          env:
+            - name: username
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: mongo-user
+            - name: password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: mongo-password
+            - name: mongo_uri
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-config
+                  key: mongo_uri
+          ports:
+            - containerPort: 8083
+      restartPolicy: Always
