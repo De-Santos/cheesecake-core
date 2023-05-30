@@ -24,21 +24,43 @@ spec:
               cpu: 300m
               memory: 500Mi
           env:
-            - name: username
+#                 RABBITMQ
+            - name: rabbit_username
               valueFrom:
                 secretKeyRef:
                   name: rabbit-secret
                   key: username
-            - name: password
+            - name: rabbit_password
               valueFrom:
                 secretKeyRef:
                   name: rabbit-secret
                   key: password
-            - name: rabbitmq_url
+            - name: rabbit_host
               valueFrom:
                 configMapKeyRef:
                   name: rabbit-config
-                  key: rabbit_url
+                  key: rabbit_host
+            - name: rabbit_port
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbit-config
+                  key: rabbit_port
+#                 POSTGRES
+            - name: postgres_username
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: postgres-user
+            - name: postgres_password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: postgres-password
+            - name: postgres_url
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_url
           ports:
             - containerPort: 8086
       restartPolicy: Always

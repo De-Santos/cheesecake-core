@@ -3,5 +3,7 @@ kind: ConfigMap
 metadata:
   name: rabbit-config
 data:
-  rabbit_url:
-    "http://rabbitmq-service:5672"
+  rabbit_host:
+    "rabbitmq-service"
+  rabbit_port:
+    "5672"
