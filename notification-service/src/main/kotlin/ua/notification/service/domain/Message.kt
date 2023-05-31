@@ -1,7 +1,6 @@
 package ua.notification.service.domain
 
 import jakarta.persistence.*
-import ua.notification.service.facade.NotifyType
 
 
 @Entity
@@ -15,10 +14,5 @@ data class Message(
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "send_status", nullable = false)
     var sendStatus: SendStatus = SendStatus.NEW,
-
-
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "notify_type", nullable = false)
-    var notifyType: NotifyType
 )
 

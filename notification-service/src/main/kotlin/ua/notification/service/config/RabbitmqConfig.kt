@@ -10,7 +10,7 @@ class RabbitmqConfig(
     val queueProperty: QueuePropertyConfig
 ) {
     @Bean
-    fun queue(): Queue {
+    fun taskQueue(): Queue {
         return Queue(queueProperty.name, true)
     }
 }

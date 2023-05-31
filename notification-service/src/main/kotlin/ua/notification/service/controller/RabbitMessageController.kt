@@ -12,11 +12,11 @@ import ua.notification.service.service.MessageService
 class RabbitMessageController(
     private val messageService: MessageService
 ) : RabbitMessageApi {
-    private val logger = LoggerFactory.getLogger(javaClass)
+    private val log = LoggerFactory.getLogger(javaClass)
 
     @PostMapping("/message")
     override fun saveMessages(notification: NotificationDto): ResponseEntity<String> {
-        logger.info("Saving messages: $notification")
+        log.info("Saving messages: $notification")
         messageService.saveMessages(notification)
         return ResponseEntity.ok("ok. done!")
     }
