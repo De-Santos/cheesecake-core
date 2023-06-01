@@ -1,6 +1,7 @@
-package ua.notification.service.entity.additional
+package ua.notification.service.entity
 
 import jakarta.persistence.*
+import ua.notification.service.entity.additional.ProcessStatus
 import java.util.*
 
 @Entity
@@ -16,7 +17,7 @@ data class Task(
     @OneToOne(mappedBy = "task", fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
     var metadata: TaskMetadata? = null,
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "process_status", nullable = false)
     var status: ProcessStatus
 ) {

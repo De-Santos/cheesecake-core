@@ -2,7 +2,7 @@ package ua.notification.service.utils.validator
 
 import org.springframework.stereotype.Component
 import ua.notification.service.dto.NotificationRequest
-import ua.notification.service.entity.additional.NotificationType
+import ua.notification.service.entity.additional.NotifyType
 import ua.notification.service.exception.request.exceeded.MessageLengthExceededException
 import ua.notification.service.exception.request.invalid.InvalidMessageException
 
@@ -15,7 +15,7 @@ class Validator {
 
     private fun messageValidation(nr: NotificationRequest) {
         if (nr.message.isNullOrBlank()) throw InvalidMessageException("Message must be not null or blank")
-        if ((nr.type == NotificationType.ALL || nr.type == NotificationType.SMS) && nr.message.length >= 160)
+        if ((nr.type == NotifyType.ALL || nr.type == NotifyType.SMS) && nr.message.length >= 160)
             throw MessageLengthExceededException.create(nr.message.length)
     }
 }

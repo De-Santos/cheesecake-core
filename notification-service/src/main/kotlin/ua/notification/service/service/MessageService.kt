@@ -3,12 +3,14 @@ package ua.notification.service.service
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.core.Queue
 import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import ua.notification.service.dto.NotificationDto
 
 @Service
 class MessageService(
     private val rabbit: RabbitTemplate,
+    @Qualifier("taskQueue")
     private val queue: Queue,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)

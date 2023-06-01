@@ -1,8 +1,7 @@
 package ua.notification.service.entity.additional
 
-enum class NotificationType {
+enum class NotifyType {
     ALL,
     EMAIL,
-    TELEGRAM,
     SMS,
 }

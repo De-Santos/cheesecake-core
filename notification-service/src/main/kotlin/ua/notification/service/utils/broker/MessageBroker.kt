@@ -1,22 +1,29 @@
 package ua.notification.service.utils.broker
 
 import org.slf4j.LoggerFactory
-import org.springframework.amqp.core.Queue
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.stereotype.Component
-import ua.notification.service.entity.additional.Task
-import ua.notification.service.utils.builder.EntityBuilder
+import ua.notification.service.config.RabbitConfig
+import ua.notification.service.entity.Task
+import ua.notification.service.entity.additional.notification.Notification
+import ua.notification.service.utils.broker.builder.MessageBuilder
 
 @Component
 class MessageBroker(
     private val rabbit: RabbitTemplate,
-    private val queue: Queue,
-    private val entityBuilder: EntityBuilder,
+    private val rabbitConfig: RabbitConfig,
+    private val messageBuilder: MessageBuilder
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun sendTask(task: Task) {
         log.info("Saving task in rabbitmq")
-        return rabbit.send(queue.name, entityBuilder.buildMessage(task))
+        rabbit.send(rabbitConfig.taskQueue().name, messageBuilder.build(task))
+    }
+
+    fun sendNotification(notification: Notification): Notification {
+        log.info("Sending notification in queue")
+        rabbit.send(rabbitConfig.directExchange().name, notification.method.toTag(), messageBuilder.build(notification))
+        return notification
     }
 }  

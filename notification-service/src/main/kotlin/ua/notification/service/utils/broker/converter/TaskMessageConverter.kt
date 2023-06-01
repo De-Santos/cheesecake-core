@@ -1,13 +1,13 @@
-package ua.notification.service.utils.mapper
+package ua.notification.service.utils.broker.converter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.core.MessageProperties
 import org.springframework.amqp.support.converter.AbstractMessageConverter
 import org.springframework.stereotype.Component
-import ua.notification.service.entity.additional.Task
+import ua.notification.service.entity.Task
 
-@Component
+@Component("taskMessageConverter")
 class TaskMessageConverter(
     private val objectMapper: ObjectMapper
 ) : AbstractMessageConverter() {

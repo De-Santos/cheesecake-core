@@ -1,6 +1,7 @@
-package ua.notification.service.entity.additional
+package ua.notification.service.entity
 
 import jakarta.persistence.*
+import ua.notification.service.entity.additional.NotifyType
 
 @Entity
 @Table(name = "task_metadata")
@@ -17,11 +18,11 @@ data class TaskMetadata(
     @JoinColumn(name = "task_id", referencedColumnName = "id")
     var task: Task? = null,
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "notification_type", nullable = false)
-    val notificationType: NotificationType
+    val notifyType: NotifyType
 ) {
     override fun toString(): String {
-        return "TaskMetadata(id=$id, message='$message', notificationType=$notificationType)"
+        return "TaskMetadata(id=$id, message='$message', notificationType=$notifyType)"
     }
 }

@@ -3,7 +3,7 @@ package ua.notification.service.utils.request
 import org.springframework.stereotype.Component
 import ua.notification.service.dao.TaskMetadataRepository
 import ua.notification.service.dao.TaskRepository
-import ua.notification.service.entity.additional.Task
+import ua.notification.service.entity.Task
 import ua.notification.service.entity.additional.TaskTuple
 
 @Component

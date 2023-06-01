@@ -29,6 +29,7 @@ spring:
     username: ${rabbit_username}
     password: ${rabbit_password}
     queue:
+      # noinspection SpringBootApplicationYaml
       name: notification-queue
   application:
     name: product-service
