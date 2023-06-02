@@ -4,7 +4,7 @@ import shutil
 import subprocess
 
 try:
-    with open("C:/CodeFile/JavaProjects/cheesecake-core/product-service/docker/AutoBuilder/config.json", "r") as f:
+    with open("C:/CodeFile/JavaProjects/cheesecake-core/user-service/docker/AutoBuilder/config.json", "r") as f:
         config = json.load(f)
 except():
     print("Cannot find config.json file")
