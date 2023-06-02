@@ -1,17 +1,15 @@
 package com.user.service.controller.user;
 
 import com.user.service.service.UserService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.*;
-import ua.cheesecake.dto.UserDto;
-
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import ua.cheesecake.dto.UserDto;
 import ua.cheesecake.dto.UserPrivateDataDto;
+
+import java.util.List;
 
 @Log4j2
 @Controller

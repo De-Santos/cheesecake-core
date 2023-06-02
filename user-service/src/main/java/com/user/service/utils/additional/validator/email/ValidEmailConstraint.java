@@ -14,7 +14,7 @@ public class ValidEmailConstraint implements
 
     @Override
     public boolean isValid(String contactField,
-            ConstraintValidatorContext cxt) {
+                           ConstraintValidatorContext cxt) {
         log.debug("Validating contactField is: {}", contactField);
         return validateEmail(contactField);
     }

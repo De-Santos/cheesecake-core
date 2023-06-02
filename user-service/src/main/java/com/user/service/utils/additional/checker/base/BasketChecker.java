@@ -1,9 +1,9 @@
 package com.user.service.utils.additional.checker.base;
 
 
+import com.user.service.dao.BasketRepository;
 import com.user.service.utils.convertor.Convertor;
 import com.user.service.utils.request.BasketRequestConstructor;
-import com.user.service.dao.BasketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class BasketChecker {
-    
+
     private final BasketRequestConstructor basketRequestConstructor;
     private final BasketRepository basketRepository;
     private final Convertor convertor;
@@ -25,7 +25,7 @@ public class BasketChecker {
     }
 
     public boolean check(Long userId) {
-        if (!basketRepository.existsById(userId)) { 
+        if (!basketRepository.existsById(userId)) {
             log.info("basket by userId: {} not found", userId);
             return false;
         } else return true;

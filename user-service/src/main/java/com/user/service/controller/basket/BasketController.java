@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v3/basket")
 public class BasketController implements BasketApi {
-    
+
     private final BasketService basketService;
 
     @Override

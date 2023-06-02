@@ -1,6 +1,6 @@
 package com.user.service.exceptions.exceptions;
 
-public class UserPrivateDataNotFoundException extends RuntimeException{
+public class UserPrivateDataNotFoundException extends RuntimeException {
 
     public UserPrivateDataNotFoundException() {
     }

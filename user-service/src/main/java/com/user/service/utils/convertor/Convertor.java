@@ -3,16 +3,11 @@ package com.user.service.utils.convertor;
 import com.user.service.dto.basket.BasketProductDto;
 import com.user.service.dto.basket.BasketResponse;
 import com.user.service.dto.wishList.WishListResponse;
-import com.user.service.entities.Basket;
-import com.user.service.entities.BasketProduct;
-import com.user.service.entities.User;
-import com.user.service.entities.UserPrivateData;
-import com.user.service.entities.WishList;
+import com.user.service.entities.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import ua.cheesecake.dto.TimeMapper;
 import ua.cheesecake.dto.UserDto;
-
-import org.springframework.stereotype.Component;
 import ua.cheesecake.dto.UserPrivateDataDto;
 
 import java.time.LocalDateTime;
@@ -22,7 +17,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class Convertor {
-    
+
     private final TimeMapper timeMapper = new TimeMapper();
 
     public WishListResponse convert(WishList wishList) {
@@ -57,12 +52,12 @@ public class Convertor {
         user.setSecondName(userPrivateDataDto.getSecondName());
         return user;
     }
+
     public UserPrivateData mergeConvert(UserPrivateDataDto userPrivateDataDto, User user) {
         UserPrivateData userPrivateData = new UserPrivateData();
         userPrivateData.setUser(user);
         userPrivateData.setEmail(userPrivateDataDto.getEmail());
         userPrivateData.setPassword(userPrivateDataDto.getPassword());
-        userPrivateData.setAddress(userPrivateDataDto.getAddress());
         userPrivateData.setPhoneNumber(userPrivateDataDto.getPhoneNumber());
         userPrivateData.setCreateTime(LocalDateTime.now());
         return userPrivateData;
