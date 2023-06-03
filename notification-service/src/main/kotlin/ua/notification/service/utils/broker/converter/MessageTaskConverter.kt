@@ -5,16 +5,17 @@ import org.springframework.amqp.core.Message
 import org.springframework.amqp.core.MessageProperties
 import org.springframework.amqp.support.converter.AbstractMessageConverter
 import org.springframework.stereotype.Component
-import ua.notification.service.entity.Task
+import ua.notification.service.config.Property
+import ua.notification.service.entity.additional.MessageTask
 
-@Component("taskMessageConverter")
-class TaskMessageConverter(
+@Component(Property.messageTaskBeanName)
+class MessageTaskConverter(
     private val objectMapper: ObjectMapper
 ) : AbstractMessageConverter() {
 
     override fun fromMessage(message: Message): Any {
         val payload = message.body
-        return objectMapper.readValue(payload, Task::class.java)
+        return objectMapper.readValue(payload, MessageTask::class.java)
     }
 
     override fun createMessage(obj: Any, messageProperties: MessageProperties): Message {

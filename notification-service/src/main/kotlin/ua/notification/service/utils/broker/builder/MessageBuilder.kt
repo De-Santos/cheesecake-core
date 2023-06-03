@@ -5,14 +5,14 @@ import org.springframework.amqp.core.MessageBuilder
 import org.springframework.amqp.core.MessageProperties
 import org.springframework.amqp.core.MessagePropertiesBuilder
 import org.springframework.stereotype.Component
-import ua.notification.service.entity.Task
+import ua.notification.service.entity.additional.MessageTask
 import ua.notification.service.entity.additional.notification.Notification
+import ua.notification.service.utils.broker.converter.MessageTaskConverter
 import ua.notification.service.utils.broker.converter.NotificationMessageConverter
-import ua.notification.service.utils.broker.converter.TaskMessageConverter
 
 @Component
 class MessageBuilder(
-    private val taskMessageConverter: TaskMessageConverter,
+    private val messageTaskConverter: MessageTaskConverter,
     private val notificationMessageConverter: NotificationMessageConverter,
 ) {
     private val messageProperty: MessageProperties = MessagePropertiesBuilder.newInstance()
@@ -20,8 +20,8 @@ class MessageBuilder(
         .build()
 
 
-    fun build(task: Task): Message {
-        return MessageBuilder.withBody(taskMessageConverter.toMessage(task, messageProperty).body)
+    fun build(messageTask: MessageTask): Message {
+        return MessageBuilder.withBody(messageTaskConverter.toMessage(messageTask, messageProperty).body)
             .andProperties(messageProperty)
             .build()
     }

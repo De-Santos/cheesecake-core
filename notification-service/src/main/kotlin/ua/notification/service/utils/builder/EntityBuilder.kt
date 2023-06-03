@@ -1,26 +1,22 @@
 package ua.notification.service.utils.builder
 
-import org.springframework.amqp.core.Message
-import org.springframework.amqp.core.MessageBuilder
-import org.springframework.amqp.core.MessageProperties
-import org.springframework.amqp.core.MessagePropertiesBuilder
 import org.springframework.stereotype.Component
 import ua.notification.service.dto.NotificationRequest
 import ua.notification.service.entity.Task
 import ua.notification.service.entity.TaskMetadata
+import ua.notification.service.entity.additional.MessageTask
 import ua.notification.service.entity.additional.ProcessStatus
 import ua.notification.service.entity.additional.TaskTuple
 import ua.notification.service.entity.additional.notification.Notification
-import ua.notification.service.utils.broker.converter.TaskMessageConverter
+import ua.notification.service.entity.additional.notification.NotificationMethod
+import ua.notification.service.entity.additional.notification.NotificationPrincipal
+import ua.notification.service.utils.broker.converter.MessageTaskConverter
+import java.util.*
 
 @Component
 class EntityBuilder(
-    private val messageConverter: TaskMessageConverter
+    private val messageConverter: MessageTaskConverter
 ) {
-    private val messageProperty: MessageProperties = MessagePropertiesBuilder.newInstance()
-        .setContentType(MessageProperties.CONTENT_TYPE_JSON)
-        .build()
-
     fun buildTask(notificationRequest: NotificationRequest, status: ProcessStatus): Task {
         return Task(
             id = null,
@@ -43,15 +39,28 @@ class EntityBuilder(
         )
     }
 
-    fun buildMessage(task: Task): Message {
-        return MessageBuilder.withBody(messageConverter.toMessage(task, messageProperty).body)
-            .andProperties(messageProperty)
-            .build()
+    fun buildNotification(
+        principal: NotificationPrincipal,
+        method: NotificationMethod,
+        task: MessageTask
+    ): Notification {
+        return Notification(
+            taskId = task.id,
+            uuid = UUID.randomUUID(),
+            method = method,
+            principal = principal,
+            message = null
+        )
     }
 
-    fun buildMessage(notification: Notification): Message {
-        return MessageBuilder.withBody(messageConverter.toMessage(notification, messageProperty).body)
-            .andProperties(messageProperty)
-            .build()
+    fun buildMessageTask(tuple: TaskTuple): MessageTask {
+        return MessageTask(
+            id = tuple.task.id!!,
+            time = tuple.task.time,
+            status = tuple.task.status,
+            message = tuple.taskMetadata.message,
+            notifyType = tuple.taskMetadata.notifyType
+        )
     }
+
 }

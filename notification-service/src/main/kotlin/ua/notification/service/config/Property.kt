@@ -12,4 +12,7 @@ object Property {
 
     //EXCHANGE
     const val directExchangeName: String = "notification-exchange"
+
+    //BEAN NAME
+    const val messageTaskBeanName: String = "messageTask"
 }

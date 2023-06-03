@@ -13,6 +13,7 @@ class TaskRequestConstructor(
 ) {
     fun saveFullTask(taskTuple: TaskTuple): Task {
         val savedTask: Task = taskRepository.save(taskTuple.task)
+        println(taskTuple)
         taskTuple.taskMetadata.task = savedTask
         taskMetadataRepository.save(taskTuple.taskMetadata)
         return savedTask
