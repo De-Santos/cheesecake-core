@@ -2,6 +2,7 @@ package ua.notification.service.utils.builder
 
 import org.springframework.stereotype.Component
 import ua.notification.service.dto.NotificationRequest
+import ua.notification.service.dto.NotificationResponse
 import ua.notification.service.entity.Task
 import ua.notification.service.entity.TaskMetadata
 import ua.notification.service.entity.additional.MessageTask
@@ -10,13 +11,10 @@ import ua.notification.service.entity.additional.TaskTuple
 import ua.notification.service.entity.additional.notification.Notification
 import ua.notification.service.entity.additional.notification.NotificationMethod
 import ua.notification.service.entity.additional.notification.NotificationPrincipal
-import ua.notification.service.utils.broker.converter.MessageTaskConverter
 import java.util.*
 
 @Component
-class EntityBuilder(
-    private val messageConverter: MessageTaskConverter
-) {
+class EntityBuilder {
     fun buildTask(notificationRequest: NotificationRequest, status: ProcessStatus): Task {
         return Task(
             id = null,
@@ -60,6 +58,13 @@ class EntityBuilder(
             status = tuple.task.status,
             message = tuple.taskMetadata.message,
             notifyType = tuple.taskMetadata.notifyType
+        )
+    }
+
+    fun buildNotificationResponse(task: Task): NotificationResponse {
+        return NotificationResponse(
+            id = task.id!!,
+            processStatus = task.status
         )
     }
 

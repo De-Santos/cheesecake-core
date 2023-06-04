@@ -1,9 +1,9 @@
 package ua.notification.service.service
 
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import ua.notification.service.dto.NotificationRequest
 import ua.notification.service.dto.NotificationResponse
+import ua.notification.service.entity.Task
 import ua.notification.service.entity.additional.ProcessStatus
 import ua.notification.service.entity.additional.TaskTuple
 import ua.notification.service.utils.broker.MessageBroker
@@ -18,14 +18,31 @@ class NotificationService(
     private val entityBuilder: EntityBuilder,
     private val taskRequestConstructor: TaskRequestConstructor,
 ) {
-    private val log = LoggerFactory.getLogger(javaClass)
 
-    fun createNew(notification: NotificationRequest): NotificationResponse {
-        log.info("Create new notification")
+    fun new(notification: NotificationRequest): NotificationResponse {
         validator.forceValidate(notification)
         val tuple: TaskTuple = entityBuilder.buildTaskTuple(notification, ProcessStatus.PENDING)
-        taskRequestConstructor.saveFullTask(tuple)
+        val task: Task = taskRequestConstructor.saveTask(tuple)
         broker.sendTask(entityBuilder.buildMessageTask(tuple))
-        return NotificationResponse(ProcessStatus.PENDING)
+        return entityBuilder.buildNotificationResponse(task)
+    }
+
+    fun info(id: Long): NotificationResponse {
+        return NotificationResponse(
+            id = id,
+            processStatus = taskRequestConstructor.getInfoById(id)
+        )
+    }
+
+    fun all(): List<Long> {
+        return taskRequestConstructor.getAll()
+    }
+
+    fun active(): List<Long> {
+        return taskRequestConstructor.getActive()
+    }
+
+    fun byStatus(status: ProcessStatus): List<Long> {
+        return taskRequestConstructor.getAllByStatus(status)
     }
 }

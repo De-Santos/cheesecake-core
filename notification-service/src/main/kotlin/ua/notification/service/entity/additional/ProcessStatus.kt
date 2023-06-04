@@ -4,4 +4,5 @@ enum class ProcessStatus {
     IN_PROCESS,
     PENDING,
     DONE,
+    ERROR
 }

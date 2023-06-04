@@ -14,7 +14,7 @@ data class Task(
 
     val time: Date = Date(),
 
-    @OneToOne(mappedBy = "task", fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE])
+    @OneToOne(mappedBy = "task", fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
     var metadata: TaskMetadata? = null,
 
     @Enumerated(EnumType.STRING)

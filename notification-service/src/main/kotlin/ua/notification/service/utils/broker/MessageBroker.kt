@@ -22,7 +22,6 @@ class MessageBroker(
     }
 
     fun sendNotification(notification: Notification): Notification {
-        log.info("Sending notification in queue")
         rabbit.send(rabbitConfig.directExchange().name, notification.method.toTag(), messageBuilder.build(notification))
         return notification
     }
