@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import ua.notification.service.dto.NotificationRequest
 import ua.notification.service.dto.NotificationResponse
+import ua.notification.service.dto.ProcessMetadataResponse
 import ua.notification.service.entity.additional.ProcessStatus
 
 interface NotificationApi {
@@ -28,7 +29,7 @@ interface NotificationApi {
     @ResponseStatus(HttpStatus.OK)
     fun createNotification(@RequestBody notification: NotificationRequest): ResponseEntity<NotificationResponse>
 
-    @Operation(summary = "Get notification info")
+    @Operation(summary = "Get notification by id")
     @ApiResponses(
         value = [
             ApiResponse(
@@ -39,7 +40,20 @@ interface NotificationApi {
         ]
     )
     @ResponseStatus(HttpStatus.OK)
-    fun getInfo(@PathVariable id: Long): ResponseEntity<NotificationResponse>
+    fun getNotification(@PathVariable id: Long): ResponseEntity<NotificationResponse>
+
+    @Operation(summary = "Get notification status by id")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Successful operation,",
+                content = [Content(mediaType = "application/json")]
+            ),
+            ApiResponse(responseCode = "400", description = "Invalid request."),
+        ]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun getStatus(@PathVariable id: Long): ResponseEntity<ProcessStatus>
 
     @Operation(summary = "Get notification ids")
     @ApiResponses(
@@ -91,4 +105,17 @@ interface NotificationApi {
     )
     @ResponseStatus(HttpStatus.OK)
     fun getAllByStatus(@PathVariable status: ProcessStatus): ResponseEntity<List<Long>>
+
+    @Operation(summary = "Get process metadata by id")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Successful operation,",
+                content = [Content(mediaType = "application/json")]
+            ),
+            ApiResponse(responseCode = "400", description = "Invalid request."),
+        ]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun getProcessMetadata(@PathVariable id: Long): ResponseEntity<ProcessMetadataResponse>
 }

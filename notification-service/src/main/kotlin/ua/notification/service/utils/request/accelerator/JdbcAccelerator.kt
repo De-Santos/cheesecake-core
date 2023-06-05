@@ -4,6 +4,8 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.PreparedStatementCreator
 import org.springframework.jdbc.core.SingleColumnRowMapper
 import org.springframework.stereotype.Component
+import ua.notification.service.dto.NotificationResponse
+import ua.notification.service.entity.ProcessMetadata
 import ua.notification.service.entity.additional.MessageTask
 import ua.notification.service.entity.additional.ProcessStatus
 import ua.notification.service.entity.additional.notification.NotificationMethod
@@ -11,6 +13,8 @@ import ua.notification.service.entity.additional.notification.NotificationPrinci
 import ua.notification.service.utils.broker.MessageBroker
 import ua.notification.service.utils.builder.EntityBuilder
 import ua.notification.service.utils.request.accelerator.mapper.NotificationPrincipalRowMapper
+import ua.notification.service.utils.request.accelerator.mapper.NotificationResponseRowMapper
+import ua.notification.service.utils.request.accelerator.mapper.ProcessMetadataRowMapper
 import ua.notification.service.utils.request.accelerator.mapper.ProcessStatusRowMapper
 import java.sql.Connection
 import java.sql.PreparedStatement
@@ -24,6 +28,8 @@ class JdbcAccelerator(
     private val builder: EntityBuilder,
 ) {
     private val notificationPrincipalRowMapper: NotificationPrincipalRowMapper = NotificationPrincipalRowMapper()
+    private val notificationResponseRowMapper: NotificationResponseRowMapper = NotificationResponseRowMapper()
+    private val processMetadataRowMapper: ProcessMetadataRowMapper = ProcessMetadataRowMapper()
     private val processStatusRowMapper: ProcessStatusRowMapper = ProcessStatusRowMapper()
 
     companion object {
@@ -41,7 +47,13 @@ class JdbcAccelerator(
             SET process_status=?
             WHERE id = ?
         """
-        const val SELECT_INFO_BY_ID: String = """
+        const val SELECT_NOTIFICATION_BY_ID: String = """
+            SELECT task.id AS task_id, task.create_time, task.process_status, process_metadata.id AS process_metadata_id
+            FROM task
+            JOIN process_metadata ON task.id = process_metadata.task_id
+            WHERE task.id = ?
+        """
+        const val SELECT_STATUS_BY_ID: String = """
             SELECT process_status
             FROM task
             WHERE id = ?
@@ -60,6 +72,11 @@ class JdbcAccelerator(
             FROM task
             WHERE process_status = ?
         """
+        const val SELECT_PROCESS_METADATA_BY_ID: String = """
+            SELECT *
+            FROM process_metadata
+            WHERE id = ?
+        """
     }
 
     fun createNotification(task: MessageTask) {
@@ -72,11 +89,32 @@ class JdbcAccelerator(
 
     fun getStatusById(id: Long): Optional<ProcessStatus> {
         val psc = PreparedStatementCreator { con: Connection ->
-            val ps: PreparedStatement = con.prepareStatement(SELECT_INFO_BY_ID)
+            val ps: PreparedStatement = con.prepareStatement(SELECT_STATUS_BY_ID)
             ps.setLong(1, id)
             ps
         }
         val resultList: List<ProcessStatus> = jdbc.query(psc, processStatusRowMapper)
+        return resultList.firstOrNull()?.let { Optional.of(it) } ?: Optional.empty()
+    }
+
+    fun getNotificationById(id: Long): Optional<NotificationResponse> {
+        val psc = PreparedStatementCreator { con: Connection ->
+            val ps: PreparedStatement = con.prepareStatement(SELECT_NOTIFICATION_BY_ID)
+            ps.setLong(1, id)
+            ps
+        }
+        val resultList: List<NotificationResponse> = jdbc.query(psc, notificationResponseRowMapper)
+        return resultList.firstOrNull()?.let { Optional.of(it) } ?: Optional.empty()
+    }
+
+
+    fun getProcessMetadataById(id: Long): Optional<ProcessMetadata> {
+        val psc = PreparedStatementCreator { con: Connection ->
+            val ps: PreparedStatement = con.prepareStatement(SELECT_PROCESS_METADATA_BY_ID)
+            ps.setLong(1, id)
+            ps
+        }
+        val resultList: List<ProcessMetadata> = jdbc.query(psc, processMetadataRowMapper)
         return resultList.firstOrNull()?.let { Optional.of(it) } ?: Optional.empty()
     }
 
@@ -97,10 +135,6 @@ class JdbcAccelerator(
         return jdbc.query(psc, SingleColumnRowMapper(Long::class.java))
     }
 
-    private fun updateTaskStatus(id: Long, status: ProcessStatus) {
-        jdbc.update(SET_TASK_STATUS, status.name, id)
-    }
-
     private fun batchCreateNotification(task: MessageTask, rowsCount: Long) {
         val batchSize: Long = 1000
         var start: Long = 0
@@ -112,11 +146,16 @@ class JdbcAccelerator(
                 }
                 start += batchSize
                 end = start + batchSize
+
             }
             this.updateTaskStatus(task.id, ProcessStatus.DONE)
         } catch (e: Exception) {
             this.updateTaskStatus(task.id, ProcessStatus.ERROR)
         }
+    }
+
+    private fun updateTaskStatus(id: Long, status: ProcessStatus) {
+        jdbc.update(SET_TASK_STATUS, status.name, id)
     }
 
 

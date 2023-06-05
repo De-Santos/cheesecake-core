@@ -2,7 +2,7 @@ package ua.notification.service.utils.builder
 
 import org.springframework.stereotype.Component
 import ua.notification.service.dto.NotificationRequest
-import ua.notification.service.dto.NotificationResponse
+import ua.notification.service.entity.ProcessMetadata
 import ua.notification.service.entity.Task
 import ua.notification.service.entity.TaskMetadata
 import ua.notification.service.entity.additional.MessageTask
@@ -54,17 +54,16 @@ class EntityBuilder {
     fun buildMessageTask(tuple: TaskTuple): MessageTask {
         return MessageTask(
             id = tuple.task.id!!,
-            time = tuple.task.time,
+            time = tuple.task.createTime,
             status = tuple.task.status,
             message = tuple.taskMetadata.message,
             notifyType = tuple.taskMetadata.notifyType
         )
     }
 
-    fun buildNotificationResponse(task: Task): NotificationResponse {
-        return NotificationResponse(
-            id = task.id!!,
-            processStatus = task.status
+    fun buildProcessMetadata(task: Task): ProcessMetadata {
+        return ProcessMetadata(
+            task = task
         )
     }
 

@@ -4,8 +4,7 @@ import org.springframework.jdbc.core.RowMapper
 import ua.notification.service.entity.additional.notification.NotificationPrincipal
 import java.sql.ResultSet
 
-class NotificationPrincipalRowMapper(
-) : RowMapper<NotificationPrincipal> {
+class NotificationPrincipalRowMapper : RowMapper<NotificationPrincipal> {
 
     override fun mapRow(rs: ResultSet, rowNum: Int): NotificationPrincipal {
         return NotificationPrincipal(
