@@ -7,7 +7,7 @@ import ua.notification.service.entity.ProcessMetadata
 import ua.notification.service.entity.Task
 
 @Component
-class ResponseBuilder {
+class DaoBuilder {
 
     fun buildNotificationResponse(task: Task): NotificationResponse {
         return NotificationResponse(

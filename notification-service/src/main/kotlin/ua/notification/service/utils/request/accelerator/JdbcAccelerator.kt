@@ -77,6 +77,16 @@ class JdbcAccelerator(
             FROM process_metadata
             WHERE id = ?
         """
+        const val SET_END_TIME_IN_PROCESS_METADATA: String = """
+            UPDATE process_metadata
+            SET end_time = ?
+            WHERE task_id = ?
+        """
+        const val SET_START_TIME_IN_PROCESS_METADATA: String = """
+            UPDATE process_metadata
+            SET start_time = ?
+            WHERE task_id = ?
+        """
     }
 
     fun createNotification(task: MessageTask) {
@@ -140,6 +150,7 @@ class JdbcAccelerator(
         var start: Long = 0
         var end: Long = batchSize
         try {
+            this.setStartTime(task.id)
             while (start < rowsCount) {
                 jdbc.query(selectBatchBuilder(start, end)) {
                     this.createNotificationResultSetExtractor(it, task)
@@ -148,10 +159,19 @@ class JdbcAccelerator(
                 end = start + batchSize
 
             }
+            this.setEndTime(task.id)
             this.updateTaskStatus(task.id, ProcessStatus.DONE)
         } catch (e: Exception) {
             this.updateTaskStatus(task.id, ProcessStatus.ERROR)
         }
+    }
+
+    private fun setStartTime(id: Long) {
+        jdbc.update(SET_START_TIME_IN_PROCESS_METADATA, Date(), id)
+    }
+
+    private fun setEndTime(id: Long) {
+        jdbc.update(SET_END_TIME_IN_PROCESS_METADATA, Date(), id)
     }
 
     private fun updateTaskStatus(id: Long, status: ProcessStatus) {

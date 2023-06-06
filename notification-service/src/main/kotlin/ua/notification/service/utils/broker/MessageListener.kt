@@ -15,7 +15,8 @@ class MessageListener(
 
     @RabbitListener(
         queues = [Property.taskQueueName],
-        messageConverter = Property.messageTaskBeanName
+        messageConverter = Property.messageTaskBeanName,
+        ackMode = "NONE"
     )
     fun receive(task: MessageTask) {
         log.info("receive task")

@@ -10,16 +10,18 @@ class ProcessMetadataRowMapper : RowMapper<ProcessMetadata> {
         return ProcessMetadata(
             id = rs.getLong("id"),
             task = null,
-            startTime = rs.getDate("start_time"),
-            endTime = rs.getDate("end_time"),
+            startTime = rs.getTimestamp("start_time"),
+            endTime = rs.getTimestamp("end_time"),
             elapsedTime = this.calculateElapsedTime(rs)
         )
     }
 
     private fun calculateElapsedTime(rs: ResultSet): Long? {
-        val startTime: Date? = rs.getDate("start_time")
-        val endTime: Date? = rs.getDate("end_time")
-        if (startTime == null || endTime == null) return null
+        println("ProcessMetadataRowMapper.calculateElapsedTime")
+        val startTime: Date? = rs.getTimestamp("start_time")
+        val endTime: Date? = rs.getTimestamp("end_time")
+        if (startTime == null) return null
+        if (endTime == null) return Date().time - startTime.time
         return endTime.time - startTime.time
     }
 }

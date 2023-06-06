@@ -25,8 +25,8 @@ class TaskRequestConstructor(
     fun saveTask(taskTuple: TaskTuple): Task {
         val savedTask: Task = taskRepository.save(taskTuple.task)
         taskTuple.taskMetadata.task = savedTask
-        taskMetadataRepository.save(taskTuple.taskMetadata)
-        processMetadataRepository.save(builder.buildProcessMetadata(savedTask))
+        println(taskMetadataRepository.save(taskTuple.taskMetadata))
+        savedTask.processMetadata = processMetadataRepository.save(builder.buildProcessMetadata(savedTask))
         return savedTask
     }
 

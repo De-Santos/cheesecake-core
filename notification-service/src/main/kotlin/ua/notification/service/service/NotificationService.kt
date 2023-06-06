@@ -8,8 +8,8 @@ import ua.notification.service.entity.Task
 import ua.notification.service.entity.additional.ProcessStatus
 import ua.notification.service.entity.additional.TaskTuple
 import ua.notification.service.utils.broker.MessageBroker
+import ua.notification.service.utils.builder.DaoBuilder
 import ua.notification.service.utils.builder.EntityBuilder
-import ua.notification.service.utils.builder.ResponseBuilder
 import ua.notification.service.utils.request.TaskRequestConstructor
 import ua.notification.service.utils.validator.Validator
 
@@ -18,7 +18,7 @@ class NotificationService(
     private val validator: Validator,
     private val broker: MessageBroker,
     private val entityBuilder: EntityBuilder,
-    private val responseBuilder: ResponseBuilder,
+    private val daoBuilder: DaoBuilder,
     private val taskRequestConstructor: TaskRequestConstructor,
 ) {
 
@@ -27,7 +27,7 @@ class NotificationService(
         val tuple: TaskTuple = entityBuilder.buildTaskTuple(notification, ProcessStatus.PENDING)
         val task: Task = taskRequestConstructor.saveTask(tuple)
         broker.sendTask(entityBuilder.buildMessageTask(tuple))
-        return responseBuilder.buildNotificationResponse(task)
+        return daoBuilder.buildNotificationResponse(task)
     }
 
     fun get(id: Long): NotificationResponse {
@@ -51,6 +51,6 @@ class NotificationService(
     }
 
     fun processMetadata(id: Long): ProcessMetadataResponse {
-        return responseBuilder.buildProcessMetadataResponse(taskRequestConstructor.getProcessMetadata(id))
+        return daoBuilder.buildProcessMetadataResponse(taskRequestConstructor.getProcessMetadata(id))
     }
 }

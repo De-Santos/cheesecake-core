@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import ua.notification.service.dto.NotificationRequest
 import ua.notification.service.dto.NotificationResponse
@@ -71,9 +72,9 @@ interface NotificationApi {
     @Operation(
         summary = "Get active notification ids",
         description = """
-            Returns id of notification with `process_status`:
-               - IN_PROCESS
-               - PENDING
+Returns id of notification with `process_status`:
+   - IN_PROCESS
+   - PENDING
             """
     )
     @ApiResponses(
@@ -90,9 +91,7 @@ interface NotificationApi {
 
     @Operation(
         summary = "Get notification ids by status",
-        description = """
-            Returns ids of notification with required status.
-            """
+        description = "Returns ids of notification with required status."
     )
     @ApiResponses(
         value = [
@@ -104,7 +103,7 @@ interface NotificationApi {
         ]
     )
     @ResponseStatus(HttpStatus.OK)
-    fun getAllByStatus(@PathVariable status: ProcessStatus): ResponseEntity<List<Long>>
+    fun getAllByStatus(@RequestParam status: ProcessStatus): ResponseEntity<List<Long>>
 
     @Operation(summary = "Get process metadata by id")
     @ApiResponses(

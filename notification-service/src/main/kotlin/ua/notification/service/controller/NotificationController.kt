@@ -46,8 +46,8 @@ class NotificationController(
         return ResponseEntity.ok(notificationService.active())
     }
 
-    @GetMapping("/{status}")
-    override fun getAllByStatus(@PathVariable status: ProcessStatus): ResponseEntity<List<Long>> {
+    @GetMapping("/status")
+    override fun getAllByStatus(@RequestParam status: ProcessStatus): ResponseEntity<List<Long>> {
         log.info("Get all notifications by status: {}", status.name)
         return ResponseEntity.ok(notificationService.byStatus(status))
     }
