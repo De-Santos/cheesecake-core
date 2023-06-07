@@ -87,6 +87,11 @@ class JdbcAccelerator(
             SET start_time = ?
             WHERE task_id = ?
         """
+        const val SET_USER_PROCESSED: String = """
+            UPDATE process_metadata
+            SET users_processed = ?
+            WHERE task_id = ?
+        """
     }
 
     fun createNotification(task: MessageTask) {
@@ -155,15 +160,20 @@ class JdbcAccelerator(
                 jdbc.query(selectBatchBuilder(start, end)) {
                     this.createNotificationResultSetExtractor(it, task)
                 }
+                this.setUserProcessed(task.id, start)
                 start += batchSize
                 end = start + batchSize
-
             }
             this.setEndTime(task.id)
+            this.setUserProcessed(task.id, rowsCount)
             this.updateTaskStatus(task.id, ProcessStatus.DONE)
         } catch (e: Exception) {
             this.updateTaskStatus(task.id, ProcessStatus.ERROR)
         }
+    }
+
+    private fun setUserProcessed(id: Long, quantity: Long) {
+        jdbc.update(SET_USER_PROCESSED, quantity, id)
     }
 
     private fun setStartTime(id: Long) {

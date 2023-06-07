@@ -17,13 +17,12 @@ data class ProcessMetadata(
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_time")
-    var startTime: Date? = null,
+    val startTime: Date? = null,
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "end_time")
-    var endTime: Date? = null,
+    val endTime: Date? = null,
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "elapsed_time")
-    val elapsedTime: Long? = null
+    @Column(name = "users_processed")
+    val usersProcessed: Long? = null,
 )

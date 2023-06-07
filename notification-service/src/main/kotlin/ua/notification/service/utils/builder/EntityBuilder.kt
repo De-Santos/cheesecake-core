@@ -15,7 +15,7 @@ import java.util.*
 
 @Component
 class EntityBuilder {
-    fun buildTask(notificationRequest: NotificationRequest, status: ProcessStatus): Task {
+    fun buildTask(status: ProcessStatus): Task {
         return Task(
             id = null,
             metadata = null,
@@ -32,7 +32,7 @@ class EntityBuilder {
 
     fun buildTaskTuple(notificationRequest: NotificationRequest, status: ProcessStatus): TaskTuple {
         return TaskTuple(
-            this.buildTask(notificationRequest, status),
+            this.buildTask(status),
             this.buildMetadata(notificationRequest)
         )
     }

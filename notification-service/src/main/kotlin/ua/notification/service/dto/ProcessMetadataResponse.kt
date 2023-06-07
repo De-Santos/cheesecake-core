@@ -14,5 +14,8 @@ data class ProcessMetadataResponse(
     var endTime: Date? = null,
 
     @JsonProperty("elapse_time")
-    var elapsedTime: Long? = null
+    var elapsedTime: Long? = null,
+
+    @JsonProperty("users_notified")
+    var userNotified: Long? = null
 )
