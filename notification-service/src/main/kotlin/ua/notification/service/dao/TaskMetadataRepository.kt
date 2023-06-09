@@ -5,5 +5,4 @@ import org.springframework.stereotype.Repository
 import ua.notification.service.entity.TaskMetadata
 
 @Repository
-interface TaskMetadataRepository : JpaRepository<TaskMetadata, Long> {
-}
+interface TaskMetadataRepository : JpaRepository<TaskMetadata, Long>

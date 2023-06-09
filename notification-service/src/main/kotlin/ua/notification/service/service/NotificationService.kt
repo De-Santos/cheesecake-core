@@ -5,28 +5,28 @@ import ua.notification.service.dto.NotificationRequest
 import ua.notification.service.dto.NotificationResponse
 import ua.notification.service.dto.ProcessMetadataResponse
 import ua.notification.service.entity.Task
+import ua.notification.service.entity.TaskMetadata
 import ua.notification.service.entity.additional.ProcessStatus
-import ua.notification.service.entity.additional.TaskTuple
-import ua.notification.service.utils.broker.MessageBroker
+import ua.notification.service.entity.additional.Tuple
 import ua.notification.service.utils.builder.DaoBuilder
 import ua.notification.service.utils.builder.EntityBuilder
 import ua.notification.service.utils.request.TaskRequestConstructor
-import ua.notification.service.utils.validator.Validator
+import ua.notification.service.utils.validator.RequestValidator
 
 @Component
 class NotificationService(
-    private val validator: Validator,
-    private val broker: MessageBroker,
+    private val validator: RequestValidator,
     private val entityBuilder: EntityBuilder,
     private val daoBuilder: DaoBuilder,
     private val taskRequestConstructor: TaskRequestConstructor,
+    private val messageService: MessageService,
 ) {
 
     fun new(notification: NotificationRequest): NotificationResponse {
         validator.forceValidate(notification)
-        val tuple: TaskTuple = entityBuilder.buildTaskTuple(notification, ProcessStatus.PENDING)
+        val tuple: Tuple<Task, TaskMetadata> = entityBuilder.buildTaskTuple(notification, ProcessStatus.PENDING)
         val task: Task = taskRequestConstructor.saveTask(tuple)
-        broker.sendTask(entityBuilder.buildMessageTask(tuple))
+        messageService.sendTask(tuple)
         return daoBuilder.buildNotificationResponse(task)
     }
 

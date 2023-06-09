@@ -6,7 +6,9 @@ import org.springframework.amqp.core.MessageProperties
 import org.springframework.amqp.core.MessagePropertiesBuilder
 import org.springframework.stereotype.Component
 import ua.notification.service.entity.additional.MessageTask
+import ua.notification.service.entity.additional.notification.DirectNotification
 import ua.notification.service.entity.additional.notification.Notification
+import ua.notification.service.utils.broker.converter.DirectNotificationMessageConverter
 import ua.notification.service.utils.broker.converter.MessageTaskConverter
 import ua.notification.service.utils.broker.converter.NotificationMessageConverter
 
@@ -14,11 +16,11 @@ import ua.notification.service.utils.broker.converter.NotificationMessageConvert
 class MessageBuilder(
     private val messageTaskConverter: MessageTaskConverter,
     private val notificationMessageConverter: NotificationMessageConverter,
+    private val directNotificationMessageConverter: DirectNotificationMessageConverter
 ) {
     private val messageProperty: MessageProperties = MessagePropertiesBuilder.newInstance()
         .setContentType(MessageProperties.CONTENT_TYPE_JSON)
         .build()
-
 
     fun build(messageTask: MessageTask): Message {
         return MessageBuilder.withBody(messageTaskConverter.toMessage(messageTask, messageProperty).body)
@@ -28,6 +30,17 @@ class MessageBuilder(
 
     fun build(notification: Notification): Message {
         return MessageBuilder.withBody(notificationMessageConverter.toMessage(notification, messageProperty).body)
+            .andProperties(messageProperty)
+            .build()
+    }
+
+    fun build(directNotification: DirectNotification): Message {
+        return MessageBuilder.withBody(
+            directNotificationMessageConverter.toMessage(
+                directNotification,
+                messageProperty
+            ).body
+        )
             .andProperties(messageProperty)
             .build()
     }

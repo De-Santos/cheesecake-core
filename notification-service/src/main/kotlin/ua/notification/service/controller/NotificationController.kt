@@ -3,9 +3,7 @@ package ua.notification.service.controller
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import ua.notification.service.dto.NotificationRequest
-import ua.notification.service.dto.NotificationResponse
-import ua.notification.service.dto.ProcessMetadataResponse
+import ua.notification.service.dto.*
 import ua.notification.service.entity.additional.ProcessStatus
 import ua.notification.service.service.NotificationService
 
@@ -29,7 +27,8 @@ class NotificationController(
         return ResponseEntity.ok(notificationService.get(id))
     }
 
-    override fun getStatus(id: Long): ResponseEntity<ProcessStatus> {
+    @GetMapping("/status/{id}")
+    override fun getStatus(@PathVariable id: Long): ResponseEntity<ProcessStatus> {
         log.info("Get notification status by id: {}", id)
         return ResponseEntity.ok(notificationService.getStatus(id))
     }

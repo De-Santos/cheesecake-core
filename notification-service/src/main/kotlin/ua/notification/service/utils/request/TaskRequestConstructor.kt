@@ -7,8 +7,9 @@ import ua.notification.service.dao.TaskRepository
 import ua.notification.service.dto.NotificationResponse
 import ua.notification.service.entity.ProcessMetadata
 import ua.notification.service.entity.Task
+import ua.notification.service.entity.TaskMetadata
 import ua.notification.service.entity.additional.ProcessStatus
-import ua.notification.service.entity.additional.TaskTuple
+import ua.notification.service.entity.additional.Tuple
 import ua.notification.service.exception.request.found.ProcessMetadataNotFoundException
 import ua.notification.service.exception.request.found.TaskNotFoundException
 import ua.notification.service.utils.builder.EntityBuilder
@@ -22,10 +23,10 @@ class TaskRequestConstructor(
     private val builder: EntityBuilder,
     private val accelerator: JdbcAccelerator
 ) {
-    fun saveTask(taskTuple: TaskTuple): Task {
-        val savedTask: Task = taskRepository.save(taskTuple.task)
-        taskTuple.taskMetadata.task = savedTask
-        println(taskMetadataRepository.save(taskTuple.taskMetadata))
+    fun saveTask(tuple: Tuple<Task, TaskMetadata>): Task {
+        val savedTask: Task = taskRepository.save(tuple.arg1)
+        tuple.arg2.task = savedTask
+        taskMetadataRepository.save(tuple.arg2)
         savedTask.processMetadata = processMetadataRepository.save(builder.buildProcessMetadata(savedTask))
         return savedTask
     }
@@ -37,7 +38,7 @@ class TaskRequestConstructor(
     }
 
     fun getAll(): List<Long> {
-        return accelerator.getAllIds()
+        return accelerator.getAllTaskIds()
     }
 
     fun getActive(): List<Long> {

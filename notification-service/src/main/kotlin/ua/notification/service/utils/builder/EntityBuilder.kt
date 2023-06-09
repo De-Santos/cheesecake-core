@@ -1,13 +1,14 @@
 package ua.notification.service.utils.builder
 
 import org.springframework.stereotype.Component
+import ua.notification.service.dto.DirectNotificationRequest
 import ua.notification.service.dto.NotificationRequest
-import ua.notification.service.entity.ProcessMetadata
-import ua.notification.service.entity.Task
-import ua.notification.service.entity.TaskMetadata
+import ua.notification.service.entity.*
 import ua.notification.service.entity.additional.MessageTask
+import ua.notification.service.entity.additional.NotifyType
 import ua.notification.service.entity.additional.ProcessStatus
-import ua.notification.service.entity.additional.TaskTuple
+import ua.notification.service.entity.additional.Tuple
+import ua.notification.service.entity.additional.notification.DirectNotification
 import ua.notification.service.entity.additional.notification.Notification
 import ua.notification.service.entity.additional.notification.NotificationMethod
 import ua.notification.service.entity.additional.notification.NotificationPrincipal
@@ -15,6 +16,7 @@ import java.util.*
 
 @Component
 class EntityBuilder {
+
     fun buildTask(status: ProcessStatus): Task {
         return Task(
             id = null,
@@ -30,8 +32,8 @@ class EntityBuilder {
         )
     }
 
-    fun buildTaskTuple(notificationRequest: NotificationRequest, status: ProcessStatus): TaskTuple {
-        return TaskTuple(
+    fun buildTaskTuple(notificationRequest: NotificationRequest, status: ProcessStatus): Tuple<Task, TaskMetadata> {
+        return Tuple(
             this.buildTask(status),
             this.buildMetadata(notificationRequest)
         )
@@ -51,13 +53,13 @@ class EntityBuilder {
         )
     }
 
-    fun buildMessageTask(tuple: TaskTuple): MessageTask {
+    fun buildMessageTask(tuple: Tuple<Task, TaskMetadata>): MessageTask {
         return MessageTask(
-            id = tuple.task.id!!,
-            time = tuple.task.createTime,
-            status = tuple.task.status,
-            message = tuple.taskMetadata.message,
-            notifyType = tuple.taskMetadata.notifyType
+            id = tuple.arg1.id!!,
+            time = tuple.arg1.createTime,
+            status = tuple.arg1.status,
+            message = tuple.arg2.message,
+            notifyType = tuple.arg2.notifyType
         )
     }
 
@@ -67,4 +69,48 @@ class EntityBuilder {
         )
     }
 
+    fun buildDirectTaskTuple(
+        directNotification: DirectNotificationRequest,
+        notifyType: NotifyType,
+        status: ProcessStatus
+    ): Tuple<DirectTask, DirectTaskMetadata> {
+        return Tuple(
+            this.buildDirectTask(status),
+            this.buildDirectTaskMetadata(directNotification, notifyType)
+        )
+    }
+
+    fun buildDirectTask(status: ProcessStatus): DirectTask {
+        return DirectTask(
+            id = null,
+            metadata = null,
+            status = status
+        )
+    }
+
+    fun buildDirectTaskMetadata(
+        directNotification: DirectNotificationRequest,
+        notifyType: NotifyType
+    ): DirectTaskMetadata {
+        return DirectTaskMetadata(
+            id = null,
+            message = directNotification.message!!,
+            notifyType = notifyType,
+            userId = directNotification.userId!!
+        )
+    }
+
+    fun buildDirectNotification(
+        principal: NotificationPrincipal,
+        method: NotificationMethod,
+        directTask: DirectTask
+    ): DirectNotification {
+        return DirectNotification(
+            directTaskId = directTask.id!!,
+            uuid = UUID.randomUUID(),
+            method = method,
+            principal = principal,
+            message = null
+        )
+    }
 }

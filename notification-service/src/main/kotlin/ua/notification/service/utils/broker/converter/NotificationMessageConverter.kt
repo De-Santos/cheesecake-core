@@ -12,7 +12,7 @@ class NotificationMessageConverter(
     private val objectMapper: ObjectMapper
 ) : AbstractMessageConverter() {
 
-    override fun fromMessage(message: Message): Any {
+    override fun fromMessage(message: Message): Notification {
         val payload = message.body
         return objectMapper.readValue(payload, Notification::class.java)
     }

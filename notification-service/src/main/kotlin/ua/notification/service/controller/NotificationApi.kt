@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
-import ua.notification.service.dto.NotificationRequest
-import ua.notification.service.dto.NotificationResponse
-import ua.notification.service.dto.ProcessMetadataResponse
+import ua.notification.service.dto.*
 import ua.notification.service.entity.additional.ProcessStatus
 
 interface NotificationApi {

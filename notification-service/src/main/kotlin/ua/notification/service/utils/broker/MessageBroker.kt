@@ -1,10 +1,10 @@
 package ua.notification.service.utils.broker
 
-import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.stereotype.Component
 import ua.notification.service.config.RabbitConfig
 import ua.notification.service.entity.additional.MessageTask
+import ua.notification.service.entity.additional.notification.DirectNotification
 import ua.notification.service.entity.additional.notification.Notification
 import ua.notification.service.utils.broker.builder.MessageBuilder
 
@@ -14,15 +14,20 @@ class MessageBroker(
     private val rabbitConfig: RabbitConfig,
     private val messageBuilder: MessageBuilder,
 ) {
-    private val log = LoggerFactory.getLogger(javaClass)
 
     fun sendTask(task: MessageTask) {
-        log.info("Saving task in rabbitmq")
         rabbit.send(rabbitConfig.taskQueue().name, messageBuilder.build(task))
     }
 
-    fun sendNotification(notification: Notification): Notification {
+    fun sendNotification(notification: Notification) {
         rabbit.send(rabbitConfig.directExchange().name, notification.method.toTag(), messageBuilder.build(notification))
-        return notification
+    }
+
+    fun sendDirectNotification(directNotification: DirectNotification) {
+        rabbit.send(
+            rabbitConfig.directExchange().name,
+            directNotification.method.toTag(),
+            messageBuilder.build(directNotification)
+        )
     }
 }  

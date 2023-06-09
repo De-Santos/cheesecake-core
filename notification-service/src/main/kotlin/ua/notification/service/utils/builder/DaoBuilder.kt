@@ -1,8 +1,10 @@
 package ua.notification.service.utils.builder
 
 import org.springframework.stereotype.Component
+import ua.notification.service.dto.DirectNotificationResponse
 import ua.notification.service.dto.NotificationResponse
 import ua.notification.service.dto.ProcessMetadataResponse
+import ua.notification.service.entity.DirectTask
 import ua.notification.service.entity.ProcessMetadata
 import ua.notification.service.entity.Task
 import java.util.*
@@ -19,6 +21,15 @@ class DaoBuilder {
         )
     }
 
+    fun buildDirectNotificationResponse(directTask: DirectTask): DirectNotificationResponse {
+        return DirectNotificationResponse(
+            id = directTask.id!!,
+            status = directTask.status,
+            creationTime = directTask.creationTime,
+            userId = directTask.metadata!!.userId
+        )
+    }
+
     fun buildProcessMetadataResponse(processMetadata: ProcessMetadata): ProcessMetadataResponse {
         return ProcessMetadataResponse(
             id = processMetadata.id!!,
@@ -28,7 +39,6 @@ class DaoBuilder {
             userNotified = processMetadata.usersProcessed
         )
     }
-
 
     private fun calculateElapsedTime(pm: ProcessMetadata): Long? {
         if (pm.startTime == null) return null

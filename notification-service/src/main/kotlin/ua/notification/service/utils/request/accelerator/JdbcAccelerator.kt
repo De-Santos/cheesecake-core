@@ -4,18 +4,15 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.PreparedStatementCreator
 import org.springframework.jdbc.core.SingleColumnRowMapper
 import org.springframework.stereotype.Component
+import ua.notification.service.dto.DirectNotificationResponse
 import ua.notification.service.dto.NotificationResponse
 import ua.notification.service.entity.ProcessMetadata
 import ua.notification.service.entity.additional.MessageTask
 import ua.notification.service.entity.additional.ProcessStatus
-import ua.notification.service.entity.additional.notification.NotificationMethod
+import ua.notification.service.entity.additional.Tuple
 import ua.notification.service.entity.additional.notification.NotificationPrincipal
-import ua.notification.service.utils.broker.MessageBroker
-import ua.notification.service.utils.builder.EntityBuilder
-import ua.notification.service.utils.request.accelerator.mapper.NotificationPrincipalRowMapper
-import ua.notification.service.utils.request.accelerator.mapper.NotificationResponseRowMapper
-import ua.notification.service.utils.request.accelerator.mapper.ProcessMetadataRowMapper
-import ua.notification.service.utils.request.accelerator.mapper.ProcessStatusRowMapper
+import ua.notification.service.service.MessageService
+import ua.notification.service.utils.request.accelerator.mapper.*
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -24,9 +21,9 @@ import java.util.*
 @Component
 class JdbcAccelerator(
     private val jdbc: JdbcTemplate,
-    private val broker: MessageBroker,
-    private val builder: EntityBuilder,
+    private val messageService: MessageService,
 ) {
+    private val directNotificationResponseRowMapper: DirectNotificationResponseRowMapper = DirectNotificationResponseRowMapper()
     private val notificationPrincipalRowMapper: NotificationPrincipalRowMapper = NotificationPrincipalRowMapper()
     private val notificationResponseRowMapper: NotificationResponseRowMapper = NotificationResponseRowMapper()
     private val processMetadataRowMapper: ProcessMetadataRowMapper = ProcessMetadataRowMapper()
@@ -42,6 +39,12 @@ class JdbcAccelerator(
             JOIN user_private_data ON users.id = user_private_data.user_id
             WHERE users.id > ? AND users.id <= ?
         """
+        const val SELECT_PRINCIPAL_BY_USER_ID: String = """
+            SELECT users.id, users.name, user_private_data.email, user_private_data.phone_number
+            FROM users
+            JOIN user_private_data ON users.id = user_private_data.user_id
+            WHERE users.id = ?
+        """
         const val SET_TASK_STATUS: String = """
             UPDATE task  
             SET process_status=?
@@ -53,14 +56,24 @@ class JdbcAccelerator(
             JOIN process_metadata ON task.id = process_metadata.task_id
             WHERE task.id = ?
         """
+        const val SELECT_DIRECT_NOTIFICATION_BY_ID: String = """
+            SELECT direct_task.id, direct_task.process_status, direct_task.creation_time, direct_task_metadata.user_id
+            FROM direct_task
+            JOIN direct_task_metadata ON direct_task.id = direct_task_metadata.direct_task_id
+            WHERE direct_task.id = ?
+        """
         const val SELECT_STATUS_BY_ID: String = """
             SELECT process_status
             FROM task
             WHERE id = ?
         """
-        const val SELECT_ALL_IDS: String = """
+        const val SELECT_ALL_TASK_IDS: String = """
             SELECT id
             FROM task
+        """
+        const val SELECT_ALL_DIRECT_TASK_IDS: String = """
+            SELECT id
+            FROM direct_task
         """
         const val SELECT_ALL_ACTIVE_IDS: String = """
             SELECT id
@@ -92,6 +105,9 @@ class JdbcAccelerator(
             SET users_processed = ?
             WHERE task_id = ?
         """
+        const val EXIST_USER_BY_ID: String = """
+            SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)
+        """
     }
 
     fun createNotification(task: MessageTask) {
@@ -122,6 +138,15 @@ class JdbcAccelerator(
         return resultList.firstOrNull()?.let { Optional.of(it) } ?: Optional.empty()
     }
 
+    fun getDirectNotificationById(id: Long): Optional<DirectNotificationResponse> {
+        val psc = PreparedStatementCreator { con: Connection ->
+            val ps: PreparedStatement = con.prepareStatement(SELECT_DIRECT_NOTIFICATION_BY_ID)
+            ps.setLong(1, id)
+            ps
+        }
+        val resultList: List<DirectNotificationResponse> = jdbc.query(psc, directNotificationResponseRowMapper)
+        return resultList.firstOrNull()?.let { Optional.of(it) } ?: Optional.empty()
+    }
 
     fun getProcessMetadataById(id: Long): Optional<ProcessMetadata> {
         val psc = PreparedStatementCreator { con: Connection ->
@@ -133,8 +158,12 @@ class JdbcAccelerator(
         return resultList.firstOrNull()?.let { Optional.of(it) } ?: Optional.empty()
     }
 
-    fun getAllIds(): List<Long> {
-        return jdbc.queryForList(SELECT_ALL_IDS, Long::class.java)
+    fun getAllTaskIds(): List<Long> {
+        return jdbc.queryForList(SELECT_ALL_TASK_IDS, Long::class.java)
+    }
+
+    fun getAllDirectTaskIds(): List<Long> {
+        return jdbc.queryForList(SELECT_ALL_DIRECT_TASK_IDS, Long::class.java)
     }
 
     fun getActiveIds(): List<Long> {
@@ -148,6 +177,21 @@ class JdbcAccelerator(
             ps
         }
         return jdbc.query(psc, SingleColumnRowMapper(Long::class.java))
+    }
+
+    fun existUserById(id: Long): Boolean {
+        return jdbc.queryForObject(EXIST_USER_BY_ID, Boolean::class.java, id)
+    }
+
+    fun getNotificationPrincipalByUserId(id: Long): Optional<NotificationPrincipal> {
+        val psc = PreparedStatementCreator { con: Connection ->
+            val ps: PreparedStatement = con.prepareStatement(SELECT_PRINCIPAL_BY_USER_ID)
+            ps.setLong(1, id)
+            ps
+        }
+
+        val resultList: List<NotificationPrincipal> = jdbc.query(psc, notificationPrincipalRowMapper)
+        return resultList.firstOrNull()?.let { Optional.of(it) } ?: Optional.empty()
     }
 
     private fun batchCreateNotification(task: MessageTask, rowsCount: Long) {
@@ -188,7 +232,6 @@ class JdbcAccelerator(
         jdbc.update(SET_TASK_STATUS, status.name, id)
     }
 
-
     private fun selectBatchBuilder(start: Long, end: Long): PreparedStatementCreator {
         return PreparedStatementCreator { con: Connection ->
             val ps: PreparedStatement = con.prepareStatement(SELECT_BATCH)
@@ -201,9 +244,7 @@ class JdbcAccelerator(
     private fun createNotificationResultSetExtractor(rs: ResultSet, task: MessageTask) {
         while (!rs.isAfterLast) {
             val principal: NotificationPrincipal = notificationPrincipalRowMapper.mapRow(rs, 0)
-            broker.sendNotification(
-                builder.buildNotification(principal, NotificationMethod.EMAIL, task)
-            )
+            messageService.sendMessageTask(Tuple(task, principal))
             rs.next()
         }
     }
