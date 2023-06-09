@@ -1,0 +1,2 @@
+docker build -t localhost:5000/email-service -f email-dockerfile .
+docker push localhost:5000/email-service
