@@ -22,6 +22,28 @@ spec:
             limits:
               cpu: 400m
               memory: 500Mi
+          env:
+            #          RABBITMQ
+            - name: rabbit_username
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit-secret
+                  key: username
+            - name: rabbit_password
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit-secret
+                  key: password
+            - name: rabbit_host
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbit-config
+                  key: rabbit_host
+            - name: rabbit_port
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbit-config
+                  key: rabbit_port
           ports:
             - containerPort: 8087
       restartPolicy: Always
