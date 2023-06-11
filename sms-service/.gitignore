@@ -1,6 +1,7 @@
 HELP.md
 .gradle
 build/
+/docker/jar/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -35,4 +36,3 @@ out/
 
 ### VS Code ###
 .vscode/
-!/docker/jar/
