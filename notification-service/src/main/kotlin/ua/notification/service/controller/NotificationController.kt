@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ua.notification.service.dto.*
+import ua.notification.service.entity.additional.NotifyType
 import ua.notification.service.entity.additional.ProcessStatus
 import ua.notification.service.service.NotificationService
 
@@ -16,9 +17,9 @@ class NotificationController(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @PostMapping("/create")
-    override fun createNotification(@RequestBody notification: NotificationRequest): ResponseEntity<NotificationResponse> {
+    override fun createNotification(@RequestParam type: NotifyType, @RequestBody notification: NotificationRequest): ResponseEntity<NotificationResponse> {
         log.info("New notification for all users")
-        return ResponseEntity.ok(notificationService.new(notification))
+        return ResponseEntity.ok(notificationService.new(notification, type))
     }
 
     @GetMapping("/{id}")

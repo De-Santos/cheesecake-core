@@ -25,17 +25,17 @@ class EntityBuilder {
         )
     }
 
-    fun buildMetadata(notificationRequest: NotificationRequest): TaskMetadata {
+    fun buildMetadata(notificationRequest: NotificationRequest, type: NotifyType): TaskMetadata {
         return TaskMetadata(
             message = notificationRequest.message!!,
-            notifyType = notificationRequest.type
+            notifyType = type
         )
     }
 
-    fun buildTaskTuple(notificationRequest: NotificationRequest, status: ProcessStatus): Tuple<Task, TaskMetadata> {
+    fun buildTaskTuple(notificationRequest: NotificationRequest, type: NotifyType, status: ProcessStatus): Tuple<Task, TaskMetadata> {
         return Tuple(
             this.buildTask(status),
-            this.buildMetadata(notificationRequest)
+            this.buildMetadata(notificationRequest, type)
         )
     }
 
@@ -49,7 +49,7 @@ class EntityBuilder {
             uuid = UUID.randomUUID(),
             method = method,
             principal = principal,
-            message = null
+            message = task.message
         )
     }
 

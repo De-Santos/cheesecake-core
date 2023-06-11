@@ -23,6 +23,7 @@ class MessageBuilder(
         .build()
 
     fun build(messageTask: MessageTask): Message {
+        println(messageTask.message)
         return MessageBuilder.withBody(messageTaskConverter.toMessage(messageTask, messageProperty).body)
             .andProperties(messageProperty)
             .build()

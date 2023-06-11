@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import ua.notification.service.dto.*
+import ua.notification.service.entity.additional.NotifyType
 import ua.notification.service.entity.additional.ProcessStatus
 
 interface NotificationApi {
@@ -26,7 +27,7 @@ interface NotificationApi {
         ]
     )
     @ResponseStatus(HttpStatus.OK)
-    fun createNotification(@RequestBody notification: NotificationRequest): ResponseEntity<NotificationResponse>
+    fun createNotification(@RequestParam type: NotifyType, @RequestBody notification: NotificationRequest): ResponseEntity<NotificationResponse>
 
     @Operation(summary = "Get notification by id")
     @ApiResponses(

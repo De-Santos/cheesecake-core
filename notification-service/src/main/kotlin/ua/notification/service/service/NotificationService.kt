@@ -6,6 +6,7 @@ import ua.notification.service.dto.NotificationResponse
 import ua.notification.service.dto.ProcessMetadataResponse
 import ua.notification.service.entity.Task
 import ua.notification.service.entity.TaskMetadata
+import ua.notification.service.entity.additional.NotifyType
 import ua.notification.service.entity.additional.ProcessStatus
 import ua.notification.service.entity.additional.Tuple
 import ua.notification.service.utils.builder.DaoBuilder
@@ -22,9 +23,9 @@ class NotificationService(
     private val messageService: MessageService,
 ) {
 
-    fun new(notification: NotificationRequest): NotificationResponse {
-        validator.forceValidate(notification)
-        val tuple: Tuple<Task, TaskMetadata> = entityBuilder.buildTaskTuple(notification, ProcessStatus.PENDING)
+    fun new(notification: NotificationRequest, type: NotifyType): NotificationResponse {
+        validator.forceValidate(notification, type)
+        val tuple: Tuple<Task, TaskMetadata> = entityBuilder.buildTaskTuple(notification, type, ProcessStatus.PENDING)
         val task: Task = taskRequestConstructor.saveTask(tuple)
         messageService.sendTask(tuple)
         return daoBuilder.buildNotificationResponse(task)

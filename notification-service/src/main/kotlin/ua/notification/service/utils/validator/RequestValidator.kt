@@ -15,8 +15,8 @@ class RequestValidator(
     private val accelerator: JdbcAccelerator
 ) {
 
-    fun forceValidate(notificationRequest: NotificationRequest) {
-        this.messageValidate(notificationRequest.type, notificationRequest.message)
+    fun forceValidate(notificationRequest: NotificationRequest, type: NotifyType) {
+        this.messageValidate(type, notificationRequest.message)
     }
 
     fun forceValidate(type: NotifyType, directNotificationRequest: DirectNotificationRequest) {

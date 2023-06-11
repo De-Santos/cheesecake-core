@@ -1,8 +1,8 @@
 package ua.notification.service.dto
 
-import ua.notification.service.entity.additional.NotifyType
+import com.fasterxml.jackson.annotation.JsonProperty
 
 data class NotificationRequest(
-    val type: NotifyType,
+    @JsonProperty("message")
     val message: String?
 )
