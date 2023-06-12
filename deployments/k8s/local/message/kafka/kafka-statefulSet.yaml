@@ -33,7 +33,7 @@ spec:
             - name: KAFKA_LISTENERS
               value: PLAINTEXT://0.0.0.0:9092
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: PLAINTEXT://$(MY_POD_NAME):9092
+              value: PLAINTEXT://$(MY_POD_NAME).kafka-service.default.svc.cluster.local:9092
             - name: KAFKA_PORT
               value: "9092"
             - name: KAFKA_LOG_DIRS
