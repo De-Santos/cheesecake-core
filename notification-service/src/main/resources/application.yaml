@@ -23,14 +23,16 @@ spring:
     username: ${postgres_username}
     password: ${postgres_password}
     url: ${postgres_url}
-  rabbitmq:
-    host: ${rabbit_host}
-    port: ${rabbit_port}
-    username: ${rabbit_username}
-    password: ${rabbit_password}
-    queue:
-      # noinspection SpringBootApplicationYaml
-      name: notification-queue
+  kafka:
+    bootstrap-servers: 10.1.5.186:9092
+    #  rabbitmq:
+#    host: ${rabbit_host}
+#    port: ${rabbit_port}
+#    username: ${rabbit_username}
+#    password: ${rabbit_password}
+#    queue:
+#      # noinspection SpringBootApplicationYaml
+#      name: notification-queue
   application:
     name: product-service
 server:
