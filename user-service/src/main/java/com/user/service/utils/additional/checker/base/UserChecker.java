@@ -1,7 +1,6 @@
 package com.user.service.utils.additional.checker.base;
 
 
-
 import com.user.service.dao.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

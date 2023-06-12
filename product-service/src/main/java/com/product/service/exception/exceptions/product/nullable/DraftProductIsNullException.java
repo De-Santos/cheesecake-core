@@ -3,6 +3,10 @@ package com.product.service.exception.exceptions.product.nullable;
 import com.product.service.exception.exceptions.product.main.DraftRequestException;
 
 public class DraftProductIsNullException extends DraftRequestException {
+    public static DraftProductIsNullException create() {
+        return new DraftProductIsNullException("Draft product is null");
+    }
+
     public DraftProductIsNullException() {
     }
 

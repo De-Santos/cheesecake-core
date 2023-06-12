@@ -1,8 +1,8 @@
 package com.product.service.controller.product;
 
 import com.product.service.dto.photo.DraftProductDto;
-import com.product.service.dto.product.ModifyingProductRequest;
 import com.product.service.dto.product.ProductResponse;
+import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.service.DraftProductService;
 import com.product.service.service.ProductService;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Log4j2
 @RestController
@@ -23,21 +24,21 @@ public class ProductController implements ProductApi {
 
     @Override
     @PostMapping("/add/{draftId}")
-    public ResponseEntity<ProductResponse> addProduct(@PathVariable("draftId") @NotNull String draftId) {
+    public ResponseEntity<UUID> addProduct(@PathVariable("draftId") @NotNull Long draftId) {
         log.info("Add product by draft product: {}", draftId);
         return ResponseEntity.ok(productService.addProduct(draftId));
     }
 
     @Override
     @PatchMapping("/update/{draftId}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable("draftId") String id) {
+    public ResponseEntity<UUID> updateProduct(@PathVariable("draftId") Long id) {
         log.info("Update product by id: {}", id);
         return ResponseEntity.ok(productService.updateProduct(id));
     }
 
     @Override
     @PatchMapping("edit/{id}")
-    public ResponseEntity<ProductResponse> editProduct(@PathVariable String id) {
+    public ResponseEntity<ProductResponse> editProduct(@PathVariable("id") UUID id) {
         log.info("Edit(active/inactive) product by id: {}", id);
         return ResponseEntity.ok(productService.editProduct(id));
     }
@@ -51,7 +52,7 @@ public class ProductController implements ProductApi {
     }
 
     @Override
-    @GetMapping("/getArchive")
+    @GetMapping("/archive")
     public ResponseEntity<List<ProductResponse>> getArchive() {
         log.info("Get all archive products");
         return ResponseEntity.ok(productService.getArchiveProducts());
@@ -59,70 +60,64 @@ public class ProductController implements ProductApi {
 
     @Override
     @GetMapping("/{versionId}")
-    public ResponseEntity<ProductResponse> getProduct(@PathVariable String versionId) {
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable("versionId") UUID versionId) {
         log.info("Get product by version id: {}", versionId);
         return ResponseEntity.ok(productService.getById(versionId));
     }
 
     @Override
     @GetMapping()
-    public ResponseEntity<List<ProductResponse>> getAll() {
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
         log.info("Get all products");
         return ResponseEntity.ok(productService.getProducts());
     }
 
     @Override
     @PatchMapping("/mode")
-    public ResponseEntity<ProductResponse> sailMode(@RequestBody ModifyingProductRequest modifyingProductRequest) {
-        log.info("Set sail price: {} for product: {}", modifyingProductRequest.getSailPrice(),
-                modifyingProductRequest.getVersionId());
-        return ResponseEntity.ok(productService.sailMode(modifyingProductRequest));
+    public ResponseEntity<ProductResponse> saleMode(@RequestBody SaleProductRequest saleProductRequest) {
+        log.info("Set sail price: {} for product: {}", saleProductRequest.getSailPrice(),
+                saleProductRequest.getVersionId());
+        return ResponseEntity.ok(productService.sailMode(saleProductRequest));
     }
 
-    // TODO: 4/19/2023 test me
     @Override
-    @GetMapping("/draft/of/{id}")
-    public ResponseEntity<DraftProductDto> toDraftProduct(@PathVariable("id") String versionId) {
+    @GetMapping("/draft/of/{versionId}")
+    public ResponseEntity<Long> toDraftProduct(@PathVariable("versionId") UUID versionId) {
         log.info("Get draft from product by versionId: {}", versionId);
         return ResponseEntity.ok(productService.toDraft(versionId));
     }
 
-    // TODO: 4/22/2023 check logic
     @Override
     @PostMapping("/draft")
-    public ResponseEntity<String> addDraft() {
+    public ResponseEntity<Long> addDraft() {
         log.info("New draft");
         return ResponseEntity.ok(draftProductService.newDraft());
     }
 
-    // TODO: 4/22/2023 check logic
     @Override
     @GetMapping("/draft/{draftId}")
-    public ResponseEntity<DraftProductDto> getDraft(@PathVariable("draftId") String id) {
+    public ResponseEntity<DraftProductDto> getDraft(@PathVariable("draftId") Long id) {
         log.info("Get draft product by id: {}", id);
         return ResponseEntity.ok(draftProductService.get(id));
     }
 
-    // TODO: 4/22/2023 check logic
     @Override
     @GetMapping("/draft")
-    public ResponseEntity<List<String>> getDrafts() {
+    public ResponseEntity<List<Long>> getDrafts() {
         log.info("Get all drafts");
         return ResponseEntity.ok(draftProductService.get());
     }
 
-    // TODO: 4/22/2023 check logic
     @Override
-    @PostMapping("/draft/update")
+    @PatchMapping("/draft/update")
     public ResponseEntity<DraftProductDto> updateDraftProduct(@RequestBody DraftProductDto draftProductDto) {
         log.info("Update draft product");
         return ResponseEntity.ok(draftProductService.update(draftProductDto));
     }
 
-    // TODO: 4/22/2023 check logic
     @Override
     @DeleteMapping("/draft/{draftId}")
-    public ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") String id) {
+    public ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") Long id) {
         log.info("Delete draft product by id: {}", id);
         return ResponseEntity.ok(draftProductService.delete(id));
     }

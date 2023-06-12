@@ -1,19 +1,28 @@
 package com.product.service.entity;
 
 import com.product.service.entity.additional.FileCollection;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
-@Document(collection = "archiveProduct")
+@Entity
+@Table(name = "archive_products")
+@NoArgsConstructor
+@AllArgsConstructor
 public final class ArchiveProduct {
-    private String versionId;
-    private String actualProductId;
+    @Id
+    @Column(name = "version_id")
+    private UUID versionId;
+    private Long actualProductId;
+    @OneToOne(mappedBy = "archiveProduct")
     private FileCollection images;
     private String name;
     private String description;

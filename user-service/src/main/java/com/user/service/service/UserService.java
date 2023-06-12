@@ -28,7 +28,7 @@ public class UserService {
         log.debug("creating user, userRegistrationDto: {}", userPrivateDataDto);
         return userRequestConstructor.create(userPrivateDataDto);
     }
-    
+
     public UserPrivateDataDto getPrivateData(Long userId) {
         log.debug("getting user private data by id: {}", userId);
         checker.check(userId);
@@ -52,7 +52,7 @@ public class UserService {
     public UserPrivateDataDto updateData(UserPrivateDataDto userPrivateDataDto) {
         log.debug("update user private data, userPrivateDataDto: {}", userPrivateDataDto);
         return convertor.mergeConvert(
-        userRequestConstructor.updateUser(userPrivateDataDto),
-        userRequestConstructor.updatePrivateData(userPrivateDataDto));
+                userRequestConstructor.updateUser(userPrivateDataDto),
+                userRequestConstructor.updatePrivateData(userPrivateDataDto));
     }
 }

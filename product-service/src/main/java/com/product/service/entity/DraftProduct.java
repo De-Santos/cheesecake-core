@@ -1,26 +1,32 @@
 package com.product.service.entity;
 
 import com.product.service.entity.additional.FileCollection;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
+@Entity
+@Table(name = "drafts")
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "draft")
 public final class DraftProduct {
     @Id
-    private String id;
-    private String parentId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private UUID parentVersionId;
+
+    @OneToOne(mappedBy = "draftProduct")
     private FileCollection images;
+
     private String name;
     private String description;
     private BigDecimal price;
@@ -28,7 +34,6 @@ public final class DraftProduct {
 
     public static DraftProduct create() {
         DraftProduct draft = new DraftProduct();
-        draft.setImages(FileCollection.create());
         draft.setCreateDate(LocalDateTime.now());
         return draft;
     }

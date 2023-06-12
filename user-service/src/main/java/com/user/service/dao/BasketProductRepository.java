@@ -14,7 +14,7 @@ public interface BasketProductRepository extends JpaRepository<BasketProduct, Lo
     @Modifying
     @Query("delete from BasketProduct b where b.id=:id and b.productId=:productId")
     void forceDelete(@Param("id") Long id, @Param("productId") String productId);
-    
+
     @Modifying
     @Query("delete from BasketProduct b where b.basket=:basket")
     void forceDeleteProductsByBasketId(@Param("basket") Basket basket);

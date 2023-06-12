@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  namespace: default
+  labels:
+    app: order-service
+spec:
+  selector:
+    matchLabels:
+      app: order-service
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: localhost:5000/order-service
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 500Mi
+          env:
+            - name: username
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: postgres-user
+            - name: password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: postgres-password
+            - name: postgres_url
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_url
+            - name: product_service_url
+              valueFrom:
+                configMapKeyRef:
+                  name: module-url
+                  key: product-service
+          ports:
+            - containerPort: 8084
+      restartPolicy: Always

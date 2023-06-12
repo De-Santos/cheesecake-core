@@ -1,21 +1,27 @@
 package com.product.service.dto.photo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.product.service.dto.photo.additional.FileCollectionDto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
 @Jacksonized
 public class DraftProductDto {
-    private String id;
+    @JsonProperty("id")
+    private Long id;
+    @JsonProperty("images")
     private FileCollectionDto images;
+    @JsonProperty("name")
     private String name;
+    @JsonProperty("description")
     private String description;
+    @JsonProperty("price")
     private BigDecimal price;
-    private LocalDateTime createDate;
+    @JsonProperty("create_date")
+    private String createDate;
 }

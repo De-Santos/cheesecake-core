@@ -1,22 +1,19 @@
 package com.user.service.controller.user;
 
-import com.user.service.dto.user.UserRegistrationDto;
-import com.user.service.entities.UserPrivateData;
-import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import ua.cheesecake.dto.UserDto;
 import ua.cheesecake.dto.UserPrivateDataDto;
+
+import java.util.List;
+
 
 public interface UserApi {
     @Operation(summary = "Create new user", description = "Create user in database")

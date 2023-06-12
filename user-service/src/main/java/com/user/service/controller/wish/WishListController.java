@@ -32,7 +32,7 @@ public class WishListController implements WishListApi {
     public ResponseEntity<Boolean> deleteItem(@NotNull WishListRequest wishListRequest) {
         log.info("Delete item in wish list");
         log.debug(wishListRequest);
-        return ResponseEntity.ok(wishListService.deleteWishItem(wishListRequest)); 
+        return ResponseEntity.ok(wishListService.deleteWishItem(wishListRequest));
     }
 
     @Override

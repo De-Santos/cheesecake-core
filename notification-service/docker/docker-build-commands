@@ -1,0 +1,2 @@
+docker build -t localhost:5000/product-service -f product-dockerfile .
+docker push localhost:5000/product-service

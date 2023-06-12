@@ -1,72 +1,93 @@
 package com.product.service.entity.additional;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.product.service.exception.exceptions.photo.found.FileNotFoundException;
+import com.product.service.entity.ArchiveProduct;
+import com.product.service.entity.DraftProduct;
+import com.product.service.entity.Product;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Jacksonized
-public class FileCollection {
-    private List<Photo> bannerPhotos;
-    // TODO: 4/21/2023 migrate to Optional
-    private Photo descriptionPhoto;
+@Entity
+@Table(name = "file_collection")
+public final class FileCollection {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public static FileCollection create() {
+    @OneToMany(mappedBy = "fileCollection", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<BannerPhoto> bannerPhotos;
+
+    @OneToOne(mappedBy = "fileCollection", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private DescriptionPhoto descriptionPhoto;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "draft_id", referencedColumnName = "id")
+    private DraftProduct draftProduct;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private Product product;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "archive_id", referencedColumnName = "version_id")
+    private ArchiveProduct archiveProduct;
+
+    public static FileCollection create(Product product) {
         return FileCollection.builder()
-                .bannerPhotos(new ArrayList<>())
-                .descriptionPhoto(null)
+                .product(product)
                 .build();
     }
 
-    @JsonIgnore
-    public List<Photo> getAll() {
-        List<Photo> allPhotos = new ArrayList<>(bannerPhotos);
-        if (Objects.nonNull(descriptionPhoto)) allPhotos.add(descriptionPhoto);
-        return allPhotos;
+    public static FileCollection create(DraftProduct draftProduct) {
+        return FileCollection.builder()
+                .draftProduct(draftProduct)
+                .build();
     }
 
-    @JsonIgnore
-    public Photo getPhotoByHash(UUID hash) {
-        if (Objects.nonNull(descriptionPhoto) && descriptionPhoto.getHash().equals(hash)) return descriptionPhoto;
-        return bannerPhotos.stream()
-                .filter(photo -> Objects.equals(photo.getHash(), hash))
-                .findFirst()
-                .orElseThrow(() -> new FileNotFoundException("File not found by id: " + hash));
+    public static FileCollection create(ArchiveProduct archiveProduct) {
+        return FileCollection.builder()
+                .archiveProduct(archiveProduct)
+                .build();
     }
 
-    @JsonIgnore
-    public Optional<Photo> getPhotoByOrder(Integer position) {
-        return bannerPhotos.stream()
-                .filter(photo -> Objects.equals(photo.getOrder(), position))
-                .findFirst();
+    public FileCollection draftProduct(DraftProduct newDraftProduct) {
+        draftProduct = newDraftProduct;
+        product = null;
+        archiveProduct = null;
+        return this;
     }
 
-    @JsonIgnore
-    public Photo remove(UUID hash) {
-        if (Objects.nonNull(descriptionPhoto) && descriptionPhoto.getHash().equals(hash)) {
-            Photo temp = descriptionPhoto;
-            descriptionPhoto = null;
-            return temp;
-        }
-        Photo photo = bannerPhotos.stream()
-                .filter(it -> it.getHash().equals(hash))
-                .findFirst()
-                .orElseThrow(() -> new FileNotFoundException("File not found by id: " + hash));
-        bannerPhotos.remove(photo);
-        return photo;
+    public FileCollection product(Product newProduct) {
+        draftProduct = null;
+        product = newProduct;
+        archiveProduct = null;
+        return this;
+    }
+
+    public FileCollection archiveProduct(ArchiveProduct newArchiveProduct) {
+        draftProduct = null;
+        product = null;
+        archiveProduct = newArchiveProduct;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "FileCollection{" +
+                "id=" + id +
+                ", bannerPhotos=" + bannerPhotos +
+                ", descriptionPhoto=" + descriptionPhoto +
+                '}';
     }
 }
 

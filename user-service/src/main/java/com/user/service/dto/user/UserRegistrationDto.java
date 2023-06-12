@@ -1,12 +1,10 @@
 package com.user.service.dto.user;
 
-import lombok.extern.jackson.Jacksonized;
-import org.springframework.validation.annotation.Validated;
-
 import com.user.service.utils.additional.validator.email.ValidEmail;
 import com.user.service.utils.additional.validator.pasword.ValidPassword;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 @Data
 @Builder
