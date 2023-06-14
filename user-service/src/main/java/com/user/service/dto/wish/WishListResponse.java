@@ -1,4 +1,4 @@
-package com.user.service.dto.wishList;
+package com.user.service.dto.wish;
 
 import lombok.Builder;
 import lombok.Data;

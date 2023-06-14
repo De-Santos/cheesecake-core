@@ -1,7 +1,7 @@
 package com.user.service.service;
 
 
-import com.user.service.dto.wishList.WishListRequest;
+import com.user.service.dto.wish.WishListRequest;
 import com.user.service.utils.additional.checker.SuperWishListChecker;
 import com.user.service.utils.request.WishListRequestConstructor;
 import lombok.RequiredArgsConstructor;

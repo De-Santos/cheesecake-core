@@ -1,6 +1,6 @@
 package com.user.service.dto.basket;
 
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -9,10 +9,12 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class BasketRequest {
-    @NotNull
+    @JsonProperty("user_id")
     private final String userId;
-    @NotNull
+
+    @JsonProperty("product_version_id")
     private final String productVersionId;
-    @NotNull
+
+    @JsonProperty("count")
     private final Integer count;
 }

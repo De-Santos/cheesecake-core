@@ -8,16 +8,16 @@ import lombok.extern.jackson.Jacksonized;
 @Data
 @Builder
 @Jacksonized
-public class UserRegistrationDto {
-    @JsonProperty("name")
-    private String name;
-
-    @JsonProperty("second_name")
-    private String secondName;
+public class UserPrivateDataRequest {
+    @JsonProperty("user_id")
+    private Long userId;
 
     @JsonProperty("email")
     private String email;
 
-    @JsonProperty("password")
-    private String password;
+    @JsonProperty("address")
+    private String address;
+
+    @JsonProperty("phone_number")
+    private String phoneNumber;
 }

@@ -2,20 +2,19 @@ package com.user.service.utils.request;
 
 import com.user.service.dao.UserPrivateDataRepository;
 import com.user.service.dao.UserRepository;
+import com.user.service.dto.user.*;
 import com.user.service.entities.User;
 import com.user.service.entities.UserPrivateData;
 import com.user.service.exceptions.exceptions.UserPrivateDataNotFoundException;
+import com.user.service.utils.additional.checker.base.UserChecker;
 import com.user.service.utils.convertor.Convertor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import ua.cheesecake.dto.UserDto;
-import ua.cheesecake.dto.UserPrivateDataDto;
 import ua.cheesecake.dto.exception.UserNotFoundException;
 
 import java.util.List;
 
-@Log4j2
 @Component
 @RequiredArgsConstructor
 public class UserRequestConstructor {
@@ -23,54 +22,47 @@ public class UserRequestConstructor {
     private final Convertor convertor;
     private final UserRepository userRepository;
     private final UserPrivateDataRepository userPrivateDataRepository;
+    private final UserChecker userChecker;
 
-    public UserDto create(UserPrivateDataDto userPrivateDataDto) {
-        log.debug("User is creating");
-        User user = userRepository.save(convertor.convert(userPrivateDataDto));
-        userPrivateDataRepository.save(convertor.mergeConvert(userPrivateDataDto, user));
+    public UserResponse create(UserRegistrationRequest userRegistrationRequest) {
+        User user = userRepository.save(convertor.convert(userRegistrationRequest));
+        userPrivateDataRepository.save(convertor.mergeConvert(userRegistrationRequest, user));
         return convertor.convert(user);
     }
 
     public List<UserDto> get() {
-        log.debug("Getting all users");
         return convertor.convert(userRepository.findAll());
     }
 
     public void delete(Long userId) {
-        log.debug("Deleting user by id: {}", userId);
         userPrivateDataRepository.deleteByUserId(userId);
         userRepository.deleteByUserId(userId);
     }
 
-    public UserPrivateDataDto getPrivateData(Long userId) {
-        log.debug("Getting user private data");
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        UserPrivateData userPrivateData = userPrivateDataRepository
+    public UserPrivateData getPrivateData(Long userId) {
+        return userPrivateDataRepository
                 .findById(userId)
                 .orElseThrow(UserPrivateDataNotFoundException::new);
-        log.debug(userPrivateData);
-        return convertor.mergeConvert(userPrivateData, user);
-
     }
 
-    public UserPrivateDataDto updatePrivateData(UserPrivateDataDto userPrivateDataDto) {
-        Long userId = userPrivateDataDto.getUserId();
-        log.debug("Updating user private data by id: {}", userId);
-        UserPrivateData userPrivateData = userPrivateDataRepository
-                .findById(userId)
-                .orElseThrow(UserPrivateDataNotFoundException::new);
-        UserPrivateData newUserPrivateData = userPrivateDataRepository
-                .save(convertor.updateCovert(userPrivateData, userPrivateDataDto));
-        log.debug("Updated user private data is: {}", newUserPrivateData);
-        return convertor.convert(newUserPrivateData);
-
+    public UserInfoResponse getUserInfoResponse(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found by id" + userId));
+        return convertor.mergeConvert(user.getUserPrivateData(), user);
     }
 
-    public UserDto updateUser(UserPrivateDataDto userPrivateDataDto) {
-        Long userId = userPrivateDataDto.getUserId();
-        log.debug("Updating user data by id: {}", userId);
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        User newUser = userRepository.save(convertor.mergeConvert(user, userPrivateDataDto));
-        return convertor.convert(newUser);
+    public UserPrivateData updatePrivateData(UserPrivateDataRequest userPrivateDataDto) {
+        userChecker.check(userPrivateDataDto.getUserId());
+        return userPrivateDataRepository.save(
+                convertor.updateConvert(
+                        userPrivateDataDto,
+                        userPrivateDataRepository.getDateById(userPrivateDataDto.getUserId())
+                )
+        );
+    }
+
+    public User updateUser(UserRequest userRequest) {
+        userChecker.check(userRequest.getId());
+        return userRepository.save(convertor.convert(userRequest));
     }
 }

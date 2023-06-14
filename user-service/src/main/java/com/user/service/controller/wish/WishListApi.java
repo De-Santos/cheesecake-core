@@ -1,7 +1,7 @@
 package com.user.service.controller.wish;
 
 
-import com.user.service.dto.wishList.WishListRequest;
+import com.user.service.dto.wish.WishListRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
-
+@SuppressWarnings("unused")
 public interface WishListApi {
     @Operation(summary = "Add item in wishList", description = "Return 'true' if operation was successful else return 'false'")
     @ApiResponses(value = {

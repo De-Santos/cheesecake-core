@@ -1,5 +1,6 @@
 package com.user.service.controller.user;
 
+import com.user.service.dto.user.*;
 import com.user.service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -7,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ua.cheesecake.dto.UserDto;
-import ua.cheesecake.dto.UserPrivateDataDto;
 
 import java.util.List;
 
@@ -20,26 +20,37 @@ public class UserController implements UserApi {
 
     @Override
     @PostMapping("/registration")
-    public ResponseEntity<UserDto> registration(@RequestBody UserPrivateDataDto userPrivateDataDto) {
+    public ResponseEntity<UserResponse> registration(@RequestBody UserRegistrationRequest userRegistrationRequest) {
         log.info("Registration user");
-        log.debug(userPrivateDataDto);
-        return ResponseEntity.ok(userService.create(userPrivateDataDto));
+        return ResponseEntity.ok(userService.create(userRegistrationRequest));
     }
 
     @Override
-    @PostMapping("/{id}")
-    public ResponseEntity<UserPrivateDataDto> getUserPrivateData(@PathVariable(name = "id") Long userId) {
+    @GetMapping("/data/{id}")
+    public ResponseEntity<UserPrivateDataResponse> getUserPrivateData(@PathVariable(name = "id") Long userId) {
         log.info("Get user private data");
-        log.debug(userId);
         return ResponseEntity.ok(userService.getPrivateData(userId));
     }
 
     @Override
-    @PatchMapping()
-    public ResponseEntity<UserPrivateDataDto> updateUserPrivateData(@RequestBody UserPrivateDataDto userPrivateDataDto) {
+    @GetMapping("/info/{id}")
+    public ResponseEntity<UserInfoResponse> getUserInfo(@PathVariable(name = "id") Long userId) {
+        log.info("Get user info");
+        return ResponseEntity.ok(userService.getUserInfo(userId));
+    }
+
+    @Override
+    @PatchMapping("/data")
+    public ResponseEntity<UserPrivateDataResponse> updateUserPrivateData(@RequestBody UserPrivateDataRequest userPrivateDataDto) {
         log.info("Update user private data");
-        log.debug(userPrivateDataDto);
-        return ResponseEntity.ok(userService.updateData(userPrivateDataDto));
+        return ResponseEntity.ok(userService.updateUserPrivateData(userPrivateDataDto));
+    }
+
+    @Override
+    @PatchMapping()
+    public ResponseEntity<UserResponse> updateUser(@RequestBody UserRequest userRequest) {
+        log.info("Update user");
+        return ResponseEntity.ok(userService.updateUser(userRequest));
     }
 
     @Override
@@ -53,7 +64,6 @@ public class UserController implements UserApi {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable(name = "id") Long userId) {
         log.info("Delete user by id");
-        log.debug(userId);
         userService.delete(userId);
     }
 }

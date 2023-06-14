@@ -17,11 +17,10 @@ public class SuperBasketChecker {
     private final ProductChecker productChecker;
     private final BasketChecker basketChecker;
 
-    public void checkBasketExistence(Long userId, String versionId, Integer count) {
+    public void checkBasketExistence(Long userId, String versionId) {
         userChecker.check(userId);
         basketChecker.checkCreate(userId);
         productChecker.check(versionId);
-        log.debug("--passed all tests");
     }
 
     public void check(Long userId) {

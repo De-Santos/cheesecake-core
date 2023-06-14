@@ -5,10 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.Date;
+
 @Data
 @Builder
 @Jacksonized
-public class UserRegistrationDto {
+public class UserInfoResponse {
+    @JsonProperty("user_id")
+    private Long userId;
+
     @JsonProperty("name")
     private String name;
 
@@ -18,6 +23,13 @@ public class UserRegistrationDto {
     @JsonProperty("email")
     private String email;
 
-    @JsonProperty("password")
-    private String password;
+    @JsonProperty("address")
+    private String address;
+
+    @JsonProperty("phone_number")
+    private String phoneNumber;
+
+    @JsonProperty("creation_time")
+    private Date createTime;
+
 }

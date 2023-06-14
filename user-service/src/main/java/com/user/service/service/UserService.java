@@ -1,5 +1,6 @@
 package com.user.service.service;
 
+import com.user.service.dto.user.*;
 import com.user.service.utils.additional.checker.SuperBasketChecker;
 import com.user.service.utils.additional.checker.SuperWishListChecker;
 import com.user.service.utils.additional.checker.base.UserChecker;
@@ -10,7 +11,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.cheesecake.dto.UserDto;
-import ua.cheesecake.dto.UserPrivateDataDto;
 
 import java.util.List;
 
@@ -24,20 +24,22 @@ public class UserService {
     private final SuperBasketChecker superBasketChecker;
     private final SuperWishListChecker superWishListChecker;
 
-    public UserDto create(UserPrivateDataDto userPrivateDataDto) {
-        log.debug("creating user, userRegistrationDto: {}", userPrivateDataDto);
-        return userRequestConstructor.create(userPrivateDataDto);
+    public UserResponse create(UserRegistrationRequest userRegistrationRequest) {
+        return userRequestConstructor.create(userRegistrationRequest);
     }
 
-    public UserPrivateDataDto getPrivateData(Long userId) {
-        log.debug("getting user private data by id: {}", userId);
+    public UserPrivateDataResponse getPrivateData(Long userId) {
         checker.check(userId);
-        return userRequestConstructor.getPrivateData(userId);
+        return convertor.convert(userRequestConstructor.getPrivateData(userId));
     }
 
     public List<UserDto> get() {
         log.debug("getting all users user");
         return userRequestConstructor.get();
+    }
+
+    public UserInfoResponse getUserInfo(Long userId) {
+        return userRequestConstructor.getUserInfoResponse(userId);
     }
 
     @Transactional
@@ -49,10 +51,11 @@ public class UserService {
         superWishListChecker.checkDelete(userId);
     }
 
-    public UserPrivateDataDto updateData(UserPrivateDataDto userPrivateDataDto) {
-        log.debug("update user private data, userPrivateDataDto: {}", userPrivateDataDto);
-        return convertor.mergeConvert(
-                userRequestConstructor.updateUser(userPrivateDataDto),
-                userRequestConstructor.updatePrivateData(userPrivateDataDto));
+    public UserPrivateDataResponse updateUserPrivateData(UserPrivateDataRequest userPrivateDataRequest) {
+        return convertor.convert(userRequestConstructor.updatePrivateData(userPrivateDataRequest));
+    }
+
+    public UserResponse updateUser(UserRequest userRequest) {
+        return convertor.convert(userRequestConstructor.updateUser(userRequest));
     }
 }
