@@ -1,6 +1,7 @@
 package com.product.service.entity;
 
 import com.product.service.entity.additional.FileCollection;
+import com.product.service.entity.additional.tag.TagCollection;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,10 +23,17 @@ public final class DraftProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "hash", unique = true)
+    private UUID hash;
+
     private UUID parentVersionId;
 
     @OneToOne(mappedBy = "draftProduct")
     private FileCollection images;
+
+    @OneToOne(mappedBy = "draftProduct")
+    private TagCollection tags;
+
 
     private String name;
     private String description;

@@ -1,6 +1,7 @@
 package com.product.service.entity;
 
 import com.product.service.entity.additional.FileCollection;
+import com.product.service.entity.additional.tag.TagCollection;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,9 +22,15 @@ public final class ArchiveProduct {
     @Id
     @Column(name = "version_id")
     private UUID versionId;
+
     private Long actualProductId;
+
     @OneToOne(mappedBy = "archiveProduct")
     private FileCollection images;
+
+    @OneToOne(mappedBy = "archiveProduct")
+    private TagCollection tags;
+
     private String name;
     private String description;
     private BigDecimal price;
