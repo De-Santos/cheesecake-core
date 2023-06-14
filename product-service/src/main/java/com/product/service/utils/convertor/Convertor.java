@@ -1,6 +1,5 @@
 package com.product.service.utils.convertor;
 
-import com.product.service.dao.ProductRepository;
 import com.product.service.dto.photo.DraftProductDto;
 import com.product.service.dto.photo.PhotoResponse;
 import com.product.service.dto.photo.additional.FileCollectionDto;
@@ -23,7 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import ua.cheesecake.dto.additional.TimeMapper;
+import ua.cheesecake.dto.TimeMapper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -36,7 +35,6 @@ import java.util.stream.Collectors;
 public class Convertor {
     private final TimeMapper timeMapper;
     private final JdbcAccelerator accelerator;
-    private final ProductRepository productRepository;
 
     public ProductResponse convert(Product product) {
         return ProductResponse.builder()
