@@ -1,27 +1,39 @@
 package com.user.service.utils.convertor;
 
 import com.user.service.dto.basket.BasketProductDto;
+import com.user.service.dto.basket.BasketRequest;
 import com.user.service.dto.basket.BasketResponse;
 import com.user.service.dto.user.*;
-import com.user.service.entities.*;
+import com.user.service.entities.Basket;
+import com.user.service.entities.BasketProduct;
+import com.user.service.entities.User;
+import com.user.service.entities.UserPrivateData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ua.cheesecake.dto.UserDto;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class Convertor {
+public class Converter {
 
-    public BasketProduct mergeConvert(Basket basket, String productId, Integer count) {
-        BasketProduct product = new BasketProduct();
-        product.setBasket(basket);
-        product.setProductId(productId);
-        product.setCount(count);
-        return product;
+    public BasketProduct convert(Basket basket, BasketRequest basketRequest) {
+        return BasketProduct.builder()
+                .basket(basket)
+                .productVersionId(basketRequest.getProductVersionId())
+                .count(basketRequest.getCount())
+                .build();
+    }
+
+    public BasketProduct convert(Long id, Basket basket, BasketRequest basketRequest) {
+        return BasketProduct.builder()
+                .id(id)
+                .basket(basket)
+                .productVersionId(basketRequest.getProductVersionId())
+                .count(basketRequest.getCount())
+                .build();
     }
 
     public BasketResponse convert(Basket basket) {
@@ -35,7 +47,7 @@ public class Convertor {
                 .build();
     }
 
-    public UserPrivateData mergeConvert(UserRegistrationRequest userRegistrationRequest, User user) {
+    public UserPrivateData convert(UserRegistrationRequest userRegistrationRequest, User user) {
         return UserPrivateData.builder()
                 .user(user)
                 .email(userRegistrationRequest.getEmail())
@@ -92,7 +104,7 @@ public class Convertor {
                 .toList();
     }
 
-    public UserInfoResponse mergeConvert(UserPrivateData userPrivateData, User user) {
+    public UserInfoResponse convert(UserPrivateData userPrivateData, User user) {
         return UserInfoResponse.builder()
                 .userId(user.getId())
                 .name(user.getName())
@@ -114,28 +126,10 @@ public class Convertor {
                 .build();
     }
 
-    public WishList emptyWishList(Long userId) {
-        WishList list = new WishList();
-        list.setId(userId);
-        list.setProductIds(Collections.emptyList());
-        return list;
-    }
-
-    public Basket emptyBasket(Long userId) {
-        Basket basket = new Basket();
-        basket.setId(userId);
-        return basket;
-    }
-
     public BasketProductDto getBasketProductDto(BasketProduct basketProduct) {
         return BasketProductDto.builder()
-                .productId(basketProduct.getProductId())
+                .productId(basketProduct.getProductVersionId())
                 .count(basketProduct.getCount())
                 .build();
-    }
-
-    public BasketProduct setConvert(BasketProduct basketProduct, Integer count) {
-        basketProduct.setCount(count);
-        return basketProduct;
     }
 }

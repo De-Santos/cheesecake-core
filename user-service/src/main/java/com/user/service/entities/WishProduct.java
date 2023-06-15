@@ -11,20 +11,19 @@ import java.util.UUID;
 @Data
 @Entity
 @Builder
-@Table(name = "basket_products")
+@Table(name = "wish_products")
 @AllArgsConstructor
 @NoArgsConstructor
-public final class BasketProduct {
+public class WishProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "basket_id")
-    private Basket basket;
-
     @Column(name = "product_version_id")
     private UUID productVersionId;
 
-    private Integer count;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wish_list_id")
+    private WishList wishList;
 }
+

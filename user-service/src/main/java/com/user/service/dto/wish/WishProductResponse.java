@@ -10,10 +10,10 @@ import java.util.UUID;
 @Data
 @Builder
 @Jacksonized
-public class WishListRequest {
-    @JsonProperty("user_id")
-    private final Long userId;
-
+public class WishProductResponse {
     @JsonProperty("product_version_id")
-    private final UUID productVersionId;
+    private UUID productVersionId;
+
+    @JsonProperty("wish_list_id")
+    private Long wishListId;
 }

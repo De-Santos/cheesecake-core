@@ -1,9 +1,10 @@
 package com.user.service.controller.basket;
 
 
-import com.user.service.dto.basket.BasketProductDto;
+import com.user.service.dto.basket.BasketProductResponse;
 import com.user.service.dto.basket.BasketRequest;
 import com.user.service.dto.basket.BasketResponse;
+import com.user.service.dto.basket.DeleteBasketProductRequest;
 import com.user.service.service.BasketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,22 +20,22 @@ public class BasketController implements BasketApi {
     private final BasketService basketService;
 
     @Override
-    @PutMapping()
-    public ResponseEntity<Boolean> addItem(@RequestBody BasketRequest basketRequest) {
+    @PostMapping()
+    public ResponseEntity<BasketProductResponse> addItem(@RequestBody BasketRequest basketRequest) {
         log.info("Add item in basket");
         return ResponseEntity.ok(basketService.add(basketRequest));
     }
 
     @Override
     @DeleteMapping()
-    public ResponseEntity<Boolean> deleteItem(@RequestBody BasketRequest basketRequest) {
+    public ResponseEntity<Boolean> deleteItem(@RequestBody DeleteBasketProductRequest deleteBasketProductRequest) {
         log.info("Delete item in basket");
-        return ResponseEntity.ok(basketService.delete(basketRequest));
+        return ResponseEntity.ok(basketService.delete(deleteBasketProductRequest));
     }
 
     @Override
     @PatchMapping()
-    public ResponseEntity<BasketProductDto> updateBasketProduct(@RequestBody BasketRequest basketRequest) {
+    public ResponseEntity<BasketProductResponse> updateBasketProduct(@RequestBody BasketRequest basketRequest) {
         log.info("Update basket");
         return ResponseEntity.ok(basketService.update(basketRequest));
     }

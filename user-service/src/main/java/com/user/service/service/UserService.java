@@ -1,10 +1,9 @@
 package com.user.service.service;
 
 import com.user.service.dto.user.*;
-import com.user.service.utils.additional.checker.SuperBasketChecker;
-import com.user.service.utils.additional.checker.SuperWishListChecker;
 import com.user.service.utils.additional.checker.base.UserChecker;
-import com.user.service.utils.convertor.Convertor;
+import com.user.service.utils.builder.ResponseBuilder;
+import com.user.service.utils.convertor.Converter;
 import com.user.service.utils.request.UserRequestConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,19 +17,18 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final Convertor convertor;
+    private final Converter converter;
     private final UserRequestConstructor userRequestConstructor;
     private final UserChecker checker;
-    private final SuperBasketChecker superBasketChecker;
-    private final SuperWishListChecker superWishListChecker;
+    private final ResponseBuilder responseBuilder;
 
     public UserResponse create(UserRegistrationRequest userRegistrationRequest) {
-        return userRequestConstructor.create(userRegistrationRequest);
+        return responseBuilder.convert(userRequestConstructor.create(userRegistrationRequest));
     }
 
     public UserPrivateDataResponse getPrivateData(Long userId) {
         checker.check(userId);
-        return convertor.convert(userRequestConstructor.getPrivateData(userId));
+        return converter.convert(userRequestConstructor.getPrivateData(userId));
     }
 
     public List<UserDto> get() {
@@ -47,15 +45,13 @@ public class UserService {
         log.debug("delete user by id: {}", userId);
         checker.check(userId);
         userRequestConstructor.delete(userId);
-        superBasketChecker.checkDelete(userId);
-        superWishListChecker.checkDelete(userId);
     }
 
     public UserPrivateDataResponse updateUserPrivateData(UserPrivateDataRequest userPrivateDataRequest) {
-        return convertor.convert(userRequestConstructor.updatePrivateData(userPrivateDataRequest));
+        return converter.convert(userRequestConstructor.updatePrivateData(userPrivateDataRequest));
     }
 
     public UserResponse updateUser(UserRequest userRequest) {
-        return convertor.convert(userRequestConstructor.updateUser(userRequest));
+        return converter.convert(userRequestConstructor.updateUser(userRequest));
     }
 }

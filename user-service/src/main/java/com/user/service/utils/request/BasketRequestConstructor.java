@@ -2,19 +2,20 @@ package com.user.service.utils.request;
 
 import com.user.service.dao.BasketProductRepository;
 import com.user.service.dao.BasketRepository;
-import com.user.service.dto.basket.BasketProductDto;
+import com.user.service.dto.basket.BasketProductResponse;
+import com.user.service.dto.basket.BasketRequest;
 import com.user.service.dto.basket.BasketResponse;
+import com.user.service.dto.basket.DeleteBasketProductRequest;
 import com.user.service.entities.Basket;
 import com.user.service.entities.BasketProduct;
 import com.user.service.exceptions.exceptions.BasketNotFoundException;
 import com.user.service.exceptions.exceptions.BasketProductNotFoundException;
-import com.user.service.utils.convertor.Convertor;
-import jakarta.validation.constraints.NotNull;
+import com.user.service.utils.convertor.Converter;
+import com.user.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Log4j2
@@ -24,70 +25,37 @@ public class BasketRequestConstructor {
 
     private final BasketRepository basketRepository;
     private final BasketProductRepository basketProductRepository;
-    private final Convertor convertor;
+    private final JdbcAccelerator accelerator;
+    private final Converter converter;
 
-    public boolean addItemToBasket(Long userId, String versionId, Integer count) {
-        Basket basket = basketRepository.findById(userId).orElseThrow(BasketNotFoundException::new);
-        log.debug("addItemToBasket get versionId: {} response basket is: {}", versionId, basket);
-        if (basketProductContainsMapper(basket, versionId)) {
-            basketProductRepository.save(convertor.mergeConvert(basket, versionId, count));
-            return true;
-        }
-        return false;
+    public BasketProduct addItemToBasket(BasketRequest basketRequest) {
+        Basket basket = basketRepository.findById(basketRequest.getUserId()).orElseThrow(BasketNotFoundException::new);
+        Optional<Long> id = accelerator.getBasketProductIdBy(basketRequest.getProductVersionId(), basket.getId());
+        return id.map(
+                it -> basketProductRepository.save(converter.convert(it, basket, basketRequest))
+        ).orElseGet(
+                () -> basketProductRepository.save(converter.convert(basket, basketRequest))
+        );
     }
 
-    private boolean basketProductContainsMapper(Basket basket, String versionId) {
-        List<BasketProduct> productList = basket.getProductList();
-        if (productList != null) {
-            List<String> products = productList.stream().map(BasketProduct::getProductId).toList();
-            return products.contains(versionId);
-        }
+    public boolean checkItemFromBasket(BasketRequest basketRequest) {
+        return accelerator.existBasketProductBy(basketRequest.getProductVersionId(), basketRequest.getUserId());
+    }
+
+    public boolean deleteItemFromBasket(DeleteBasketProductRequest deleteRequest) {
+        if (Boolean.TRUE.equals(accelerator.existBasketProductBy(deleteRequest.getProductVersionId(), deleteRequest.getUserId())))
+            throw BasketProductNotFoundException.create(deleteRequest.getUserId(), deleteRequest.getProductVersionId());
+        basketProductRepository.forceDelete(deleteRequest.getUserId(), deleteRequest.getProductVersionId());
         return true;
     }
 
-    public boolean checkItemFromBasket(Long userId, String versionId) {
+    public BasketProductResponse updateItemFromBasket(BasketRequest basketRequest) {
+        return accelerator.updateCountInBasketProductBy(basketRequest.getProductVersionId(), basketRequest.getUserId())
+                .orElseThrow(() -> BasketProductNotFoundException.create(basketRequest.getUserId(), basketRequest.getProductVersionId()));
+    }
+
+    public BasketResponse getItemsFromBasket(Long userId) {
         Basket basket = basketRepository.findById(userId).orElseThrow(BasketNotFoundException::new);
-        log.debug("checkItemFromBasket get versionId: {}, basket: {} ", versionId, basket);
-        return basketProductRepository.existsBasketProductByBasketAndProductId(basket, versionId);
-    }
-
-    public void deleteBasket(Long userId) {
-        Basket basket = basketRepository.findById(userId).orElseThrow(BasketNotFoundException::new);
-        log.debug("deleteBasket delete basket by id: {}", userId);
-        basketProductRepository.forceDeleteProductsByBasketId(basket);
-        basketRepository.deleteById(userId);
-    }
-
-    public boolean deleteItemFromBasket(Long userId, String versionId) {
-        Optional<BasketProduct> basketProductId = findBasketProductIdByVersionId(versionId, userId);
-        log.debug("deleteItemFromBasket get basketProduct: {}", basketProductId);
-        if (basketProductId.isPresent()) {
-            basketProductRepository.forceDelete(basketProductId.get().getId(), versionId);
-            return true;
-        }
-        return false;
-    }
-
-    public BasketProductDto updateItemFromBasket(Long userId, String versionId, Integer count) {
-        BasketProduct basketProduct = findBasketProductIdByVersionId(versionId, userId)
-                .orElseThrow(BasketProductNotFoundException::new);
-        log.debug("updateItemFromBasket get basketProduct: {}", basketProduct);
-        BasketProduct newBasketProduct = basketProductRepository.save(convertor.setConvert(basketProduct, count));
-        log.debug("updated basket product is: {}", newBasketProduct);
-        return convertor.getBasketProductDto(newBasketProduct);
-    }
-
-    private Optional<BasketProduct> findBasketProductIdByVersionId(String versionId, Long userId) {
-        Basket basket = basketRepository.findById(userId).orElseThrow(BasketNotFoundException::new);
-        return basket
-                .getProductList()
-                .stream()
-                .filter(it -> it.getProductId().equals(versionId))
-                .findAny();
-    }
-
-    public BasketResponse getItemsFromBasket(@NotNull Long userId) {
-        Basket basket = basketRepository.findById(userId).orElseThrow(BasketNotFoundException::new);
-        return convertor.convert(basket);
+        return converter.convert(basket);
     }
 }

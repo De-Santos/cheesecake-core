@@ -1,13 +1,15 @@
 package com.user.service.service;
 
 
-import com.user.service.dto.basket.BasketProductDto;
+import com.user.service.dto.basket.BasketProductResponse;
 import com.user.service.dto.basket.BasketRequest;
 import com.user.service.dto.basket.BasketResponse;
-import com.user.service.utils.additional.checker.SuperBasketChecker;
+import com.user.service.dto.basket.DeleteBasketProductRequest;
+import com.user.service.exceptions.exceptions.BasketNotFoundException;
+import com.user.service.exceptions.exceptions.BasketProductNotFoundException;
+import com.user.service.utils.builder.ResponseBuilder;
 import com.user.service.utils.request.BasketRequestConstructor;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -17,44 +19,42 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BasketService {
 
-    private final SuperBasketChecker superBasketChecker;
     private final BasketRequestConstructor basketRequestConstructor;
+    private final ResponseBuilder responseBuilder;
 
-    public boolean add(@NotNull BasketRequest basketRequest) {
-        Long userId = Long.valueOf(basketRequest.getUserId());
-        String versionId = basketRequest.getProductVersionId();
-        Integer count = basketRequest.getCount();
-        superBasketChecker.checkBasketExistence(userId, versionId, count);
-        return basketRequestConstructor.addItemToBasket(userId, versionId, count);
+    /**
+     * Adds a product to the basket based on the provided {@link BasketRequest}.
+     *
+     * @param basketRequest The {@link BasketRequest}.
+     * @return The {@link BasketProductResponse} for the added product.
+     * @throws BasketNotFoundException If the basket is not found for the given userId in the {@link BasketRequest}.
+     */
+    public BasketProductResponse add(BasketRequest basketRequest) throws BasketNotFoundException {
+        return responseBuilder.convert(basketRequestConstructor.addItemToBasket(basketRequest));
     }
 
     @Transactional
-    public boolean delete(@NotNull BasketRequest basketRequest) {
-        Long userId = Long.valueOf(basketRequest.getUserId());
-        String versionId = basketRequest.getProductVersionId();
-        Integer count = basketRequest.getCount();
-        superBasketChecker.checkBasketExistence(userId, versionId, count);
-        return basketRequestConstructor.deleteItemFromBasket(userId, versionId);
+    public boolean delete(DeleteBasketProductRequest deleteBasketProductRequest) {
+        return basketRequestConstructor.deleteItemFromBasket(deleteBasketProductRequest);
     }
 
-    public BasketProductDto update(@NotNull BasketRequest basketRequest) {
-        Long userId = Long.valueOf(basketRequest.getUserId());
-        String versionId = basketRequest.getProductVersionId();
-        Integer count = basketRequest.getCount();
-        superBasketChecker.checkBasketExistence(userId, versionId, count);
-        return basketRequestConstructor.updateItemFromBasket(userId, versionId, count);
+
+    /**
+     * Updates a product count in the basket by the provided {@link BasketRequest}.
+     *
+     * @param basketRequest The {@link BasketRequest}.
+     * @return The {@link BasketProductResponse} from the updated product.
+     * @throws BasketProductNotFoundException If the basket is not found for the given userId in the {@link BasketRequest}.
+     */
+    public BasketProductResponse update(BasketRequest basketRequest) {
+        return basketRequestConstructor.updateItemFromBasket(basketRequest);
     }
 
-    public boolean check(@NotNull BasketRequest basketRequest) {
-        Long userId = Long.valueOf(basketRequest.getUserId());
-        String versionId = basketRequest.getProductVersionId();
-        Integer count = basketRequest.getCount();
-        superBasketChecker.checkBasketExistence(userId, versionId, count);
-        return basketRequestConstructor.checkItemFromBasket(userId, versionId);
+    public boolean check(BasketRequest basketRequest) {
+        return basketRequestConstructor.checkItemFromBasket(basketRequest);
     }
 
-    public BasketResponse get(@NotNull Long userId) {
-        superBasketChecker.check(userId);
+    public BasketResponse get(Long userId) {
         return basketRequestConstructor.getItemsFromBasket(userId);
     }
 }

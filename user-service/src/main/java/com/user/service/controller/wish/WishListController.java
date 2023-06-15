@@ -2,6 +2,7 @@ package com.user.service.controller.wish;
 
 
 import com.user.service.dto.wish.WishListRequest;
+import com.user.service.dto.wish.WishProductResponse;
 import com.user.service.service.WishListService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,9 @@ public class WishListController implements WishListApi {
 
     @Override
     @PutMapping()
-    public ResponseEntity<Boolean> addItem(@NotNull WishListRequest wishListRequest) {
+    public ResponseEntity<WishProductResponse> addItem(@NotNull WishListRequest wishListRequest) {
         log.info("Add item to wishList");
+        log.debug(wishListRequest);
         return ResponseEntity.ok(wishListService.addWishItem(wishListRequest));
     }
 
@@ -30,6 +32,7 @@ public class WishListController implements WishListApi {
     @DeleteMapping()
     public ResponseEntity<Boolean> deleteItem(@NotNull WishListRequest wishListRequest) {
         log.info("Delete item in wish list");
+        log.debug(wishListRequest);
         return ResponseEntity.ok(wishListService.deleteWishItem(wishListRequest));
     }
 
@@ -37,13 +40,15 @@ public class WishListController implements WishListApi {
     @PostMapping("/check")
     public ResponseEntity<Boolean> checkItem(@NotNull WishListRequest wishListRequest) {
         log.info("Check item in wishList");
+        log.debug(wishListRequest);
         return ResponseEntity.ok(wishListService.checkItemInWishList(wishListRequest));
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<List<String>> getWishList(@PathVariable(name = "id") @NotNull String userId) {
+    public ResponseEntity<List<Long>> getWishList(@PathVariable(name = "id") Long userId) {
         log.info("Get wishList");
-        return ResponseEntity.ok(wishListService.getWishList(Long.valueOf(userId)));
+        log.debug(userId);
+        return ResponseEntity.ok(wishListService.getWishList(userId));
     }
 }

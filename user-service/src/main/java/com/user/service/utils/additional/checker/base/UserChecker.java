@@ -15,7 +15,7 @@ public class UserChecker {
     private final UserRepository userRepository;
 
     public void check(Long userId) {
-        log.debug("UserChecker.check check user by id: {}", userId);
-        if (!userRepository.existsById(userId)) throw new UserNotFoundException(userId.toString());
+        if (!userRepository.existsById(userId)) return;
+        throw new UserNotFoundException(userId.toString());
     }
 }

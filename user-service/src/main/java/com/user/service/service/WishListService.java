@@ -2,7 +2,7 @@ package com.user.service.service;
 
 
 import com.user.service.dto.wish.WishListRequest;
-import com.user.service.utils.additional.checker.SuperWishListChecker;
+import com.user.service.dto.wish.WishProductResponse;
 import com.user.service.utils.request.WishListRequestConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,33 +15,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WishListService {
 
-    private final SuperWishListChecker superWishListChecker;
     private final WishListRequestConstructor wishListRequestConstructor;
 
-    public boolean addWishItem(WishListRequest wishListRequest) {
-        Long userId = Long.valueOf(wishListRequest.getUserId());
-        String versionId = wishListRequest.getProductVersionId();
-        log.debug("addWishItem supplied: {}", wishListRequest);
-        superWishListChecker.checkWishListExistence(userId, versionId);
-        return wishListRequestConstructor.addItemToWishList(userId, versionId);
+    public WishProductResponse addWishItem(WishListRequest wishListRequest) {
+        return wishListRequestConstructor.addItemToWishList(wishListRequest);
     }
 
     public boolean deleteWishItem(WishListRequest wishListRequest) {
-        Long userId = Long.valueOf(wishListRequest.getUserId());
-        String versionId = wishListRequest.getProductVersionId();
-        log.debug("deleteWishItem supplied: {}", wishListRequest);
-        superWishListChecker.checkWishListExistence(userId, versionId);
-        return wishListRequestConstructor.deleteItemFromWishList(userId, versionId);
+        return wishListRequestConstructor.deleteItemFromWishList(wishListRequest);
     }
 
     public boolean checkItemInWishList(WishListRequest wishListRequest) {
-        Long userId = Long.valueOf(wishListRequest.getUserId());
-        String versionId = wishListRequest.getProductVersionId();
-        return superWishListChecker.checkWishProduct(userId, versionId);
+        return wishListRequestConstructor.checkWishProduct(wishListRequest);
     }
 
-    public List<String> getWishList(Long userId) {
-        superWishListChecker.checkUser(userId);
+    public List<Long> getWishList(Long userId) {
         return wishListRequestConstructor.getWishProducts(userId);
     }
 }

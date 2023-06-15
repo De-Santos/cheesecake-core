@@ -1,4 +1,4 @@
-package com.user.service.dto.wish;
+package com.user.service.dto.basket;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -10,10 +10,11 @@ import java.util.UUID;
 @Data
 @Builder
 @Jacksonized
-public class WishListRequest {
+public class DeleteBasketProductRequest {
+
     @JsonProperty("user_id")
-    private final Long userId;
+    private Long userId;
 
     @JsonProperty("product_version_id")
-    private final UUID productVersionId;
+    private UUID productVersionId;
 }

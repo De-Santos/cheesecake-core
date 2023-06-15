@@ -1,9 +1,10 @@
 package com.user.service.controller.basket;
 
 
-import com.user.service.dto.basket.BasketProductDto;
+import com.user.service.dto.basket.BasketProductResponse;
 import com.user.service.dto.basket.BasketRequest;
 import com.user.service.dto.basket.BasketResponse;
+import com.user.service.dto.basket.DeleteBasketProductRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -21,7 +22,7 @@ public interface BasketApi {
             @ApiResponse(responseCode = "404", description = "Unknown userId"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<Boolean> addItem(@RequestBody BasketRequest basketRequest);
+    ResponseEntity<BasketProductResponse> addItem(@RequestBody BasketRequest basketRequest);
 
     @Operation(summary = "Delete item from basket", description = "Delete product in basket only if the product exist in basket, return 'true'. If product does not exist, return 'false'.")
     @ApiResponses(value = {
@@ -29,7 +30,7 @@ public interface BasketApi {
             @ApiResponse(responseCode = "404", description = "Unknown userId"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<Boolean> deleteItem(@RequestBody BasketRequest basketRequest);
+    ResponseEntity<Boolean> deleteItem(@RequestBody DeleteBasketProductRequest deleteBasketProductRequest);
 
     @Operation(summary = "Update basket", description = "If product exist in basket, return 'true' else return 'false'")
     @ApiResponses(value = {
@@ -37,7 +38,7 @@ public interface BasketApi {
             @ApiResponse(responseCode = "404", description = "Unknown userId"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<BasketProductDto> updateBasketProduct(@RequestBody BasketRequest basketRequest);
+    ResponseEntity<BasketProductResponse> updateBasketProduct(@RequestBody BasketRequest basketRequest);
 
     @Operation(summary = "Check product in basket", description = "If product exist in basket, return 'true' else return 'false'")
     @ApiResponses(value = {

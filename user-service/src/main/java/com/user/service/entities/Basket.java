@@ -1,25 +1,27 @@
 package com.user.service.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Entity
+@Builder
 @Table(name = "basket")
+@AllArgsConstructor
+@NoArgsConstructor
 public final class Basket {
     @Id
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "basket", fetch = FetchType.LAZY)
-//    @JoinColumn(name = "basket", referencedColumnName = "id")
-    private List<BasketProduct> productList;
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY)
+    private User user;
 
-    @Override
-    public String toString() {
-        return "Basket{" +
-                "id=" + id +
-                '}';
-    }
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "basket", fetch = FetchType.LAZY)
+    private List<BasketProduct> productList;
 }
