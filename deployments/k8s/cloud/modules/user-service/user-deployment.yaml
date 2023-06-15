@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: localhost:5000/user-service
+          image: eu.gcr.io/cheesecake-core/user-service
           resources:
             limits:
               cpu: 1000m

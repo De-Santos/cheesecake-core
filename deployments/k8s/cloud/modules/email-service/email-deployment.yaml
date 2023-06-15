@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-service
+  namespace: default
+  labels:
+    app: email-service
+spec:
+  selector:
+    matchLabels:
+      app: email-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: email-service
+    spec:
+      containers:
+        - name: email-service
+          image: eu.gcr.io/cheesecake-core/email-service
+          resources:
+            limits:
+              cpu: 400m
+              memory: 500Mi
+          env:
+            #          RABBITMQ
+            - name: rabbit_username
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit-secret
+                  key: username
+            - name: rabbit_password
+              valueFrom:
+                secretKeyRef:
+                  name: rabbit-secret
+                  key: password
+            - name: rabbit_host
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbit-config
+                  key: rabbit_host
+            - name: rabbit_port
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbit-config
+                  key: rabbit_port
+          ports:
+            - containerPort: 8087
+      restartPolicy: Always

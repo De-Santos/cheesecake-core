@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sms-service-svc
+  namespace: default
+spec:
+  selector:
+    app: sms-service
+  type: NodePort
+  ports:
+    - port: 8088
+      targetPort: 8088

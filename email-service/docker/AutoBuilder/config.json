@@ -1,5 +1,5 @@
 {
-  "upload_type": "LOCAL",
+  "upload_type": "CLOUD",
   "project_path": "C:/CodeFile/JavaProjects/cheesecake-core/email-service",
   "gradle_build_command": "gradle bootJar",
   "jar_name": "email-service-0.0.1-SNAPSHOT.jar",
