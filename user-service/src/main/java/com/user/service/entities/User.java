@@ -27,7 +27,7 @@ public final class User {
     private WishList wishList;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private UserNotificationData userNotificationData;
+    private UserNotificationSettings userNotificationSettings;
 
     private String name;
 

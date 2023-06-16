@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Builder
-@Table(name = "user_notification_data")
+@Table(name = "user_notification_settings")
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserNotificationData {
+public class UserNotificationSettings {
     @Id
     private Long id;
 

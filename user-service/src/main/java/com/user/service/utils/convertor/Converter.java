@@ -88,6 +88,8 @@ public class Converter {
         return User.builder()
                 .name(userRegistrationRequest.getName())
                 .secondName(userRegistrationRequest.getSecondName())
+                .blocked(false)
+                .deleted(false)
                 .build();
     }
 

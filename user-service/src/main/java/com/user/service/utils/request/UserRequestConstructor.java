@@ -1,24 +1,20 @@
 package com.user.service.utils.request;
 
-import com.user.service.dao.BasketRepository;
-import com.user.service.dao.UserPrivateDataRepository;
-import com.user.service.dao.UserRepository;
-import com.user.service.dao.WishListRepository;
-import com.user.service.dto.user.UserInfoResponse;
-import com.user.service.dto.user.UserPrivateDataRequest;
-import com.user.service.dto.user.UserRegistrationRequest;
-import com.user.service.dto.user.UserRequest;
+import com.user.service.dao.*;
+import com.user.service.dto.user.*;
 import com.user.service.entities.User;
 import com.user.service.entities.UserPrivateData;
+import com.user.service.exceptions.UserNotificationSettingsNotFoundException;
 import com.user.service.exceptions.exceptions.UserPrivateDataNotFoundException;
+import com.user.service.exceptions.exceptions.user.UserNotFoundException;
 import com.user.service.utils.additional.checker.base.UserChecker;
 import com.user.service.utils.builder.EntityBuilder;
 import com.user.service.utils.convertor.Converter;
+import com.user.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.cheesecake.dto.UserDto;
-import ua.cheesecake.dto.exception.UserNotFoundException;
 
 import java.util.List;
 
@@ -28,9 +24,11 @@ public class UserRequestConstructor {
 
     private final Converter converter;
     private final UserRepository userRepository;
+    private final UserNotificationSettingsRepository userNotificationSettingsRepository;
     private final UserPrivateDataRepository userPrivateDataRepository;
     private final WishListRepository wishListRepository;
     private final BasketRepository basketRepository;
+    private final JdbcAccelerator accelerator;
     private final EntityBuilder entityBuilder;
     private final UserChecker userChecker;
 
@@ -38,6 +36,7 @@ public class UserRequestConstructor {
     public User create(UserRegistrationRequest userRegistrationRequest) {
         User user = userRepository.save(converter.convert(userRegistrationRequest));
         userPrivateDataRepository.save(converter.convert(userRegistrationRequest, user));
+        userNotificationSettingsRepository.save(entityBuilder.userNotificationSettingsFrom(user));
         wishListRepository.save(entityBuilder.wishListFrom(user));
         basketRepository.save(entityBuilder.basketFrom(user));
         return user;
@@ -47,19 +46,40 @@ public class UserRequestConstructor {
         return converter.convert(userRepository.findAll());
     }
 
-    public void delete(Long userId) {
-        userRepository.markDeletedById(userId);
+    public UserResponse delete(Long userId) {
+        return accelerator.deletedById(userId)
+                .orElseThrow(() -> UserNotFoundException.create(userId));
+    }
+
+    public UserResponse restore(Long userId) {
+        return accelerator.restoreById(userId)
+                .orElseThrow(() -> UserNotFoundException.create(userId));
+    }
+
+    public UserResponse getUserById(Long userId) {
+        return accelerator.getUserResponseById(userId)
+                .orElseThrow(() -> UserNotFoundException.create(userId));
     }
 
     public UserPrivateData getPrivateData(Long userId) {
         return userPrivateDataRepository
                 .findById(userId)
-                .orElseThrow(UserPrivateDataNotFoundException::new);
+                .orElseThrow(() -> UserPrivateDataNotFoundException.create(userId));
+    }
+
+    public UserNotificationSettingsResponse getNotificationSettings(Long userId) {
+        return accelerator.getUserNotificationSettings(userId)
+                .orElseThrow(() -> UserNotificationSettingsNotFoundException.create(userId));
+    }
+
+    public UserNotificationSettingsResponse updateNotificationSettings(UserNotificationSettingsRequest notificationSettingsRequest) {
+        return accelerator.updateUserNotificationSettings(notificationSettingsRequest)
+                .orElseThrow(() -> UserNotificationSettingsNotFoundException.create(notificationSettingsRequest.getId()));
     }
 
     public UserInfoResponse getUserInfoResponse(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found by id" + userId));
+                .orElseThrow(() -> UserNotFoundException.create(userId));
         return converter.convert(user.getUserPrivateData(), user);
     }
 
