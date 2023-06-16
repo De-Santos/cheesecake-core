@@ -24,6 +24,8 @@ public class ResponseBuilder {
                 .id(user.getId())
                 .name(user.getName())
                 .secondName(user.getSecondName())
+                .blocked(user.getBlocked())
+                .deleted(user.getDeleted())
                 .build();
     }
 

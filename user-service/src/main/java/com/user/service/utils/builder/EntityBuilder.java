@@ -1,9 +1,6 @@
 package com.user.service.utils.builder;
 
-import com.user.service.entities.Basket;
-import com.user.service.entities.User;
-import com.user.service.entities.WishList;
-import com.user.service.entities.WishProduct;
+import com.user.service.entities.*;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -27,6 +24,15 @@ public class EntityBuilder {
     public Basket basketFrom(User user) {
         return Basket.builder()
                 .user(user)
+                .build();
+    }
+
+    public UserNotificationSettings userNotificationSettingsFrom(User user) {
+        return UserNotificationSettings.builder()
+                .user(user)
+                .emailNotification(true)
+                .smsNotification(true)
+                .adsNotification(true)
                 .build();
     }
 }

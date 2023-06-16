@@ -38,7 +38,6 @@ public class BasketService {
         return basketRequestConstructor.deleteItemFromBasket(deleteBasketProductRequest);
     }
 
-
     /**
      * Updates a product count in the basket by the provided {@link BasketRequest}.
      *

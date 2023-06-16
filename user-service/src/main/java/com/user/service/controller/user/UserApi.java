@@ -23,6 +23,27 @@ public interface UserApi {
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<UserResponse> registration(@RequestBody UserRegistrationRequest userRegistrationRequest);
 
+    @Operation(summary = "Get user by id", description = "If user does not exist an exception will be thrown.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<UserResponse> getUser(@PathVariable("id") Long userId);
+
+    @Operation(summary = "Delete user by id", description = "If user does not exist an exception will be thrown.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<UserResponse> deleteUser(@PathVariable("id") Long userId);
+
+    @Operation(summary = "Restore user by id", description = "If user does not exist an exception will be thrown.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<UserResponse> restoreUser(@PathVariable("id") Long userId);
+
     @Operation(summary = "Get user private data", description = "Return user private data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
@@ -55,18 +76,26 @@ public interface UserApi {
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<UserResponse> updateUser(@RequestBody UserRequest userRequest);
 
+    @Operation(summary = "Update user's notification settings")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "404", description = "User or private data does not exist"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<UserNotificationSettingsResponse> getUserNotificationSettings(@PathVariable("id") Long userId);
+
+    @Operation(summary = "Update user's notification settings")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "404", description = "User or private data does not exist"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<UserNotificationSettingsResponse> updateUserNotificationSettings(@RequestBody UserNotificationSettingsRequest userRequest);
+
     @Operation(summary = "Get all users", description = "Return list of user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
     })
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<List<UserDto>> getUsers();
-
-    @Operation(summary = "Delete user", description = "Delete user by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "404", description = "Unknown userId")
-    })
-    @ResponseStatus(HttpStatus.OK)
-    void deleteUser(@NotNull @PathVariable(name = "id") Long userId);
 }
