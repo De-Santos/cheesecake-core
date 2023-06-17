@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: localhost:5000/order-service
+          image: eu.gcr.io/cheesecake-core/order-service
           resources:
             limits:
               cpu: 1000m

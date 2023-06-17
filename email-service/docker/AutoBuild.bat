@@ -1,0 +1,3 @@
+@echo off
+echo AUTO BUILD START...
+python C:\CodeFile\JavaProjects\cheesecake-core\email-service\docker\AutoBuilder\builder.py

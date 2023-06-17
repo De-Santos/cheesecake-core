@@ -1,13 +1,19 @@
 package com.user.service.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Entity
+@Builder
 @Table(name = "user_private_data")
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserPrivateData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +31,6 @@ public class UserPrivateData {
 
     private String phoneNumber;
 
-    private LocalDateTime createTime;
+    private Date creationTime;
 
 }

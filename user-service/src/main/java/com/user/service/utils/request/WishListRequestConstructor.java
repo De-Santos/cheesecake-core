@@ -2,8 +2,16 @@ package com.user.service.utils.request;
 
 
 import com.user.service.dao.WishListRepository;
+import com.user.service.dao.WishProductRepository;
+import com.user.service.dto.wish.WishListRequest;
+import com.user.service.dto.wish.WishProductResponse;
 import com.user.service.entities.WishList;
+import com.user.service.entities.WishProduct;
 import com.user.service.exceptions.exceptions.WishListNotFoundException;
+import com.user.service.exceptions.exceptions.wish.exist.WishProductAlreadyExistException;
+import com.user.service.utils.builder.EntityBuilder;
+import com.user.service.utils.builder.ResponseBuilder;
+import com.user.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -16,35 +24,35 @@ import java.util.List;
 public class WishListRequestConstructor {
 
     private final WishListRepository wishRepository;
+    private final WishProductRepository wishProductRepository;
+    private final ResponseBuilder responseBuilder;
+    private final JdbcAccelerator accelerator;
+    private final EntityBuilder entityBuilder;
 
-    public boolean addItemToWishList(Long userId, String versionId) {
-        WishList wishList = wishRepository.findById(userId).orElseThrow(WishListNotFoundException::new);
-        log.debug("addItemToWishList get versionId: {} \n wishRepository response is: {}", versionId, wishList);
-        List<String> products = wishList.getProductIds();
-        if (!products.contains(versionId)) products.add(versionId);
-        else return false;
-        wishRepository.save(wishList);
+    public WishProductResponse addItemToWishList(WishListRequest wishListRequest) {
+        if (Boolean.TRUE.equals(accelerator.existWishProductBy(wishListRequest.getUserId(), wishListRequest.getProductVersionId())))
+            throw WishProductAlreadyExistException.create(wishListRequest.getUserId(), wishListRequest.getProductVersionId());
+        WishList wishList = wishRepository.findById(wishListRequest.getUserId()).orElseThrow(() -> WishListNotFoundException.create(wishListRequest.getUserId()));
+        return responseBuilder.convert(wishProductRepository.save(entityBuilder.buildWishProduct(wishList, wishListRequest.getProductVersionId())));
+    }
+
+    public boolean deleteItemFromWishList(WishListRequest wishListRequest) {
+        if (Boolean.TRUE.equals(accelerator.existWishProductBy(wishListRequest.getUserId(), wishListRequest.getProductVersionId())))
+            throw WishProductAlreadyExistException.create(wishListRequest.getUserId(), wishListRequest.getProductVersionId());
+        wishProductRepository.deleteByWishListAndProductVersionId(wishListRequest.getProductVersionId(), wishListRequest.getUserId());
         return true;
     }
 
-    public boolean deleteItemFromWishList(Long userId, String versionId) {
-        WishList wishList = wishRepository.findById(userId).orElseThrow(WishListNotFoundException::new);
-        log.debug("deleteIteFromWishList get versionId: {} \n wishRepository response is: {}", versionId, wishList);
-        List<String> products = wishList.getProductIds();
-        if (products.contains(versionId)) products.remove(versionId);
-        else return false;
-        wishRepository.save(wishList);
-        return true;
+    public List<Long> getWishProducts(Long userId) {
+        return wishRepository.findById(userId)
+                .orElseThrow(() -> WishListNotFoundException.create(userId))
+                .getProducts()
+                .stream()
+                .map(WishProduct::getId)
+                .toList();
     }
 
-    public List<String> getWishProducts(Long userId) {
-        WishList wishList = wishRepository.findById(userId).orElseThrow(WishListNotFoundException::new);
-        return wishList.getProductIds();
-    }
-
-    public void deleteWishList(Long userId) {
-        WishList wishList = wishRepository.findById(userId).orElseThrow(WishListNotFoundException::new);
-        log.debug("deleteWishList delete wishList by id: {}", userId);
-        wishRepository.delete(wishList);
+    public boolean checkWishProduct(WishListRequest wishListRequest) {
+        return accelerator.existWishProductBy(wishListRequest.getUserId(), wishListRequest.getProductVersionId());
     }
 }

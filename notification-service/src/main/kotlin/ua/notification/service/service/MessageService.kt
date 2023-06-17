@@ -37,8 +37,8 @@ class MessageService(
 
     private fun sendEMAIL(principal: NotificationPrincipal, directTask: DirectTask) {
         if (directTask.metadata!!.notifyType == NotifyType.SMS) return
-        broker.sendDirectNotification(
-            entityBuilder.buildDirectNotification(
+        broker.sendNotification(
+            entityBuilder.buildNotification(
                 principal,
                 NotificationMethod.EMAIL,
                 directTask
@@ -48,8 +48,8 @@ class MessageService(
 
     private fun sendSMS(principal: NotificationPrincipal, directTask: DirectTask) {
         if (directTask.metadata!!.notifyType == NotifyType.EMAIL) return
-        broker.sendDirectNotification(
-            entityBuilder.buildDirectNotification(
+        broker.sendNotification(
+            entityBuilder.buildNotification(
                 principal,
                 NotificationMethod.SMS,
                 directTask

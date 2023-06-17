@@ -1,7 +1,6 @@
 package com.user.service.dto.user;
 
-import com.user.service.utils.additional.validator.email.ValidEmail;
-import com.user.service.utils.additional.validator.pasword.ValidPassword;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -10,10 +9,15 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class UserRegistrationDto {
+    @JsonProperty("name")
     private String name;
+
+    @JsonProperty("second_name")
     private String secondName;
-    @ValidEmail
+
+    @JsonProperty("email")
     private String email;
-    @ValidPassword
+
+    @JsonProperty("password")
     private String password;
 }

@@ -23,7 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import ua.cheesecake.dto.additional.TimeMapper;
+import ua.cheesecake.dto.TimeMapper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 public class Convertor {
     private final TimeMapper timeMapper;
     private final JdbcAccelerator accelerator;
-    private final ProductRepository productRepository;
 
     public ProductResponse convert(Product product) {
         return ProductResponse.builder()

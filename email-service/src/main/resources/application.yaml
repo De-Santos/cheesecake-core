@@ -1,0 +1,16 @@
+spring:
+  rabbitmq:
+    host: ${rabbit_host}
+    port: ${rabbit_port}
+    username: ${rabbit_username}
+    password: ${rabbit_password}
+    queue-name: email-queue
+
+  application:
+    name: email-service
+
+logging:
+  level:
+    com.product.service: TRACE
+  pattern:
+    console: "%d{ISO8601} %highlight(%-5level{TRACE=blue, DEBUG=yellow}) [%green(%t)] %cyan(%C{1.}): %msg%n%throwable"

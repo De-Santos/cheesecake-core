@@ -1,7 +1,8 @@
 package com.user.service.controller.wish;
 
 
-import com.user.service.dto.wishList.WishListRequest;
+import com.user.service.dto.wish.WishListRequest;
+import com.user.service.dto.wish.WishProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public interface WishListApi {
     @Operation(summary = "Add item in wishList", description = "Return 'true' if operation was successful else return 'false'")
     @ApiResponses(value = {
@@ -21,7 +23,7 @@ public interface WishListApi {
             @ApiResponse(responseCode = "404", description = "Unknown userId"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<Boolean> addItem(@RequestBody @NotNull WishListRequest wishListRequest);
+    ResponseEntity<WishProductResponse> addItem(@RequestBody @NotNull WishListRequest wishListRequest);
 
     @Operation(summary = "Delete item in wishList", description = "Return 'true' if operation was successful else return 'false'")
     @ApiResponses(value = {
@@ -46,5 +48,5 @@ public interface WishListApi {
             @ApiResponse(responseCode = "404", description = "Unknown userId"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<List<String>> getWishList(@PathVariable(name = "id") @NotNull String userId);
+    ResponseEntity<List<Long>> getWishList(@PathVariable(name = "id") Long userId);
 }

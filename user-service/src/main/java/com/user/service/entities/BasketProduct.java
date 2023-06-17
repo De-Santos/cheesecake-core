@@ -1,11 +1,19 @@
 package com.user.service.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "basket_product")
+@Builder
+@Table(name = "basket_products")
+@AllArgsConstructor
+@NoArgsConstructor
 public final class BasketProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +23,8 @@ public final class BasketProduct {
     @JoinColumn(name = "basket_id")
     private Basket basket;
 
-    private String productId;
+    @Column(name = "product_version_id")
+    private UUID productVersionId;
 
     private Integer count;
 }

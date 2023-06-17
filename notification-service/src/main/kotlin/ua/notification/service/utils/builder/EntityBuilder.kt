@@ -8,10 +8,10 @@ import ua.notification.service.entity.additional.MessageTask
 import ua.notification.service.entity.additional.NotifyType
 import ua.notification.service.entity.additional.ProcessStatus
 import ua.notification.service.entity.additional.Tuple
-import ua.notification.service.entity.additional.notification.DirectNotification
 import ua.notification.service.entity.additional.notification.Notification
 import ua.notification.service.entity.additional.notification.NotificationMethod
 import ua.notification.service.entity.additional.notification.NotificationPrincipal
+import ua.notification.service.entity.additional.notification.NotificationType
 import java.util.*
 
 @Component
@@ -32,7 +32,11 @@ class EntityBuilder {
         )
     }
 
-    fun buildTaskTuple(notificationRequest: NotificationRequest, type: NotifyType, status: ProcessStatus): Tuple<Task, TaskMetadata> {
+    fun buildTaskTuple(
+        notificationRequest: NotificationRequest,
+        type: NotifyType,
+        status: ProcessStatus
+    ): Tuple<Task, TaskMetadata> {
         return Tuple(
             this.buildTask(status),
             this.buildMetadata(notificationRequest, type)
@@ -45,11 +49,27 @@ class EntityBuilder {
         task: MessageTask
     ): Notification {
         return Notification(
-            taskId = task.id,
+            id = task.id,
             uuid = UUID.randomUUID(),
+            notificationType = NotificationType.FOR_ALL,
             method = method,
             principal = principal,
             message = task.message
+        )
+    }
+
+    fun buildNotification(
+        principal: NotificationPrincipal,
+        method: NotificationMethod,
+        task: DirectTask
+    ): Notification {
+        return Notification(
+            id = task.id!!,
+            uuid = UUID.randomUUID(),
+            notificationType = NotificationType.DIRECT,
+            method = method,
+            principal = principal,
+            message = task.metadata!!.message
         )
     }
 
@@ -100,17 +120,4 @@ class EntityBuilder {
         )
     }
 
-    fun buildDirectNotification(
-        principal: NotificationPrincipal,
-        method: NotificationMethod,
-        directTask: DirectTask
-    ): DirectNotification {
-        return DirectNotification(
-            directTaskId = directTask.id!!,
-            uuid = UUID.randomUUID(),
-            method = method,
-            principal = principal,
-            message = null
-        )
-    }
 }

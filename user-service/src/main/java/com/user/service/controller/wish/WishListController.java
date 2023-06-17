@@ -1,7 +1,8 @@
 package com.user.service.controller.wish;
 
 
-import com.user.service.dto.wishList.WishListRequest;
+import com.user.service.dto.wish.WishListRequest;
+import com.user.service.dto.wish.WishProductResponse;
 import com.user.service.service.WishListService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class WishListController implements WishListApi {
 
     @Override
     @PutMapping()
-    public ResponseEntity<Boolean> addItem(@NotNull WishListRequest wishListRequest) {
+    public ResponseEntity<WishProductResponse> addItem(@NotNull WishListRequest wishListRequest) {
         log.info("Add item to wishList");
         log.debug(wishListRequest);
         return ResponseEntity.ok(wishListService.addWishItem(wishListRequest));
@@ -45,9 +46,9 @@ public class WishListController implements WishListApi {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<List<String>> getWishList(@PathVariable(name = "id") @NotNull String userId) {
+    public ResponseEntity<List<Long>> getWishList(@PathVariable(name = "id") Long userId) {
         log.info("Get wishList");
         log.debug(userId);
-        return ResponseEntity.ok(wishListService.getWishList(Long.valueOf(userId)));
+        return ResponseEntity.ok(wishListService.getWishList(userId));
     }
 }

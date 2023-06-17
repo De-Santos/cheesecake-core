@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: email-service-svc
+  namespace: default
+spec:
+  selector:
+    app: email-service
+  type: NodePort
+  ports:
+    - port: 8087
+      targetPort: 8087

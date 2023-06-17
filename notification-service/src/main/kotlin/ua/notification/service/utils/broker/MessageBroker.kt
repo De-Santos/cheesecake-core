@@ -4,7 +4,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.stereotype.Component
 import ua.notification.service.config.RabbitConfig
 import ua.notification.service.entity.additional.MessageTask
-import ua.notification.service.entity.additional.notification.DirectNotification
 import ua.notification.service.entity.additional.notification.Notification
 import ua.notification.service.utils.broker.builder.MessageBuilder
 
@@ -21,13 +20,5 @@ class MessageBroker(
 
     fun sendNotification(notification: Notification) {
         rabbit.send(rabbitConfig.directExchange().name, notification.method.toTag(), messageBuilder.build(notification))
-    }
-
-    fun sendDirectNotification(directNotification: DirectNotification) {
-        rabbit.send(
-            rabbitConfig.directExchange().name,
-            directNotification.method.toTag(),
-            messageBuilder.build(directNotification)
-        )
     }
 }  
