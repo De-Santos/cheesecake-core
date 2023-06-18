@@ -5,9 +5,7 @@ import ua.notification.service.dto.DirectNotificationRequest
 import ua.notification.service.dto.DirectNotificationResponse
 import ua.notification.service.entity.DirectTask
 import ua.notification.service.entity.DirectTaskMetadata
-import ua.notification.service.entity.additional.NotifyType
-import ua.notification.service.entity.additional.ProcessStatus
-import ua.notification.service.entity.additional.Tuple
+import ua.notification.service.entity.additional.*
 import ua.notification.service.entity.additional.notification.NotificationPrincipal
 import ua.notification.service.utils.builder.DaoBuilder
 import ua.notification.service.utils.builder.EntityBuilder
@@ -23,11 +21,11 @@ class DirectNotificationService(
     private val messageService: MessageService,
 ) {
 
-    fun new(type: NotifyType, directNotification: DirectNotificationRequest): DirectNotificationResponse {
+    fun new(type: NotifyType, directNotification: DirectNotificationRequest, sendType: SendType): DirectNotificationResponse {
         validator.forceValidate(type, directNotification)
-        val directTuple: Tuple<DirectTask, DirectTaskMetadata> = entityBuilder.buildDirectTaskTuple(directNotification, type, ProcessStatus.DONE)
+        val directTuple: Tuple<DirectTask, DirectTaskMetadata> = entityBuilder.buildDirectTaskTuple(directNotification, type, ProcessStatus.DONE, sendType)
         val messageTuple: Tuple<DirectTask, NotificationPrincipal> = directTaskRequestConstructor.saveDirectTaskAndReturn(directTuple)
-        messageService.sendDirectTask(messageTuple)
+        messageService.sendDirectTask(messageTuple, sendType)
         return daoBuilder.buildDirectNotificationResponse(directTuple.arg1)
     }
 

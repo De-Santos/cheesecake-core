@@ -29,6 +29,19 @@ interface DirectNotificationApi {
     @ResponseStatus(HttpStatus.OK)
     fun createDirectNotification(@RequestParam type: NotifyType, @RequestBody notification: DirectNotificationRequest): ResponseEntity<DirectNotificationResponse>
 
+    @Operation(summary = "Create force direct notification")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Successful operation,",
+                content = [Content(mediaType = "application/json")]
+            ),
+            ApiResponse(responseCode = "400", description = "Invalid request."),
+        ]
+    )
+    @ResponseStatus(HttpStatus.OK)
+    fun createForceDirectNotification(@RequestParam type: NotifyType, @RequestBody notification: DirectNotificationRequest): ResponseEntity<DirectNotificationResponse>
+
     @Operation(summary = "Get direct notification by id")
     @ApiResponses(
         value = [

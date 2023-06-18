@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*
 import ua.notification.service.dto.DirectNotificationRequest
 import ua.notification.service.dto.DirectNotificationResponse
 import ua.notification.service.entity.additional.NotifyType
+import ua.notification.service.entity.additional.SendType
 import ua.notification.service.service.DirectNotificationService
 
 @RestController
@@ -18,7 +19,13 @@ class DirectNotificationController(
     @PostMapping("/create")
     override fun createDirectNotification(@RequestParam type: NotifyType, @RequestBody notification: DirectNotificationRequest): ResponseEntity<DirectNotificationResponse> {
         log.info("New direct notification")
-        return ResponseEntity.ok(directNotificationService.new(type, notification))
+        return ResponseEntity.ok(directNotificationService.new(type, notification, SendType.CUSTOM))
+    }
+
+    @PostMapping("/create/force")
+    override fun createForceDirectNotification(@RequestParam type: NotifyType, @RequestBody notification: DirectNotificationRequest): ResponseEntity<DirectNotificationResponse> {
+        log.info("New force direct notification")
+        return ResponseEntity.ok(directNotificationService.new(type, notification, SendType.FORCE))
     }
 
     @GetMapping("/{id}")

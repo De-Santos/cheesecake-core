@@ -34,15 +34,17 @@ class JdbcAccelerator(
             SELECT COUNT(id) FROM users
             """
         const val SELECT_BATCH: String = """
-            SELECT users.id, users.name, user_private_data.email, user_private_data.phone_number
+            SELECT users.id, users.name, upd.email, upd.phone_number, uns.email_notification, uns.sms_notification
             FROM users
-            JOIN user_private_data ON users.id = user_private_data.user_id
+            JOIN user_private_data AS upd ON users.id = upd.user_id
+            JOIN user_notification_settings AS uns ON users.id = uns.user_id
             WHERE users.id > ? AND users.id <= ?
         """
         const val SELECT_PRINCIPAL_BY_USER_ID: String = """
-            SELECT users.id, users.name, user_private_data.email, user_private_data.phone_number
+            SELECT users.id, users.name, upd.email, upd.phone_number, uns.email_notification, uns.sms_notification
             FROM users
-            JOIN user_private_data ON users.id = user_private_data.user_id
+            JOIN user_private_data AS upd ON users.id = upd.user_id
+            JOIN user_notification_settings AS uns ON users.id = uns.user_id
             WHERE users.id = ?
         """
         const val SET_TASK_STATUS: String = """
@@ -100,7 +102,7 @@ class JdbcAccelerator(
             SET start_time = ?
             WHERE task_id = ?
         """
-        const val SET_USER_PROCESSED: String = """
+        const val SET_USERS_PROCESSED: String = """
             UPDATE process_metadata
             SET users_processed = ?
             WHERE task_id = ?
@@ -204,20 +206,20 @@ class JdbcAccelerator(
                 jdbc.query(selectBatchBuilder(start, end)) {
                     this.createNotificationResultSetExtractor(it, task)
                 }
-                this.setUserProcessed(task.id, start)
+                this.setUsersProcessed(task.id, start)
                 start += batchSize
                 end = start + batchSize
             }
             this.setEndTime(task.id)
-            this.setUserProcessed(task.id, rowsCount)
+            this.setUsersProcessed(task.id, rowsCount)
             this.updateTaskStatus(task.id, ProcessStatus.DONE)
         } catch (e: Exception) {
             this.updateTaskStatus(task.id, ProcessStatus.ERROR)
         }
     }
 
-    private fun setUserProcessed(id: Long, quantity: Long) {
-        jdbc.update(SET_USER_PROCESSED, quantity, id)
+    private fun setUsersProcessed(id: Long, quantity: Long) {
+        jdbc.update(SET_USERS_PROCESSED, quantity, id)
     }
 
     private fun setStartTime(id: Long) {
@@ -242,10 +244,8 @@ class JdbcAccelerator(
     }
 
     private fun createNotificationResultSetExtractor(rs: ResultSet, task: MessageTask) {
-        while (!rs.isAfterLast) {
-            val principal: NotificationPrincipal = notificationPrincipalRowMapper.mapRow(rs, 0)
-            messageService.sendMessageTask(Tuple(task, principal))
-            rs.next()
+        while (rs.next()) {
+            messageService.sendMessageTask(Tuple(task, notificationPrincipalRowMapper.mapRow(rs, 0)),)
         }
     }
 }

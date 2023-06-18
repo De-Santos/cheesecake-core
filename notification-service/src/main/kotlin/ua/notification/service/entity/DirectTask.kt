@@ -2,6 +2,7 @@ package ua.notification.service.entity
 
 import jakarta.persistence.*
 import ua.notification.service.entity.additional.ProcessStatus
+import ua.notification.service.entity.additional.SendType
 import java.util.*
 
 @Entity
@@ -15,6 +16,10 @@ data class DirectTask(
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_time")
     val creationTime: Date = Date(),
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "send_type", nullable = false)
+    val sendType: SendType,
 
     @OneToOne(mappedBy = "directTask", fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
     var metadata: DirectTaskMetadata? = null,
