@@ -8,7 +8,7 @@
   "target_dir": "C:/CodeFile/JavaProjects/cheesecake-core/user-service/docker/jar",
   "local_build_command": "docker build -t localhost:5000/user-service -f user-dockerfile .",
   "local_push_command": "docker push localhost:5000/user-service",
-  "cloud_build_command": "docker build -t eu.gcr.io/cheesecake-core/user-service -f product-dockerfile .",
+  "cloud_build_command": "docker build -t eu.gcr.io/cheesecake-core/user-service -f user-dockerfile .",
   "cloud_push_command": "docker push eu.gcr.io/cheesecake-core/user-service:latest",
   "kubernetes_update_command": "kubectl rollout restart deploy user-service"
 }

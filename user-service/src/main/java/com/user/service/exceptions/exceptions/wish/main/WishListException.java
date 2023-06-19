@@ -2,6 +2,7 @@ package com.user.service.exceptions.exceptions.wish.main;
 
 @SuppressWarnings("unused")
 public class WishListException extends RuntimeException {
+
     public WishListException() {
     }
 

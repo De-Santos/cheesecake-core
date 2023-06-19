@@ -3,6 +3,7 @@ package com.user.service.utils.request.jdbc.accelerator;
 import com.user.service.dto.basket.BasketProductResponse;
 import com.user.service.dto.user.UserNotificationSettingsRequest;
 import com.user.service.dto.user.UserNotificationSettingsResponse;
+import com.user.service.dto.user.UserRequest;
 import com.user.service.dto.user.UserResponse;
 import com.user.service.utils.request.jdbc.accelerator.mapper.BasketProductResponseRowMapper;
 import com.user.service.utils.request.jdbc.accelerator.mapper.UserNotificationSettigsResponseRowMapper;
@@ -34,6 +35,7 @@ public class JdbcAccelerator {
     private static final String SELECT_EXIST_WISH_PRODUCT_BY_WISH_LIST_ID_AND_VERSION_ID = "SELECT EXISTS(SELECT 1 FROM wish_products WHERE wish_list_id = ? AND product_version_id = ?)";
     private static final String SELECT_USER_RESPONSE_BY_ID = "SELECT * FROM users WHERE id = ?";
     private static final String UPDATE_FILED_DELETED_BY_ID = "UPDATE users SET deleted = ? WHERE id = ? RETURNING *";
+    private static final String UPDATE_USER_BY_ID = "UPDATE users SET name = ?, second_name = ? WHERE id = ? RETURNING *";
     private static final String SELECT_NOTIFICATION_SETTINGS_BY_ID = "SELECT * FROM user_notification_settings WHERE user_id = ?";
     private static final String UPDATE_NOTIFICATION_SETTINGS_BY_ID = "UPDATE user_notification_settings SET email_notification = ?, sms_notification = ?, ads_notification = ? WHERE user_id = ? RETURNING *";
 
@@ -125,4 +127,18 @@ public class JdbcAccelerator {
         List<UserNotificationSettingsResponse> results = jdbc.query(psc, userNotificationSettingsResponseRowMapper);
         return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
     }
+
+    public Optional<UserResponse> updateUserById(UserRequest userRequest) {
+        PreparedStatementCreator psc = con -> {
+            PreparedStatement ps = con.prepareStatement(UPDATE_USER_BY_ID);
+            ps.setString(1, userRequest.getName());
+            ps.setString(2, userRequest.getSecondName());
+            ps.setLong(3, userRequest.getId());
+            return ps;
+        };
+        List<UserResponse> results = jdbc.query(psc, userResponseRowMapper);
+        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+    }
+
+
 }

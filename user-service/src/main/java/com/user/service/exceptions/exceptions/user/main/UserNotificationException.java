@@ -1,7 +1,8 @@
-package com.user.service.exceptions;
+package com.user.service.exceptions.exceptions.user.main;
 
 @SuppressWarnings("unused")
 public class UserNotificationException extends RuntimeException {
+
     public UserNotificationException() {
     }
 

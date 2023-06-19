@@ -2,6 +2,7 @@ package com.user.service.exceptions.exceptions.user.main;
 
 @SuppressWarnings("unused")
 public class UserException extends RuntimeException {
+
     public UserException() {
     }
 

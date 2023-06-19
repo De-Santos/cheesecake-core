@@ -1,8 +1,8 @@
 package com.user.service.service;
 
 import com.user.service.dto.user.*;
-import com.user.service.exceptions.UserNotificationSettingsNotFoundException;
-import com.user.service.exceptions.exceptions.user.UserNotFoundException;
+import com.user.service.exceptions.exceptions.user.found.UserNotFoundException;
+import com.user.service.exceptions.exceptions.user.found.UserNotificationSettingsNotFoundException;
 import com.user.service.utils.additional.checker.base.UserChecker;
 import com.user.service.utils.builder.ResponseBuilder;
 import com.user.service.utils.convertor.Converter;
@@ -101,6 +101,6 @@ public class UserService {
     }
 
     public UserResponse updateUser(UserRequest userRequest) {
-        return converter.convert(userRequestConstructor.updateUser(userRequest));
+        return userRequestConstructor.updateUser(userRequest);
     }
 }

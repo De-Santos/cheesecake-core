@@ -1,7 +1,9 @@
-package com.user.service.exceptions.exceptions;
+package com.user.service.exceptions.exceptions.user.found;
+
+import com.user.service.exceptions.exceptions.user.main.UserPrivateDataException;
 
 @SuppressWarnings("unused")
-public class UserPrivateDataNotFoundException extends RuntimeException {
+public class UserPrivateDataNotFoundException extends UserPrivateDataException {
 
     public static UserPrivateDataNotFoundException create(Long userId) {
         return new UserPrivateDataNotFoundException("User private data doesn't found by user id: " + userId);

@@ -1,6 +1,9 @@
-package com.user.service.exceptions.exceptions;
+package com.user.service.exceptions.exceptions.basket.found;
 
-public class BasketNotFoundException extends RuntimeException {
+import com.user.service.exceptions.exceptions.basket.main.BasketException;
+
+@SuppressWarnings("unused")
+public class BasketNotFoundException extends BasketException {
 
     public BasketNotFoundException() {
     }

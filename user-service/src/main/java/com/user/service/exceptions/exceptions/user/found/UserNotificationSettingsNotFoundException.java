@@ -1,7 +1,10 @@
-package com.user.service.exceptions;
+package com.user.service.exceptions.exceptions.user.found;
+
+import com.user.service.exceptions.exceptions.user.main.UserNotificationException;
 
 @SuppressWarnings("unused")
 public class UserNotificationSettingsNotFoundException extends UserNotificationException {
+
     public static UserNotificationSettingsNotFoundException create(Long userId) {
         return new UserNotificationSettingsNotFoundException("User notification settings not found by user id: " + userId);
     }

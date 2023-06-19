@@ -1,7 +1,9 @@
-package com.user.service.exceptions.exceptions;
+package com.user.service.exceptions.exceptions.wish.found;
+
+import com.user.service.exceptions.exceptions.wish.main.WishListException;
 
 @SuppressWarnings("unused")
-public class WishListNotFoundException extends RuntimeException {
+public class WishListNotFoundException extends WishListException {
 
     public static WishListNotFoundException create(Long id) {
         return new WishListNotFoundException("Wish list not found by id: " + id);

@@ -1,4 +1,4 @@
-package com.user.service.exceptions.exceptions.user;
+package com.user.service.exceptions.exceptions.user.found;
 
 import com.user.service.exceptions.exceptions.user.main.UserException;
 

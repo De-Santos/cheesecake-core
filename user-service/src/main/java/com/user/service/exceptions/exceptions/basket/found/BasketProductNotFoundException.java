@@ -1,9 +1,11 @@
-package com.user.service.exceptions.exceptions;
+package com.user.service.exceptions.exceptions.basket.found;
+
+import com.user.service.exceptions.exceptions.basket.main.BasketException;
 
 import java.util.UUID;
 
 @SuppressWarnings("unused")
-public class BasketProductNotFoundException extends RuntimeException {
+public class BasketProductNotFoundException extends BasketException {
 
     public static BasketProductNotFoundException create(Long basketId, UUID versionId) {
         return new BasketProductNotFoundException(
