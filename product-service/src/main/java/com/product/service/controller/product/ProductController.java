@@ -67,7 +67,7 @@ public class ProductController implements ProductApi {
 
     @Override
     @GetMapping()
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+    public ResponseEntity<List<UUID>> getAllProducts() {
         log.info("Get all products");
         return ResponseEntity.ok(productService.getProducts());
     }

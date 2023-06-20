@@ -28,10 +28,10 @@ public final class DraftProduct {
 
     private UUID parentVersionId;
 
-    @OneToOne(mappedBy = "draftProduct")
+    @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER)
     private FileCollection images;
 
-    @OneToOne(mappedBy = "draftProduct")
+    @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER)
     private TagCollection tags;
 
 

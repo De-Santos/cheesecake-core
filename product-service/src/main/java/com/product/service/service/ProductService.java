@@ -39,7 +39,7 @@ public class ProductService {
         return productRequestConstructor.getProductById(versionId);
     }
 
-    public List<ProductResponse> getProducts() {
+    public List<UUID> getProducts() {
         log.info("Get all products");
         return productRequestConstructor.getAll();
     }

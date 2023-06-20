@@ -24,10 +24,10 @@ public final class FileCollection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "fileCollection", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "fileCollection", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<BannerPhoto> bannerPhotos;
 
-    @OneToOne(mappedBy = "fileCollection", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "fileCollection", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private DescriptionPhoto descriptionPhoto;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -58,13 +58,6 @@ public final class FileCollection {
         return FileCollection.builder()
                 .archiveProduct(archiveProduct)
                 .build();
-    }
-
-    public FileCollection draftProduct(DraftProduct newDraftProduct) {
-        draftProduct = newDraftProduct;
-        product = null;
-        archiveProduct = null;
-        return this;
     }
 
     public FileCollection product(Product newProduct) {

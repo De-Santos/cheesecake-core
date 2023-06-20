@@ -13,6 +13,7 @@ import com.product.service.exception.exceptions.product.found.ArchiveProductNotF
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
 import com.product.service.utils.additional.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
+import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import com.product.service.utils.request.utils.duplicator.EntityDuplicator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -36,6 +37,7 @@ public class ProductRequestConstructor {
     private final FileCollectionRepository fileCollectionRepository;
     private final ArchiveProductRepository archiveProductRepository;
     private final DraftProductRepository draftProductRepository;
+    private final JdbcAccelerator accelerator;
     private final EntityDuplicator entityDuplicator;
 
     @Transactional
@@ -61,13 +63,9 @@ public class ProductRequestConstructor {
         return this.getArchiveProductByVersionId(versionId);
     }
 
-    public List<ProductResponse> getAll() {
+    public List<UUID> getAll() {
         log.info("Getting all products from database.");
-        return productRepository
-                .findAll()
-                .stream()
-                .map(convertor::convert)
-                .toList();
+        return accelerator.getAllVersionId();
     }
 
     @Transactional

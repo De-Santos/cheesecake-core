@@ -117,12 +117,12 @@ public interface ProductApi {
     ResponseEntity<ProductResponse> getProduct(@PathVariable("versionId") UUID versionId);
 
     @Operation(summary = "Get all products",
-            description = "Returns a list of products with version_id: `UUID`")
+            description = "Returns a list of product's version_id: `UUID`")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<List<ProductResponse>> getAllProducts();
+    ResponseEntity<List<UUID>> getAllProducts();
 
     @Operation(summary = "Sale mode for a product",
             description = """

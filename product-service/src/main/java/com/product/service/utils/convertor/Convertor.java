@@ -45,6 +45,7 @@ public class Convertor {
                 .sailPrice(product.getSalePrice())
                 .createDate(timeMapper.toTime(product.getCreateDate()))
                 .active(product.isActive())
+                .fileCollectionDto(this.fileCollectionConvert(product.getImages()))
                 .build();
     }
 
