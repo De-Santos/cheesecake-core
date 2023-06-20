@@ -1,4 +1,4 @@
-package com.order.service.orderservice.entities;
+package com.order.service.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

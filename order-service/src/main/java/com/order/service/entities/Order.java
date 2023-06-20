@@ -1,8 +1,9 @@
-package com.order.service.orderservice.entities;
+package com.order.service.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,8 +22,8 @@ public class Order {
 
     private LocalDateTime createDate;
 
-    private Float realTotalPrice;
+    private BigDecimal realTotalPrice;
 
-    private Float totalPrice;
+    private BigDecimal totalPrice;
 
 }

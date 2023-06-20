@@ -1,6 +1,6 @@
-package com.order.service.orderservice.dao;
+package com.order.service.dao;
 
-import com.order.service.orderservice.entities.Order;
+import com.order.service.entities.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

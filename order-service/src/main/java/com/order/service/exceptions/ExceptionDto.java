@@ -1,4 +1,4 @@
-package com.order.service.orderservice.exceptions;
+package com.order.service.exceptions;
 
 import java.time.LocalDateTime;
 
