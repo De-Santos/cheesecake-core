@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.file.collection.update;
 
 import com.product.service.exception.exceptions.file.collection.main.FileCollectionUpdateException;
 
+@SuppressWarnings("unused")
 public class FileCollectionNotIdentityUpdateException extends FileCollectionUpdateException {
 
     public FileCollectionNotIdentityUpdateException() {

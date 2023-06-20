@@ -1,7 +1,8 @@
-package com.product.service.exception.exceptions.product.nullable;
+package com.product.service.exception.exceptions.file.collection.nullable;
 
-import com.product.service.exception.exceptions.product.main.FileCollectionException;
+import com.product.service.exception.exceptions.file.collection.main.FileCollectionException;
 
+@SuppressWarnings("unused")
 public class BannerPhotosIsNullException extends FileCollectionException {
     public static BannerPhotosIsNullException create() {
         return new BannerPhotosIsNullException("Banner photos is null");

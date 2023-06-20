@@ -1,5 +1,6 @@
 package com.product.service.exception.exceptions.file.collection.main;
 
+@SuppressWarnings("unused")
 public class FileCollectionUpdateException extends RuntimeException {
 
     public FileCollectionUpdateException() {

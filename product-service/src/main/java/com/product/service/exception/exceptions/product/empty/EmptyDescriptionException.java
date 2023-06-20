@@ -3,6 +3,7 @@ package com.product.service.exception.exceptions.product.empty;
 
 import com.product.service.exception.exceptions.product.main.ProductRequestException;
 
+@SuppressWarnings("unused")
 public class EmptyDescriptionException extends ProductRequestException {
 
     public EmptyDescriptionException() {

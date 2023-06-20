@@ -1,8 +1,9 @@
-package com.product.service.exception.exceptions.product.nullable;
+package com.product.service.exception.exceptions.file.collection.nullable;
 
-import com.product.service.exception.exceptions.product.main.DraftRequestException;
+import com.product.service.exception.exceptions.file.collection.main.FileCollectionException;
 
-public class DraftProductIsNullException extends DraftRequestException {
+@SuppressWarnings("unused")
+public class DraftProductIsNullException extends FileCollectionException {
     public static DraftProductIsNullException create() {
         return new DraftProductIsNullException("Draft product is null");
     }

@@ -1,8 +1,9 @@
-package com.product.service.exception.exceptions.product.invalid;
+package com.product.service.exception.exceptions.file.collection.invalid;
 
-import com.product.service.exception.exceptions.product.main.FileCollectionException;
+import com.product.service.exception.exceptions.file.collection.main.FileCollectionUpdateException;
 
-public class FileCollectionOrderException extends FileCollectionException {
+@SuppressWarnings("unused")
+public class FileCollectionOrderException extends FileCollectionUpdateException {
     public FileCollectionOrderException() {
     }
 

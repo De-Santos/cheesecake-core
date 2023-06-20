@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.product.modifying;
 
 import com.product.service.exception.exceptions.product.main.ModifyingRequestException;
 
+@SuppressWarnings("unused")
 public class FileCollectionModifyingException extends ModifyingRequestException {
     public FileCollectionModifyingException() {
     }

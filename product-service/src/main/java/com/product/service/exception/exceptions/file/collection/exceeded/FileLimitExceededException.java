@@ -1,7 +1,8 @@
-package com.product.service.exception.exceptions.product.exceeded;
+package com.product.service.exception.exceptions.file.collection.exceeded;
 
-import com.product.service.exception.exceptions.product.main.FileCollectionException;
+import com.product.service.exception.exceptions.file.collection.main.FileCollectionException;
 
+@SuppressWarnings("unused")
 public class FileLimitExceededException extends FileCollectionException {
     public FileLimitExceededException() {
     }

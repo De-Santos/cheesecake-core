@@ -57,6 +57,11 @@ public class JdbcAccelerator {
         return Boolean.TRUE.equals(jdbc.queryForObject(ProductQuery.EXIST_BY_NAME.query, Boolean.class, name));
     }
 
+    public List<UUID> getAllVersionId() {
+        logger(ProductQuery.SELECT_ALL_VERSION_ID.query);
+        return jdbc.queryForList(ProductQuery.SELECT_ALL_VERSION_ID.query, UUID.class);
+    }
+
     @SuppressWarnings("unused")
     public boolean existProductByVersionIdAndActiveIsTrue(UUID versionId) {
         Protector.nonNull(new IllegalArgumentException(VERSION_ID_IS_NULL), versionId);

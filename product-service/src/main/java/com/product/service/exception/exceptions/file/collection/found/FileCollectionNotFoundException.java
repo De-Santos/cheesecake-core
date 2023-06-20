@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.file.collection.found;
 
 import com.product.service.exception.exceptions.file.collection.main.FileCollectionException;
 
+@SuppressWarnings("unused")
 public class FileCollectionNotFoundException extends FileCollectionException {
     public static FileCollectionNotFoundException create(Long id) {
         return new FileCollectionNotFoundException("File collection not found by id: " + id);

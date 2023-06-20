@@ -1,7 +1,8 @@
-package com.product.service.exception.exceptions.product.nullable;
+package com.product.service.exception.exceptions.file.collection.nullable;
 
-import com.product.service.exception.exceptions.product.main.FileCollectionException;
+import com.product.service.exception.exceptions.file.collection.main.FileCollectionException;
 
+@SuppressWarnings("unused")
 public class FileCollectionIsNullException extends FileCollectionException {
     public static FileCollectionIsNullException create() {
         return new FileCollectionIsNullException("File collection is null");

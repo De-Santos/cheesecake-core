@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.product.found;
 
 import com.product.service.exception.exceptions.product.main.DraftRequestException;
 
+@SuppressWarnings("unused")
 public class DraftProductNotFoundException extends DraftRequestException {
 
     public static DraftProductNotFoundException create(Long id) {

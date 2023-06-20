@@ -30,7 +30,6 @@ public class DraftProductService {
         return draftRequestConstructor.update(draftProductDto);
     }
 
-    // FIXME: 4/22/2023
     @Transactional
     public DraftProductDto delete(Long id) {
         log.info("Delete draft product by id: {}", id);
@@ -38,6 +37,7 @@ public class DraftProductService {
         return draftRequestConstructor.delete(id);
     }
 
+    @Transactional
     public DraftProductDto get(Long id) {
         log.info("Get draft by id: {}", id);
         return convertor.convert(draftRequestConstructor.get(id));

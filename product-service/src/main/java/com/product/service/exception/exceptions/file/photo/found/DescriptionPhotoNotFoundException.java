@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.file.photo.found;
 
 import com.product.service.exception.exceptions.file.photo.main.FileException;
 
+@SuppressWarnings("unused")
 public class DescriptionPhotoNotFoundException extends FileException {
     public static DescriptionPhotoNotFoundException create(Long id) {
         return new DescriptionPhotoNotFoundException("Description photo not found by id: " + id);

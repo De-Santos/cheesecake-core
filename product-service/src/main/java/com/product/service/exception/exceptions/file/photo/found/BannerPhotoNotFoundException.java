@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.file.photo.found;
 
 import com.product.service.exception.exceptions.file.photo.main.FileException;
 
+@SuppressWarnings("unused")
 public class BannerPhotoNotFoundException extends FileException {
 
     public static BannerPhotoNotFoundException create(Long id) {

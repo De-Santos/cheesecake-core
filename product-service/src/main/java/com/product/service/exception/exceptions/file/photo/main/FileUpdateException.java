@@ -1,5 +1,6 @@
 package com.product.service.exception.exceptions.file.photo.main;
 
+@SuppressWarnings("unused")
 public class FileUpdateException extends RuntimeException {
     public FileUpdateException() {
     }

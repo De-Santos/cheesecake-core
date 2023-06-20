@@ -11,13 +11,13 @@ import com.product.service.exception.exceptions.product.empty.EmptyPhotosExcepti
 import com.product.service.exception.exceptions.product.exist.ProductAlreadyExistDraftException;
 import com.product.service.exception.exceptions.product.exist.ProductAlreadyExistException;
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
-import com.product.service.exception.exceptions.product.invalid.FileCollectionOrderException;
+import com.product.service.exception.exceptions.file.collection.invalid.FileCollectionOrderException;
 import com.product.service.exception.exceptions.product.invalid.InvalidProductNameException;
 import com.product.service.exception.exceptions.product.invalid.ProductInvalidPriceException;
 import com.product.service.exception.exceptions.product.invalid.ProductInvalidSailPriceException;
-import com.product.service.exception.exceptions.product.nullable.BannerPhotosIsNullException;
-import com.product.service.exception.exceptions.product.nullable.DraftProductIsNullException;
-import com.product.service.exception.exceptions.product.nullable.FileCollectionIsNullException;
+import com.product.service.exception.exceptions.file.collection.nullable.BannerPhotosIsNullException;
+import com.product.service.exception.exceptions.file.collection.nullable.DraftProductIsNullException;
+import com.product.service.exception.exceptions.file.collection.nullable.FileCollectionIsNullException;
 import com.product.service.exception.exceptions.product.nullable.NullArgumentException;
 import com.product.service.exception.exceptions.product.sintax.ProductNameOutOfBoundsException;
 import com.product.service.utils.protector.Protector;
@@ -39,16 +39,6 @@ public class ProductChecker {
     // TODO: 3/26/2023 create configuration from database
     private static final Integer MAX_PRODUCT_NAME_LENGTH = 100;
     private static final Integer MIN_PRODUCT_NAME_LENGTH = 0;
-
-    // FIXME: 4/22/2023
-    public void checkProductSequence(List<Long> products) {
-//        List<Long> unfoundedProducts = products.stream()
-//                .filter(it -> !productRepository.existsProductByVersionIdAndActiveIsTrue(it))
-//                .toList();
-//        if (!unfoundedProducts.isEmpty()) {
-//            throw new ProductNotFoundException(unfoundedProducts.toString());
-//        }
-    }
 
     public void checkProductNameExistence(String name) {
         if (accelerator.existProductByName(name))
@@ -132,10 +122,7 @@ public class ProductChecker {
     }
 
     public void checkDraft(DraftProductDto draftProductDto) {
-        this.checkName(draftProductDto.getName());
         this.checkDraftPhotoDto(draftProductDto);
-        this.checkPrice(draftProductDto.getPrice());
-        this.checkDescription(draftProductDto.getDescription());
     }
 
     private void checkDraftPhotoDto(DraftProductDto draftProductDto) {
