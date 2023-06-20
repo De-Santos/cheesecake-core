@@ -1,22 +1,28 @@
 package com.order.service.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "order_products")
 public class OrderProduct {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private Order orderId;
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    private Order order;
 
-    private String productId;
+    @Column(name = "product_version_id")
+    private UUID productId;
 
+    @Column(name = "count")
     private Integer count;
+
+
 }

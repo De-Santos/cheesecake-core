@@ -1,4 +1,4 @@
-package com.order.service.exceptions;
+package com.order.service.exceptions.controller;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
