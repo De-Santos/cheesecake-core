@@ -1,5 +1,6 @@
 package com.product.service.exception.exceptions.product.main;
 
+@SuppressWarnings("unused")
 public class ProductRequestException extends RuntimeException {
     public ProductRequestException() {
         super("exception");

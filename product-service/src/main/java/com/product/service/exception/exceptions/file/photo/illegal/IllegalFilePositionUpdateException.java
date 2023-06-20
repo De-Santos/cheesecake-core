@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.file.photo.illegal;
 
 import com.product.service.exception.exceptions.file.photo.main.FileUpdateException;
 
+@SuppressWarnings("unused")
 public class IllegalFilePositionUpdateException extends FileUpdateException {
     public static IllegalFilePositionUpdateException create(Integer pos) {
         return new IllegalFilePositionUpdateException("Illegal position obtained: " + pos);

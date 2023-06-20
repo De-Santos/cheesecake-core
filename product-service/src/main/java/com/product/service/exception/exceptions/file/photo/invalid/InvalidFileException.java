@@ -3,6 +3,7 @@ package com.product.service.exception.exceptions.file.photo.invalid;
 
 import com.product.service.exception.exceptions.file.photo.main.FileException;
 
+@SuppressWarnings("unused")
 public class InvalidFileException extends FileException {
     public InvalidFileException() {
     }

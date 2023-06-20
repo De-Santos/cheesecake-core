@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.product.exist;
 
 import com.product.service.exception.exceptions.product.main.ProductRequestException;
 
+@SuppressWarnings("unused")
 public class ProductAlreadyExistException extends ProductRequestException {
 
     public static ProductAlreadyExistException create(String name) {

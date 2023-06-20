@@ -3,6 +3,7 @@ package com.product.service.exception.exceptions.file.photo.bounds;
 
 import com.product.service.exception.exceptions.file.photo.main.FileException;
 
+@SuppressWarnings("unused")
 public class FileOutOfBoundsException extends FileException {
     public FileOutOfBoundsException() {
     }

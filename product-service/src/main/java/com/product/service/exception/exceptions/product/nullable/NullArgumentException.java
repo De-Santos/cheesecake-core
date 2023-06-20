@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.product.nullable;
 
 import com.product.service.exception.exceptions.product.main.ModifyingRequestException;
 
+@SuppressWarnings("unused")
 public class NullArgumentException extends ModifyingRequestException {
     public NullArgumentException() {
     }

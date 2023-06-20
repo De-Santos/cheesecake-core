@@ -3,6 +3,7 @@ package com.product.service.exception.exceptions.file.photo.empty;
 
 import com.product.service.exception.exceptions.file.photo.main.FileException;
 
+@SuppressWarnings("unused")
 public class EmptyFileException extends FileException {
     public EmptyFileException() {
     }

@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.product.invalid;
 
 import com.product.service.exception.exceptions.product.main.ProductRequestException;
 
+@SuppressWarnings("unused")
 public class InvalidProductNameException extends ProductRequestException {
     public static InvalidProductNameException create(String name) {
         return new InvalidProductNameException("Obtained invalid name: " + name);

@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.product.found;
 
 import com.product.service.exception.exceptions.product.main.ProductRequestException;
 
+@SuppressWarnings("unused")
 public class ArchiveProductNotFoundException extends ProductRequestException {
 
     public static ArchiveProductNotFoundException create(String versionId) {

@@ -3,6 +3,7 @@ package com.product.service.exception.exceptions.file.photo.exceeded;
 
 import com.product.service.exception.exceptions.file.photo.main.FileException;
 
+@SuppressWarnings("unused")
 public class FileSizeExceededException extends FileException {
     public FileSizeExceededException() {
     }

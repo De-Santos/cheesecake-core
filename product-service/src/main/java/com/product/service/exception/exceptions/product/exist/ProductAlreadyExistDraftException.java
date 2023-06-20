@@ -4,6 +4,7 @@ import com.product.service.exception.exceptions.product.main.ProductRequestExcep
 
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class ProductAlreadyExistDraftException extends ProductRequestException {
     public static ProductAlreadyExistDraftException create(UUID versionId) {
         return new ProductAlreadyExistDraftException("Product already has draft, product versionId: " + versionId);

@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.product.sintax;
 
 import com.product.service.exception.exceptions.product.main.ProductRequestException;
 
+@SuppressWarnings("unused")
 public class ProductPhotosLimitException extends ProductRequestException {
     public ProductPhotosLimitException() {
     }

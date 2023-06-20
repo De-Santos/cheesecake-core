@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.file.photo.nullable;
 
 import com.product.service.exception.exceptions.file.photo.main.NullFileException;
 
+@SuppressWarnings("unused")
 public class NullFileContentTypeException extends NullFileException {
     public NullFileContentTypeException() {
     }

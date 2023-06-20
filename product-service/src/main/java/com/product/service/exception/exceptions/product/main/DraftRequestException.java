@@ -1,5 +1,6 @@
 package com.product.service.exception.exceptions.product.main;
 
+@SuppressWarnings("unused")
 public class DraftRequestException extends RuntimeException {
     public DraftRequestException() {
     }

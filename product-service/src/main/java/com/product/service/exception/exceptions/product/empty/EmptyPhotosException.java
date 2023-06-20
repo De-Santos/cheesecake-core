@@ -2,6 +2,7 @@ package com.product.service.exception.exceptions.product.empty;
 
 import com.product.service.exception.exceptions.product.main.ProductRequestException;
 
+@SuppressWarnings("unused")
 public class EmptyPhotosException extends ProductRequestException {
     public EmptyPhotosException() {
     }
