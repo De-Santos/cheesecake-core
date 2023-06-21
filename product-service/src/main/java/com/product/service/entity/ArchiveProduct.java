@@ -23,6 +23,7 @@ public final class ArchiveProduct {
     @Column(name = "version_id")
     private UUID versionId;
 
+    @Column(name = "actual_product_id")
     private Long actualProductId;
 
     @OneToOne(mappedBy = "archiveProduct")
@@ -31,8 +32,15 @@ public final class ArchiveProduct {
     @OneToOne(mappedBy = "archiveProduct")
     private TagCollection tags;
 
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "price")
     private BigDecimal price;
+
+    @Column(name = "create_date")
     private LocalDateTime createDate;
 }

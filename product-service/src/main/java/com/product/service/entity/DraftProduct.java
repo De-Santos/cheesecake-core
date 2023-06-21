@@ -26,6 +26,7 @@ public final class DraftProduct {
     @Column(name = "hash", unique = true)
     private UUID hash;
 
+    @Column(name = "parent_version_id")
     private UUID parentVersionId;
 
     @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER)
@@ -34,10 +35,16 @@ public final class DraftProduct {
     @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER)
     private TagCollection tags;
 
-
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "price")
     private BigDecimal price;
+
+    @Column(name = "create_date")
     private LocalDateTime createDate;
 
     public static DraftProduct create() {

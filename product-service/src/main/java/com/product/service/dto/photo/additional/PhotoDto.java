@@ -11,8 +11,10 @@ import lombok.extern.jackson.Jacksonized;
 public class PhotoDto {
     @JsonProperty("id")
     private Long id;
+
     @JsonProperty("position")
     private Integer position;
+
     @JsonProperty("real_photo_name")
     private String realPhotoName;
 }

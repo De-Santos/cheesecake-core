@@ -14,6 +14,7 @@ import java.util.UUID;
 public class SaleProductRequest {
     @JsonProperty("version_id")
     private final UUID versionId;
+
     @JsonProperty("sail_price")
     private final BigDecimal sailPrice;
 }

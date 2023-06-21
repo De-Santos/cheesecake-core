@@ -2,7 +2,7 @@ package com.product.service.utils.request;
 
 import com.product.service.dao.DraftProductRepository;
 import com.product.service.dao.FileCollectionRepository;
-import com.product.service.dto.photo.DraftProductDto;
+import com.product.service.dto.product.DraftProductDto;
 import com.product.service.entity.DraftProduct;
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
 import com.product.service.utils.additional.FileCollectionChecker;

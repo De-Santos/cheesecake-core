@@ -39,5 +39,5 @@ public class ProductResponse {
     private boolean active;
 
     @JsonProperty("file_collection")
-    private FileCollectionDto fileCollectionDto;
+    private FileCollectionDto images;
 }

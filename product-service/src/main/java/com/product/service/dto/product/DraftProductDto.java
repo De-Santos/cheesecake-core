@@ -1,4 +1,4 @@
-package com.product.service.dto.photo;
+package com.product.service.dto.product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.product.service.dto.photo.additional.FileCollectionDto;
@@ -14,14 +14,19 @@ import java.math.BigDecimal;
 public class DraftProductDto {
     @JsonProperty("id")
     private Long id;
+
     @JsonProperty("images")
     private FileCollectionDto images;
+
     @JsonProperty("name")
     private String name;
+
     @JsonProperty("description")
     private String description;
+
     @JsonProperty("price")
     private BigDecimal price;
+
     @JsonProperty("create_date")
     private String createDate;
 }

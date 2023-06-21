@@ -1,6 +1,6 @@
 package com.product.service.service;
 
-import com.product.service.dto.photo.DraftProductDto;
+import com.product.service.dto.product.DraftProductDto;
 import com.product.service.utils.additional.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
 import com.product.service.utils.request.DraftRequestConstructor;

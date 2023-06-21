@@ -1,7 +1,7 @@
 package com.product.service.utils.additional;
 
 import com.product.service.dao.ProductRepository;
-import com.product.service.dto.photo.DraftProductDto;
+import com.product.service.dto.product.DraftProductDto;
 import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.entity.DraftProduct;
 import com.product.service.entity.additional.FileCollection;
@@ -49,10 +49,6 @@ public class ProductChecker {
     public void forceCheckProductExistence(UUID versionId) throws ProductNotFoundException {
         if (accelerator.existProductByVersionId(versionId)) return;
         throw ProductNotFoundException.create(versionId.toString());
-    }
-
-    public boolean checkProductExistence(UUID versionId) {
-        return accelerator.existProductByVersionId(versionId);
     }
 
     public void forceCheckGlobalExistence(UUID versionId) {

@@ -33,10 +33,21 @@ public final class Product {
     @OneToOne(mappedBy = "product")
     private TagCollection tags;
 
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "price")
     private BigDecimal price;
+
+    @Column(name = "sale_price")
     private BigDecimal salePrice;
+
+    @Column(name = "create_date")
     private LocalDateTime createDate;
+
+    @Column(name = "active")
     private boolean active;
 }

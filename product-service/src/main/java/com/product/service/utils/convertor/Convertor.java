@@ -1,6 +1,6 @@
 package com.product.service.utils.convertor;
 
-import com.product.service.dto.photo.DraftProductDto;
+import com.product.service.dto.product.DraftProductDto;
 import com.product.service.dto.photo.PhotoResponse;
 import com.product.service.dto.photo.additional.FileCollectionDto;
 import com.product.service.dto.photo.additional.PhotoDto;
@@ -45,7 +45,7 @@ public class Convertor {
                 .sailPrice(product.getSalePrice())
                 .createDate(timeMapper.toTime(product.getCreateDate()))
                 .active(product.isActive())
-                .fileCollectionDto(this.fileCollectionConvert(product.getImages()))
+                .images(this.fileCollectionConvert(product.getImages()))
                 .build();
     }
 

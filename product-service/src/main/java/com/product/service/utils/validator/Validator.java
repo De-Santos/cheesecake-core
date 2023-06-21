@@ -33,7 +33,6 @@ public class Validator {
 
     private static void validateFileType(MultipartFile file) {
         String fileType = file.getContentType();
-        // TODO: 4/3/2023 refactor me please I must check only is file is image
         if (Objects.isNull(fileType) || (!fileType.equals("image/png") && !fileType.equals("image/jpeg"))) {
             throw new InvalidFileTypeException("Only PNG and JPEG file types are allowed.");
         }

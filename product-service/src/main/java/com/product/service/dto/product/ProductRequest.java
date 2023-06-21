@@ -15,14 +15,19 @@ import java.util.List;
 public class ProductRequest {
     @JsonProperty("name")
     private final String name;
+
     @JsonProperty("description")
     private final String description;
+
     @JsonProperty("images_id")
     private final List<String> imagesId;
+
     @JsonProperty("description_image_id")
     private final String descriptionImageId;
+
     @JsonProperty("price")
     private final BigDecimal price;
+
     @JsonProperty("active")
     private final boolean active;
 }
