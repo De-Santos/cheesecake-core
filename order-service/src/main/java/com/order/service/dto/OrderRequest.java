@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.Date;
-import java.util.UUID;
+import java.util.List;
 
 @Data
 @Builder
@@ -17,14 +17,11 @@ public class OrderRequest {
     @JsonProperty("user_id")
     private final Long userId;
 
-    @JsonProperty("count")
-    private final Integer count;
-
     @JsonProperty("message")
     private final String message;
 
-    @JsonProperty("product_version_id")
-    private final UUID productVersionId;
+    @JsonProperty("products")
+    private final List<OrderProductRequest> products;
 
     @JsonProperty("required_done_time")
     private final Date requiredDoneTime;

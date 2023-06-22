@@ -22,6 +22,13 @@ public interface OrderApi {
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest);
 
+    @Operation(summary = "Create new order for single product --User")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<OrderResponse> createOrderFromBasket(@PathVariable Long basketId);
+
     @Operation(summary = "Disable order by id --User")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),

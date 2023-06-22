@@ -22,9 +22,6 @@ public class UpdateOrderRequest {
     @JsonProperty("total_price")
     private BigDecimal totalPrice;
 
-    @JsonProperty("real_total_price")
-    private BigDecimal realTotalPrice;
-
     @JsonProperty("process_status")
     private ProcessStatus processStatus;
 
