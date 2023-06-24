@@ -1,6 +1,5 @@
 package com.user.service.controller.user;
 
-import com.user.service.dto.LoginUserDto;
 import com.user.service.dto.user.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,7 +7,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import ua.cheesecake.dto.UserDto;
 
 import java.util.List;
@@ -97,7 +98,4 @@ public interface UserApi {
     })
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<List<UserDto>> getUsers();
-
-	@PostMapping("/login")
-	ResponseEntity<UserResponse> getUserByLogin(@RequestBody LoginUserDto loginUserDto);
 }

@@ -1,7 +1,6 @@
 package com.user.service.utils.request;
 
 import com.user.service.dao.*;
-import com.user.service.dto.LoginUserDto;
 import com.user.service.dto.user.*;
 import com.user.service.entities.User;
 import com.user.service.entities.UserPrivateData;
@@ -97,10 +96,5 @@ public class UserRequestConstructor {
     public UserResponse updateUser(UserRequest userRequest) {
         return accelerator.updateUserById(userRequest)
                 .orElseThrow(() -> UserNotFoundException.create(userRequest.getId()));
-    }
-
-    public UserResponse getUserByLogin(LoginUserDto login) {
-        return userPrivateDataRepository.findByLoginAndPassword(login.getLogin(), login.getPassword())
-                .orElseThrow(() -> UserNotFoundException.create(login.getLogin()));
     }
 }
