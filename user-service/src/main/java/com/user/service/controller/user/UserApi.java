@@ -1,5 +1,6 @@
 package com.user.service.controller.user;
 
+import com.user.service.dto.LoginUserDto;
 import com.user.service.dto.user.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -101,5 +102,5 @@ public interface UserApi {
     ResponseEntity<List<UserDto>> getUsers();
 
 	@GetMapping("/login")
-	ResponseEntity<UserResponse> getUserByLogin(@RequestBody UserController.LoginUser loginUser);
+	ResponseEntity<UserResponse> getUserByLogin(@RequestBody LoginUserDto loginUserDto);
 }
