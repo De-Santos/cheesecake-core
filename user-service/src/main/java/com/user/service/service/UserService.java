@@ -1,5 +1,6 @@
 package com.user.service.service;
 
+import com.user.service.dto.LoginUserDto;
 import com.user.service.dto.user.*;
 import com.user.service.exceptions.exceptions.user.found.UserNotFoundException;
 import com.user.service.exceptions.exceptions.user.found.UserNotificationSettingsNotFoundException;
@@ -102,5 +103,9 @@ public class UserService {
 
     public UserResponse updateUser(UserRequest userRequest) {
         return userRequestConstructor.updateUser(userRequest);
+    }
+
+    public UserResponse getUserByLogin(LoginUserDto login) {
+        return userRequestConstructor.getUserByLogin(login);
     }
 }

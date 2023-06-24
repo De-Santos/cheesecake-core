@@ -1,5 +1,6 @@
 package com.user.service.controller.user;
 
+import com.user.service.dto.LoginUserDto;
 import com.user.service.dto.user.*;
 import com.user.service.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -95,4 +96,11 @@ public class UserController implements UserApi {
         log.info("Get all users");
         return ResponseEntity.ok(userService.get());
     }
+
+    @GetMapping("/login")
+    public ResponseEntity<UserResponse> getUserByLogin(@RequestBody LoginUserDto loginUserDto) {
+        log.info("Get user by login: {}", loginUserDto.getLogin());
+        return ResponseEntity.ok(userService.getUserByLogin(loginUserDto));
+    }
+
 }
