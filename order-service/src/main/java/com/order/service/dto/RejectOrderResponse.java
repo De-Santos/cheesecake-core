@@ -9,10 +9,13 @@ import lombok.extern.jackson.Jacksonized;
 @Data
 @Builder
 @Jacksonized
-public class RejectOrderRequest {
+public class RejectOrderResponse {
 
     @JsonProperty("user_id")
     private final Long userId;
+
+    @JsonProperty("order_id")
+    private final Long orderId;
 
     @JsonProperty("message")
     private final String message;

@@ -1,12 +1,11 @@
 package com.order.service.utils.request;
 
-import com.order.service.dao.OrderMetadataRepository;
-import com.order.service.dao.OrderProductRepository;
-import com.order.service.dao.OrderRepository;
-import com.order.service.dao.PaymentDataRepository;
+import com.order.service.dao.*;
 import com.order.service.dto.OrderRequest;
+import com.order.service.dto.RejectOrderRequest;
 import com.order.service.dto.UpdateProcessStatusRequest;
 import com.order.service.entities.Order;
+import com.order.service.entities.RejectOrderCause;
 import com.order.service.entities.additional.ProcessStatus;
 import com.order.service.exception.exceptions.order.found.OrderNotFoundException;
 import com.order.service.utils.builder.EntityBuilder;
@@ -23,6 +22,7 @@ public class OrderRequestConstructor {
     private final OrderProductRepository orderProductRepository;
     private final OrderMetadataRepository orderMetadataRepository;
     private final PaymentDataRepository paymentDataRepository;
+    private final RejectOrderCauseRepository rejectOrderCauseRepository;
     private final EntityBuilder builder;
     private final JdbcAccelerator accelerator;
     private final PaymentCalculator paymentCalculator;
@@ -46,5 +46,16 @@ public class OrderRequestConstructor {
         accelerator.updateStatus(id, ProcessStatus.valueOf(processStatus.name()));
         return orderRepository.findById(id)
                 .orElseThrow(() -> OrderNotFoundException.create(id));
+    }
+
+    public Order getOrder(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> OrderNotFoundException.create(id));
+    }
+
+    @Transactional
+    public RejectOrderCause rejectOrder(Long id, RejectOrderRequest rejectOrderRequest) {
+        accelerator.updateStatus(id, ProcessStatus.REJECTED);
+        return rejectOrderCauseRepository.saveFrom(id, rejectOrderRequest.getUserId(), rejectOrderRequest.getMessage());
     }
 }

@@ -41,7 +41,7 @@ public interface OrderApi {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<OrderResponse> rejectOrder(@PathVariable Long id, @RequestBody RejectOrderRequest rejectOrderRequest);
+    ResponseEntity<RejectOrderResponse> rejectOrder(@PathVariable Long id, @RequestBody RejectOrderRequest rejectOrderRequest);
 
     @Operation(summary = "Get order info by id --User")
     @ApiResponses(value = {

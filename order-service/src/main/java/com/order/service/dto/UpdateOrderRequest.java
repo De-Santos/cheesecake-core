@@ -9,7 +9,6 @@ import lombok.extern.jackson.Jacksonized;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Builder
@@ -27,7 +26,4 @@ public class UpdateOrderRequest {
 
     @JsonProperty("required_done_time")
     private final Date requiredDoneTime;
-
-    @JsonProperty("order_product_list")
-    private List<OrderProductRequest> orderProductList;
 }

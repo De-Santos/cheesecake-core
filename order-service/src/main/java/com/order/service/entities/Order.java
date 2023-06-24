@@ -31,6 +31,9 @@ public class Order {
     @OneToOne(mappedBy = "order")
     private PaymentData paymentData;
 
+    @OneToOne(mappedBy = "order")
+    private PaymentData rejectOrderCause;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ProcessStatus processStatus;

@@ -37,7 +37,7 @@ public class OrderController implements OrderApi {
 
     @Override
     @PatchMapping("/{id}/reject")
-    public ResponseEntity<OrderResponse> rejectOrder(@PathVariable Long id, @RequestBody RejectOrderRequest rejectOrderRequest) {
+    public ResponseEntity<RejectOrderResponse> rejectOrder(@PathVariable Long id, @RequestBody RejectOrderRequest rejectOrderRequest) {
         log.info("Reject order by id: {} with request: {}", id, rejectOrderRequest);
         return ResponseEntity.ok(orderService.rejectOrder(id, rejectOrderRequest));
     }

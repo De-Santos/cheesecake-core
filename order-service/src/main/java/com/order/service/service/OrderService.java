@@ -30,14 +30,13 @@ public class OrderService {
         return responseBuilder.build(orderRequestConstructor.disableOrder(orderId));
     }
 
-    public OrderResponse rejectOrder(Long id, RejectOrderRequest rejectOrderRequest) {
+    public RejectOrderResponse rejectOrder(Long id, RejectOrderRequest rejectOrderRequest) {
         requestValidator.validateOrderRejectRequest(id, rejectOrderRequest);
-        return null;
+        return responseBuilder.build(id, orderRequestConstructor.rejectOrder(id, rejectOrderRequest));
     }
 
-    @SuppressWarnings("unused")
     public OrderInfoResponse getOrderInfo(Long id) {
-        return null;
+        return responseBuilder.buildInfo(orderRequestConstructor.getOrder(id));
     }
 
     public OrderResponse updateOrder(UpdateOrderRequest updateOrderRequest) {

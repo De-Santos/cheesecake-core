@@ -50,7 +50,8 @@ public class RequestValidator implements DtoValidator {
     @Override
     public void validateBasketById(Long basketId) {
         if (basketId == null) throw BasketIdIsNullException.create();
-        if (Boolean.FALSE.equals(validationAccelerator.existBasketById(basketId))) throw BasketNotFoundException.create(basketId);
+        if (Boolean.FALSE.equals(validationAccelerator.existBasketById(basketId)))
+            throw BasketNotFoundException.create(basketId);
         this.validateBasketProductsByBasketId(basketId);
     }
 
@@ -73,7 +74,6 @@ public class RequestValidator implements DtoValidator {
             throw OrderNotFoundException.create(updateOrderRequest.getId());
         this.validateTotalPrice(updateOrderRequest.getTotalPrice());
         this.validateRequiredDoneTime(updateOrderRequest.getRequiredDoneTime());
-        this.validateProducts(updateOrderRequest.getOrderProductList());
     }
 
     /**
@@ -101,7 +101,8 @@ public class RequestValidator implements DtoValidator {
         if (orderProductRequest.getProductVersionId() == null) throw OrderProductVersionIsNullException.create();
         if (orderProductRequest.getCount() > MAX_PRODUCT_COUNT)
             throw OrderProductCountExceededException.create(orderProductRequest, MAX_PRODUCT_COUNT);
-        if (Boolean.TRUE.equals(validationAccelerator.existProductByVersionId(orderProductRequest.getProductVersionId()))) return;
+        if (Boolean.TRUE.equals(validationAccelerator.existProductByVersionId(orderProductRequest.getProductVersionId())))
+            return;
         throw ProductDoesNotExistInActiveProductsException.create(orderProductRequest.getProductVersionId());
     }
 
@@ -137,7 +138,7 @@ public class RequestValidator implements DtoValidator {
 
     private void validateRejectOrderRequest(RejectOrderRequest rejectOrderRequest) {
         if (rejectOrderRequest == null) throw RejectOrderExceptionIsNullRequestException.create();
-        if (rejectOrderRequest.getAdminId() == null) throw AdminIdIsNullRequestException.create();
+        if (rejectOrderRequest.getUserId() == null) throw AdminIdIsNullRequestException.create();
         if (rejectOrderRequest.getMessage() == null) throw RejectOrderMessageIsNullRequestException.create();
     }
 
