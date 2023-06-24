@@ -97,7 +97,7 @@ public class UserController implements UserApi {
         return ResponseEntity.ok(userService.get());
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<UserResponse> getUserByLogin(@RequestBody LoginUserDto loginUserDto) {
         log.info("Get user by login: {}", loginUserDto.getLogin());
         return ResponseEntity.ok(userService.getUserByLogin(loginUserDto));
