@@ -1,6 +1,6 @@
-package com.order.service.utils.request;
+package com.order.service.utils.request.accelerator;
 
-import com.order.service.utils.request.extracter.BasketProductsResultSetExtract;
+import com.order.service.utils.request.accelerator.extracter.BasketProductsResultSetExtract;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;

@@ -1,4 +1,4 @@
-package com.order.service.utils.request.extracter;
+package com.order.service.utils.request.accelerator.extracter;
 
 import com.order.service.exception.exceptions.basket.duplicate.DuplicateBasketProductException;
 import org.springframework.dao.DataAccessException;

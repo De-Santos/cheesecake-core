@@ -17,7 +17,7 @@ import com.order.service.exception.exceptions.product.nullable.OrderProductCount
 import com.order.service.exception.exceptions.product.nullable.OrderProductListIsNullException;
 import com.order.service.exception.exceptions.product.nullable.OrderProductVersionIsNullException;
 import com.order.service.exception.exceptions.user.found.UserNotFoundException;
-import com.order.service.utils.request.ValidationAccelerator;
+import com.order.service.utils.request.accelerator.ValidationAccelerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +50,7 @@ public class RequestValidator implements DtoValidator {
     @Override
     public void validateBasketById(Long basketId) {
         if (basketId == null) throw BasketIdIsNullException.create();
-        if (!validationAccelerator.existBasketById(basketId)) throw BasketNotFoundException.create(basketId);
+        if (Boolean.FALSE.equals(validationAccelerator.existBasketById(basketId))) throw BasketNotFoundException.create(basketId);
         this.validateBasketProductsByBasketId(basketId);
     }
 
@@ -69,7 +69,7 @@ public class RequestValidator implements DtoValidator {
     @Override
     public void validateUpdateOrderRequest(UpdateOrderRequest updateOrderRequest) {
         if (updateOrderRequest == null) throw UpdateOrderRequestIsNullException.create();
-        if (!validationAccelerator.existOrderById(updateOrderRequest.getId()))
+        if (Boolean.FALSE.equals(validationAccelerator.existOrderById(updateOrderRequest.getId())))
             throw OrderNotFoundException.create(updateOrderRequest.getId());
         this.validateTotalPrice(updateOrderRequest.getTotalPrice());
         this.validateRequiredDoneTime(updateOrderRequest.getRequiredDoneTime());
@@ -86,7 +86,7 @@ public class RequestValidator implements DtoValidator {
 
     private void validateUserId(Long userId) {
         if (userId == null) throw UserNameIsNullException.create();
-        if (validationAccelerator.existUserById(userId)) return;
+        if (Boolean.TRUE.equals(validationAccelerator.existUserById(userId))) return;
         throw UserNotFoundException.create(userId);
     }
 
@@ -101,7 +101,7 @@ public class RequestValidator implements DtoValidator {
         if (orderProductRequest.getProductVersionId() == null) throw OrderProductVersionIsNullException.create();
         if (orderProductRequest.getCount() > MAX_PRODUCT_COUNT)
             throw OrderProductCountExceededException.create(orderProductRequest, MAX_PRODUCT_COUNT);
-        if (validationAccelerator.existProductByVersionId(orderProductRequest.getProductVersionId())) return;
+        if (Boolean.TRUE.equals(validationAccelerator.existProductByVersionId(orderProductRequest.getProductVersionId()))) return;
         throw ProductDoesNotExistInActiveProductsException.create(orderProductRequest.getProductVersionId());
     }
 
@@ -130,7 +130,7 @@ public class RequestValidator implements DtoValidator {
         products.forEach((productVersionId, count) -> {
             if (count > MAX_PRODUCT_COUNT)
                 throw BasketProductCountExceededException.create(productVersionId, basketId, MAX_PRODUCT_COUNT);
-            if (!validationAccelerator.existProductByVersionId(productVersionId))
+            if (Boolean.FALSE.equals(validationAccelerator.existProductByVersionId(productVersionId)))
                 throw ProductDoesNotExistInActiveProductsException.create(productVersionId);
         });
     }

@@ -36,6 +36,6 @@ public class OrderResponse {
     @JsonProperty("required_done_time")
     private final Date requiredDoneTime;
 
-    @JsonProperty("order_product_list")
-    private List<OrderProductResponse> orderProductList;
+    @JsonProperty("order_product_id_list")
+    private List<Long> orderProductIdList;
 }

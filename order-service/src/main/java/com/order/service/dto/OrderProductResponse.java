@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -16,9 +15,6 @@ public class OrderProductResponse {
 
     @JsonProperty("product_version_id")
     private UUID productVersionId;
-
-    @JsonProperty("creation_time")
-    private Date creationTime;
 
     @JsonProperty("count")
     private Integer count;

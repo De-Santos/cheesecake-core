@@ -13,8 +13,8 @@ import java.util.UUID;
 public class OrderProductRequest {
 
     @JsonProperty("product_version_id")
-    private UUID productVersionId;
+    private final UUID productVersionId;
 
     @JsonProperty("count")
-    private Integer count;
+    private final Integer count;
 }

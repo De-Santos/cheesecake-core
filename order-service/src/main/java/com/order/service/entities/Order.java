@@ -1,33 +1,37 @@
 package com.order.service.entities;
 
+import com.order.service.entities.additional.ProcessStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 
 @Data
 @Entity
+@Builder
 @Table(name = "orders")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "order_products")
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderProduct> orderProducts;
 
-    @Column(name = "creation_toime")
-    private Date creationTime;
+    @OneToOne(mappedBy = "order")
+    private OrderMetadata orderMetadata;
 
-    @Column(name = "real_total_price")
-    private BigDecimal realTotalPrice;
+    @OneToOne(mappedBy = "order")
+    private PaymentData paymentData;
 
-    @Column(name = "total_price")
-    private BigDecimal totalPrice;
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private ProcessStatus processStatus;
 }
