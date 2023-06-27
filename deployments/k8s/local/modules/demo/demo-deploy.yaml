@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo
+  namespace: default
+  labels:
+    app: demo
+spec:
+  selector:
+    matchLabels:
+      app: demo
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: demo
+    spec:
+      containers:
+        - name: demo
+          image: localhost:5000/demo
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1000Mi
+          env:
+            #                 POSTGRES
+            - name: username
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: postgres-user
+            - name: password
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: postgres-password
+            - name: postgres_url
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_url
+          ports:
+            - containerPort: 8090
+      restartPolicy: Always
