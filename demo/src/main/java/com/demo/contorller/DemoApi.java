@@ -1,4 +1,4 @@
-package com.demo;
+package com.demo.contorller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;

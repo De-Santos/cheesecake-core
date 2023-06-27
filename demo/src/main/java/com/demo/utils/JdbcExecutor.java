@@ -1,6 +1,8 @@
-package com.demo;
+package com.demo.utils;
 
+import com.demo.dto.UserRegistrationRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,6 +32,29 @@ public class JdbcExecutor {
                 JOIN user_notification_settings AS uns ON users.id = uns.user_id
             """;
 
+    private static final String INSERT_DEFAULT_USER = """
+                WITH inserted_user AS (
+                    INSERT INTO users (blocked, deleted, "name", second_name)
+                    VALUES (false, false, 'user', 'second name')
+                    RETURNING id
+                ), inserted_user_private_data AS (
+                    INSERT INTO user_private_data (address, email, password, phone_number, user_id)
+                    SELECT 'address', 'email@gmail.com', 'password', '909090909090', id
+                    FROM inserted_user
+                ), inserted_user_notification_settings AS (
+                    INSERT INTO user_notification_settings (ads_notification, email_notification, sms_notification, user_id)
+                    SELECT true, true, true, id
+                    FROM inserted_user
+                ), inserted_wich_list AS (
+                    INSERT INTO wich_list (user_id)
+                    SELECT id
+                    FROM inserted_user
+                )
+                INSERT INTO basket (user_id)
+                SELECT id
+                FROM inserted_user;
+            """;
+
     public void createTest() {
         this.test();
     }
@@ -47,12 +72,18 @@ public class JdbcExecutor {
         };
     }
 
+    @SuppressWarnings("unused")
     public void create(UserRegistrationRequest userRegistrationRequest) {
         Long userId = insertUser(userRegistrationRequest);
         insertUserPrivateData(userRegistrationRequest, userId);
         insertUserNotificationSettings(userId);
         insertWishList(userId);
         insertBasket(userId);
+    }
+
+    @SneakyThrows
+    public void monoCreate() {
+        jdbc.update(INSERT_DEFAULT_USER);
     }
 
     public Long insertUser(UserRegistrationRequest userRegistrationRequest) {
@@ -94,8 +125,6 @@ public class JdbcExecutor {
     }
 
     private static class SimpleRowExtractor implements ResultSetExtractor<String> {
-
-
         @Override
         public String extractData(ResultSet rs) throws SQLException, DataAccessException {
             int i = 0;
