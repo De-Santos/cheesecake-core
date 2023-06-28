@@ -25,11 +25,27 @@ spec:
               memory: 500Mi
           env:
             - name: POSTGRES_DB
-              value: cheesecake_db
+              valueFrom:
+                secretKeyRef:
+                  key: postgres_db
+                  name: postgres-config-secret
             - name: POSTGRES_USER
-              value: admin
+              valueFrom:
+                secretKeyRef:
+                  key: postgres_user
+                  name: postgres-config-secret
             - name: POSTGRES_PASSWORD
-              value: password
+              valueFrom:
+                secretKeyRef:
+                  key: postgres_password
+                  name: postgres-config-secret
           ports:
             - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-persistent-storage
+      volumes:
+        - name: postgres-persistent-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
       restartPolicy: Always
