@@ -11,7 +11,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: backup-container
-              image: backup-script-image:latest
+              image: localhost:5000/backup-script
               command: ["/bin/bash", "/backup.sh"]
               env:
                 - name: POSTGRES_HOST
