@@ -1,10 +1,14 @@
 package com.product.service.utils.request.jdbc.accelerator;
 
+import com.product.service.dto.tag.TagRequest;
+import com.product.service.dto.tag.TagResponse;
 import com.product.service.entity.additional.BannerPhoto;
 import com.product.service.entity.additional.DescriptionPhoto;
+import com.product.service.utils.build.EntityBuilder;
 import com.product.service.utils.protector.Protector;
 import com.product.service.utils.request.jdbc.accelerator.mapper.BannerPhotoRowMapper;
 import com.product.service.utils.request.jdbc.accelerator.mapper.DescriptionPhotoRowMapper;
+import com.product.service.utils.request.jdbc.accelerator.mapper.TagResponseRowMapper;
 import com.product.service.utils.request.jdbc.accelerator.query.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -29,9 +33,11 @@ import java.util.UUID;
 public class JdbcAccelerator {
     private final JdbcTemplate jdbc;
     private final Environment environment;
+    private final EntityBuilder entityBuilder;
 
     private static final BannerPhotoRowMapper bannerPhotoRowMapper = new BannerPhotoRowMapper();
     private static final DescriptionPhotoRowMapper descriptionPhotoRowMapper = new DescriptionPhotoRowMapper();
+    private static final TagResponseRowMapper tagResponseRowMapper = new TagResponseRowMapper();
 
     private static final String VERSION_ID_IS_NULL = "versionId is null";
     private static final String ID_IS_NULL = "id is null";
@@ -202,4 +208,26 @@ public class JdbcAccelerator {
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
+    //TAG
+    public TagResponse createTag(TagRequest tagRequest) {
+        logger(TagQuery.INSERT.query);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbc.update(con -> {
+            PreparedStatement ps = con.prepareStatement(TagQuery.INSERT.query, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, tagRequest.getTagName());
+            return ps;
+        }, keyHolder);
+        return entityBuilder.build(tagRequest, Objects.requireNonNull(keyHolder.getKey()).longValue());
+    }
+
+    public Optional<TagResponse> deleteTag(Long tagId) {
+        logger(TagQuery.DELETE.query);
+        List<TagResponse> result = jdbc.query(TagQuery.DELETE.query, tagResponseRowMapper, tagId);
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
+    }
+
+    public List<TagResponse> getAllTags() {
+        logger(TagQuery.SELECT_ALL.query);
+        return jdbc.query(TagQuery.SELECT_ALL.query, tagResponseRowMapper);
+    }
 }

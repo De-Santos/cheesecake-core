@@ -1,4 +1,4 @@
-package com.product.service.utils.additional;
+package com.product.service.utils.check;
 
 import com.product.service.dao.ProductRepository;
 import com.product.service.dto.product.DraftProductDto;

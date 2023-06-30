@@ -3,10 +3,10 @@ package com.product.service.service;
 
 import com.product.service.dto.photo.PhotoResponse;
 import com.product.service.entity.additional.BannerPhoto;
-import com.product.service.utils.additional.ProductChecker;
+import com.product.service.utils.check.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
 import com.product.service.utils.request.PhotoRequestConstructor;
-import com.product.service.utils.validator.Validator;
+import com.product.service.utils.validator.FileValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +50,7 @@ public class PhotoService {
     @Transactional
     public Long insert(@NonNull MultipartFile file, Long draftId, Integer position) {
         log.info("Upload file with position: {} for draft product by id: {}", position, draftId);
-        Validator.validateObtainFile(file);
+        FileValidator.validateObtainFile(file);
         productChecker.checkDraft(draftId);
         return photoRequestConstructor.uploadFile(file, draftId, position);
     }

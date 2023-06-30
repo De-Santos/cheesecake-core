@@ -11,7 +11,7 @@ import com.product.service.entity.DraftProduct;
 import com.product.service.entity.Product;
 import com.product.service.exception.exceptions.product.found.ArchiveProductNotFoundException;
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
-import com.product.service.utils.additional.ProductChecker;
+import com.product.service.utils.check.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
 import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import com.product.service.utils.request.utils.duplicator.EntityDuplicator;

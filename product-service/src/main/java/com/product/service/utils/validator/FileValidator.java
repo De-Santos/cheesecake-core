@@ -16,7 +16,7 @@ import java.util.Objects;
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Validator {
+public class FileValidator {
     // TODO: 3/29/2023 make configuration from database
     private static final Long MAX_FILE_SIZE = 100L; // MB
 

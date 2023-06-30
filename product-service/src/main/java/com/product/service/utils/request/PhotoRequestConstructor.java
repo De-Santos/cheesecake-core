@@ -9,11 +9,11 @@ import com.product.service.entity.additional.FileCollection;
 import com.product.service.exception.exceptions.file.collection.found.FileCollectionNotFoundException;
 import com.product.service.exception.exceptions.file.photo.found.BannerPhotoNotFoundException;
 import com.product.service.exception.exceptions.file.photo.found.DescriptionPhotoNotFoundException;
-import com.product.service.utils.additional.FileCollectionChecker;
+import com.product.service.utils.check.FileCollectionChecker;
 import com.product.service.utils.convertor.Convertor;
 import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import com.product.service.utils.request.utils.FileCollectionUtils;
-import com.product.service.utils.validator.Validator;
+import com.product.service.utils.validator.FileValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.lang.NonNull;
@@ -47,7 +47,7 @@ public class PhotoRequestConstructor {
 
     public Long uploadFile(@NonNull MultipartFile file, Long draftId) {
         log.info("Upload file in database with name: {}", file.getOriginalFilename());
-        Validator.validateObtainFile(file);
+        FileValidator.validateObtainFile(file);
         FileCollection fileCollection = this.safeGetFileCollectionByDraftId(draftId);
         fileCollectionChecker.checkFileOrder(fileCollection);
         return this.addNewPhoto(file, fileCollection);

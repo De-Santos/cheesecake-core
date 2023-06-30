@@ -3,7 +3,7 @@ package com.product.service.service;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.entity.DraftProduct;
-import com.product.service.utils.additional.ProductChecker;
+import com.product.service.utils.check.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
 import com.product.service.utils.request.DraftRequestConstructor;
 import com.product.service.utils.request.ProductRequestConstructor;

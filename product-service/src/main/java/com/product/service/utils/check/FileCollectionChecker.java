@@ -1,4 +1,4 @@
-package com.product.service.utils.additional;
+package com.product.service.utils.check;
 
 import com.product.service.dto.photo.additional.FileCollectionDto;
 import com.product.service.dto.photo.additional.PhotoDto;
