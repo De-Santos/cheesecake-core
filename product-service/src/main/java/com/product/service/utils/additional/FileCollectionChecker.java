@@ -4,10 +4,10 @@ import com.product.service.dto.photo.additional.FileCollectionDto;
 import com.product.service.dto.photo.additional.PhotoDto;
 import com.product.service.entity.additional.BannerPhoto;
 import com.product.service.entity.additional.FileCollection;
+import com.product.service.exception.exceptions.file.collection.exceeded.FileLimitExceededException;
 import com.product.service.exception.exceptions.file.collection.update.FileCollectionNotIdentityUpdateException;
 import com.product.service.exception.exceptions.file.photo.bounds.FileOutOfBoundsException;
 import com.product.service.exception.exceptions.file.photo.illegal.IllegalFilePositionUpdateException;
-import com.product.service.exception.exceptions.file.collection.exceeded.FileLimitExceededException;
 import com.product.service.utils.protector.Protector;
 import org.springframework.stereotype.Component;
 

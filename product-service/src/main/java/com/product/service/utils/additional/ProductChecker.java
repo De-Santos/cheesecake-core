@@ -5,19 +5,19 @@ import com.product.service.dto.product.DraftProductDto;
 import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.entity.DraftProduct;
 import com.product.service.entity.additional.FileCollection;
+import com.product.service.exception.exceptions.file.collection.invalid.FileCollectionOrderException;
+import com.product.service.exception.exceptions.file.collection.nullable.BannerPhotosIsNullException;
+import com.product.service.exception.exceptions.file.collection.nullable.DraftProductIsNullException;
+import com.product.service.exception.exceptions.file.collection.nullable.FileCollectionIsNullException;
 import com.product.service.exception.exceptions.product.empty.EmptyDescriptionException;
 import com.product.service.exception.exceptions.product.empty.EmptyNameException;
 import com.product.service.exception.exceptions.product.empty.EmptyPhotosException;
 import com.product.service.exception.exceptions.product.exist.ProductAlreadyExistDraftException;
 import com.product.service.exception.exceptions.product.exist.ProductAlreadyExistException;
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
-import com.product.service.exception.exceptions.file.collection.invalid.FileCollectionOrderException;
 import com.product.service.exception.exceptions.product.invalid.InvalidProductNameException;
 import com.product.service.exception.exceptions.product.invalid.ProductInvalidPriceException;
 import com.product.service.exception.exceptions.product.invalid.ProductInvalidSailPriceException;
-import com.product.service.exception.exceptions.file.collection.nullable.BannerPhotosIsNullException;
-import com.product.service.exception.exceptions.file.collection.nullable.DraftProductIsNullException;
-import com.product.service.exception.exceptions.file.collection.nullable.FileCollectionIsNullException;
 import com.product.service.exception.exceptions.product.nullable.NullArgumentException;
 import com.product.service.exception.exceptions.product.sintax.ProductNameOutOfBoundsException;
 import com.product.service.utils.protector.Protector;
@@ -28,7 +28,10 @@ import org.springframework.stereotype.Component;
 import ua.cheesecake.dto.exception.ProductNotFoundException;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashSet;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.UUID;
 
 @Log4j2
 @Component

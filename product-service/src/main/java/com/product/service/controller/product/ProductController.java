@@ -3,6 +3,8 @@ package com.product.service.controller.product;
 import com.product.service.dto.product.DraftProductDto;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.dto.product.SaleProductRequest;
+import com.product.service.dto.tag.TagRequest;
+import com.product.service.dto.tag.TagResponse;
 import com.product.service.service.DraftProductService;
 import com.product.service.service.ProductService;
 import jakarta.validation.constraints.NotNull;
@@ -120,5 +122,47 @@ public class ProductController implements ProductApi {
     public ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") Long id) {
         log.info("Delete draft product by id: {}", id);
         return ResponseEntity.ok(draftProductService.delete(id));
+    }
+
+    @Override
+    @PostMapping("/draft/{draftId}/new/tag/")
+    public ResponseEntity<DraftProductDto> addNewTagToDraftProduct(@PathVariable("draftId") Long id, @RequestBody TagRequest tagRequest) {
+        log.info("Add new tag by: {} to draft product by id: {}", tagRequest, id);
+        return ResponseEntity.ok(null);
+    }
+
+    @Override
+    @PatchMapping("/draft/{draftId}/tag")
+    public ResponseEntity<DraftProductDto> addTagToDraftProduct(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId) {
+        log.info("Add tag by id: {} to draft product by id: {}", tagId, id);
+        return ResponseEntity.ok(null);
+    }
+
+    @Override
+    @GetMapping("/tag")
+    public ResponseEntity<List<TagResponse>> getTags() {
+        log.info("Get all tags");
+        return ResponseEntity.ok(null);
+    }
+
+    @Override
+    @PostMapping("/tag")
+    public ResponseEntity<TagResponse> createTag(@RequestBody TagRequest tagRequest) {
+        log.info("Create tag by: {}", tagRequest);
+        return ResponseEntity.ok(null);
+    }
+
+    @Override
+    @DeleteMapping("/draft/{draftId}/tag")
+    public ResponseEntity<DraftProductDto> deleteTagFromDraft(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId) {
+        log.info("Delete tag by id: {} from draft product by id: {}", tagId, id);
+        return ResponseEntity.ok(null);
+    }
+
+    @Override
+    @DeleteMapping("tag/{tagId}")
+    public ResponseEntity<TagResponse> deleteTag(@PathVariable("tagId") Long tagId) {
+        log.info("Delete tag by id: {}", tagId);
+        return ResponseEntity.ok(null);
     }
 }

@@ -1,5 +1,5 @@
 {
-  "upload_type": "CLOUD",
+  "upload_type": "local",
   "project_path": "C:/CodeFile/JavaProjects/cheesecake-core/product-service",
   "gradle_build_command": "gradle bootJar",
   "jar_name": "product-service-0.0.1-SNAPSHOT.jar",

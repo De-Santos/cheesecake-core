@@ -3,6 +3,8 @@ package com.product.service.controller.product;
 import com.product.service.dto.product.DraftProductDto;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.dto.product.SaleProductRequest;
+import com.product.service.dto.tag.TagRequest;
+import com.product.service.dto.tag.TagResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
@@ -70,7 +73,6 @@ public interface ProductApi {
     })
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<UUID> updateProduct(@PathVariable("draftId") Long id);
-
 
     @Operation(summary = "Activate or Deactivate the product",
             description = """
@@ -197,7 +199,6 @@ public interface ProductApi {
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<List<Long>> getDrafts();
 
-
     @Operation(summary = "Update a draft",
             description = """
                     Returns the updated draft.
@@ -225,4 +226,109 @@ public interface ProductApi {
     })
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") Long id);
+
+    @Operation(summary = "Add new tag to the draft product by draftId",
+            description = """
+                    Returns the draftProductDto with updated tags.
+
+                    Process:
+                       - Create a new tag by tagRequest.
+                       - Match the new tag to draftProduct by `ID`.
+                       - Return the draft product.
+
+                    Rules:
+                       - If the draft product is not found by `ID`, an exception will be thrown.
+                       - If the tagRequest has invalid data, an exception will be thrown.
+                       - If tag already exist, an exception will be thrown.
+                    """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in request body"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<DraftProductDto> addNewTagToDraftProduct(@PathVariable("draftId") Long id, @RequestBody TagRequest tagRequest);
+
+    @Operation(summary = "Add tag to the draft product by draftId",
+            description = """
+                    Returns the draftProductDto with updated tags.
+
+                    Process:
+                       - Match the tag by id to draftProduct by draftId.
+                       - Return the draft product.
+
+                    Rules:
+                       - If the draft product is not found by `ID`, an exception will be thrown.
+                       - If tag already matched to the draft product, an exception will be thrown.
+                    """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in request body"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<DraftProductDto> addTagToDraftProduct(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId);
+
+    @Operation(summary = "Get all tags")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in request body"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<List<TagResponse>> getTags();
+
+    @Operation(summary = "Create a new tag",
+            description = """
+                    Returns the tagResponse.
+
+                    Process:
+                       - Create a new tag by tagRequest.
+                       - Return the tag.
+
+                    Rules:
+                       - If the tagRequest has invalid data, an exception will be thrown.
+                       - If tag already exist, an exception will be thrown.
+                    """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in request body"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<TagResponse> createTag(@RequestBody TagRequest tagRequest);
+
+    @Operation(summary = "Delete the tag by id from draft product",
+            description = """
+                    Returns the draftProductDto with updated tags.
+
+                    Process:
+                       - Delete the tag matching to draftId by `ID`.
+                       - Return the tag.
+
+                    Rules:
+                       - If the tag is not found by `ID`, an exception will be thrown.
+                       - If the draft product is not found by `ID`, an exception will be thrown.
+                       - If the tag is not matched to the draft product, an exception will be thrown.
+                    """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in request body"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<DraftProductDto> deleteTagFromDraft(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId);
+
+    @Operation(summary = "Delete the tag by id",
+            description = """
+                    Returns the tagResponse.
+
+                    Process:
+                       - Delete the tag by `ID`.
+                       - Return the tag.
+
+                    Rules:
+                       - If the tag is not found by `ID`, an exception will be thrown.
+                    """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in request body"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<TagResponse> deleteTag(@PathVariable("tagId") Long tagId);
 }

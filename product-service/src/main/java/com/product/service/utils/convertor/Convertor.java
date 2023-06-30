@@ -1,9 +1,9 @@
 package com.product.service.utils.convertor;
 
-import com.product.service.dto.product.DraftProductDto;
 import com.product.service.dto.photo.PhotoResponse;
 import com.product.service.dto.photo.additional.FileCollectionDto;
 import com.product.service.dto.photo.additional.PhotoDto;
+import com.product.service.dto.product.DraftProductDto;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.entity.ArchiveProduct;
 import com.product.service.entity.DraftProduct;
