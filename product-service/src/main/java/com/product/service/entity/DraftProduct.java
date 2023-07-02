@@ -29,10 +29,10 @@ public final class DraftProduct {
     @Column(name = "parent_version_id")
     private UUID parentVersionId;
 
-    @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private FileCollection images;
 
-    @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private TagCollection tags;
 
     @Column(name = "name")
@@ -48,8 +48,9 @@ public final class DraftProduct {
     private LocalDateTime createDate;
 
     public static DraftProduct create() {
-        DraftProduct draft = new DraftProduct();
-        draft.setCreateDate(LocalDateTime.now());
-        return draft;
+        return DraftProduct.builder()
+                .hash(UUID.randomUUID())
+                .createDate(LocalDateTime.now())
+                .build();
     }
 }

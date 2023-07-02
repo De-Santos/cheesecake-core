@@ -69,5 +69,4 @@ public class PhotoService {
         productChecker.checkDraftById(draftId);
         return convertor.convert(photoRequestConstructor.removeDescriptionPhoto(id));
     }
-
 }

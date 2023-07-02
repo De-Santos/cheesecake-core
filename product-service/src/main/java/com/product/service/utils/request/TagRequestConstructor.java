@@ -1,6 +1,5 @@
 package com.product.service.utils.request;
 
-import com.product.service.dto.product.DraftProductDto;
 import com.product.service.dto.tag.TagRequest;
 import com.product.service.dto.tag.TagResponse;
 import com.product.service.exception.exceptions.tag.found.TagNotFoundException;
@@ -16,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TagRequestConstructor {
     private final JdbcAccelerator accelerator;
+//    private final DraftRequestConstructor draftRequestConstructor;
 
     public TagResponse createTag(TagRequest tagRequest) {
         return accelerator.createTag(tagRequest);
@@ -30,18 +30,19 @@ public class TagRequestConstructor {
         return accelerator.getAllTags();
     }
 
-    @SuppressWarnings("unused")
-    public DraftProductDto addNewTagToDraftProduct(Long draftId, TagRequest tagRequest) {
-        return null;
+    public List<TagResponse> addNewTagToDraftProduct(Long draftId, TagRequest tagRequest) {
+        return accelerator.addTagToDraft(draftId, this.createTag(tagRequest).getId());
     }
 
-    @SuppressWarnings("unused")
-    public DraftProductDto addTagToDraftProduct(Long draftId, Long tagId) {
-        return null;
+    public List<TagResponse> addTagToDraftProduct(Long draftId, Long tagId) {
+        return accelerator.addTagToDraft(draftId, tagId);
     }
 
-    @SuppressWarnings("unused")
-    public DraftProductDto deleteTagFromDraft(Long draftId, Long tagId) {
-        return null;
+    public List<TagResponse> deleteTagFromDraft(Long draftId, Long tagId) {
+        return accelerator.deleteTagMatchingToDraft(tagId, draftId);
+    }
+
+    public List<TagResponse> getTagsByDraftId(Long draftId) {
+        return accelerator.getTagsByDraftId(draftId);
     }
 }

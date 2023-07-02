@@ -1,6 +1,7 @@
 package com.product.service.controller.product;
 
-import com.product.service.dto.product.DraftProductDto;
+import com.product.service.dto.product.DraftProductRequest;
+import com.product.service.dto.product.DraftProductResponse;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.dto.tag.TagRequest;
@@ -11,10 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -190,7 +188,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Error in request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<DraftProductDto> getDraft(@PathVariable("draftId") Long id);
+    ResponseEntity<DraftProductResponse> getDraft(@PathVariable("draftId") Long id);
 
     @Operation(summary = "Get a list of draft `ID`s", description = "Returns a list of draft `ID`s")
     @ApiResponses(value = {
@@ -211,7 +209,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Invalid request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<DraftProductDto> updateDraftProduct(@RequestBody DraftProductDto draftProductDto);
+    ResponseEntity<DraftProductResponse> updateDraftProduct(@RequestBody DraftProductRequest draftProductRequest);
 
     @Operation(summary = "Delete a draft",
             description = """
@@ -225,11 +223,11 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Error in request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") Long id);
+    ResponseEntity<DraftProductResponse> deleteDraftProduct(@PathVariable("draftId") Long id);
 
     @Operation(summary = "Add new tag to the draft product by draftId",
             description = """
-                    Returns the draftProductDto with updated tags.
+                    Returns the draftProductRequest with updated tags.
 
                     Process:
                        - Create a new tag by tagRequest.
@@ -246,11 +244,11 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Error in request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<DraftProductDto> addNewTagToDraftProduct(@PathVariable("draftId") Long id, @RequestBody TagRequest tagRequest);
+    ResponseEntity<List<TagResponse>> addNewTagToDraftProduct(@PathVariable("draftId") Long id, @RequestBody TagRequest tagRequest);
 
     @Operation(summary = "Add tag to the draft product by draftId",
             description = """
-                    Returns the draftProductDto with updated tags.
+                    Returns the draftProductRequest with updated tags.
 
                     Process:
                        - Match the tag by id to draftProduct by draftId.
@@ -265,7 +263,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Error in request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<DraftProductDto> addTagToDraftProduct(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId);
+    ResponseEntity<List<TagResponse>> addTagToDraftProduct(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId);
 
     @Operation(summary = "Get all tags")
     @ApiResponses(value = {
@@ -296,7 +294,7 @@ public interface ProductApi {
 
     @Operation(summary = "Delete the tag by id from draft product",
             description = """
-                    Returns the draftProductDto with updated tags.
+                    Returns the draftProductRequest with updated tags.
 
                     Process:
                        - Delete the tag matching to draftId by `ID`.
@@ -312,7 +310,7 @@ public interface ProductApi {
             @ApiResponse(responseCode = "400", description = "Error in request body"),
     })
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<DraftProductDto> deleteTagFromDraft(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId);
+    ResponseEntity<List<TagResponse>> deleteTagFromDraft(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId);
 
     @Operation(summary = "Delete the tag by id",
             description = """
@@ -331,4 +329,18 @@ public interface ProductApi {
     })
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<TagResponse> deleteTag(@PathVariable("tagId") Long tagId);
+
+    @Operation(summary = "Get tags by draftId",
+            description = """
+                    Returns list of TagResponse.
+                    
+                    Rules:
+                       - If the draft product is not found by `ID`, an exception will be thrown.
+                    """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Error in request body"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<List<TagResponse>> getTagByDraft(@PathVariable("draftId") Long id);
 }

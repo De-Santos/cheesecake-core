@@ -1,6 +1,7 @@
 package com.product.service.service;
 
-import com.product.service.dto.product.DraftProductDto;
+import com.product.service.dto.product.DraftProductRequest;
+import com.product.service.dto.product.DraftProductResponse;
 import com.product.service.utils.check.ProductChecker;
 import com.product.service.utils.convertor.Convertor;
 import com.product.service.utils.request.DraftRequestConstructor;
@@ -24,21 +25,21 @@ public class DraftProductService {
         return draftRequestConstructor.newDraft();
     }
 
-    public DraftProductDto update(DraftProductDto draftProductDto) {
-        log.info("Update draft product by id: {}", draftProductDto.getId());
-        productChecker.checkDraft(draftProductDto);
-        return draftRequestConstructor.update(draftProductDto);
+    public DraftProductResponse update(DraftProductRequest draftProductRequest) {
+        log.info("Update draft product by id: {}", draftProductRequest.getId());
+        productChecker.checkDraft(draftProductRequest);
+        return draftRequestConstructor.update(draftProductRequest);
     }
 
     @Transactional
-    public DraftProductDto delete(Long id) {
+    public DraftProductResponse delete(Long id) {
         log.info("Delete draft product by id: {}", id);
         productChecker.checkDraftById(id);
         return draftRequestConstructor.delete(id);
     }
 
     @Transactional
-    public DraftProductDto get(Long id) {
+    public DraftProductResponse get(Long id) {
         log.info("Get draft by id: {}", id);
         return convertor.convert(draftRequestConstructor.get(id));
     }
@@ -47,5 +48,4 @@ public class DraftProductService {
         log.info("Get all draft products");
         return draftRequestConstructor.get();
     }
-
 }

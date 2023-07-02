@@ -24,16 +24,13 @@ spring:
     username: ${username}
     password: ${password}
     url: ${postgres_url}
-  #    username: ${username}
-  #    password: ${password}
-  #    url: ${postgres_url}
   application:
     name: product-service
 server:
   port: 8082
 
 accelerator:
-  show-sql: true
+  show-sql: false
 
 logging:
   level:

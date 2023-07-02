@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Data
 @Builder
 @Jacksonized
-public class DraftProductDto {
+public class DraftProductRequest {
     @JsonProperty("id")
     private Long id;
 

@@ -3,14 +3,18 @@ package com.product.service.utils.convertor;
 import com.product.service.dto.photo.PhotoResponse;
 import com.product.service.dto.photo.additional.FileCollectionDto;
 import com.product.service.dto.photo.additional.PhotoDto;
-import com.product.service.dto.product.DraftProductDto;
+import com.product.service.dto.product.DraftProductRequest;
+import com.product.service.dto.product.DraftProductResponse;
 import com.product.service.dto.product.ProductResponse;
+import com.product.service.dto.tag.TagResponse;
 import com.product.service.entity.ArchiveProduct;
 import com.product.service.entity.DraftProduct;
 import com.product.service.entity.Product;
 import com.product.service.entity.additional.BannerPhoto;
 import com.product.service.entity.additional.DescriptionPhoto;
 import com.product.service.entity.additional.FileCollection;
+import com.product.service.entity.additional.tag.Tag;
+import com.product.service.entity.additional.tag.TagCollection;
 import com.product.service.exception.exceptions.file.photo.invalid.InvalidFileException;
 import com.product.service.exception.exceptions.product.modifying.FileCollectionModifyingException;
 import com.product.service.utils.protector.Protector;
@@ -60,14 +64,29 @@ public class Convertor {
                 .build();
     }
 
-    public DraftProductDto convert(DraftProduct draftProduct) {
-        return DraftProductDto.builder()
+    public DraftProductResponse convert(DraftProduct draftProduct) {
+        return DraftProductResponse.builder()
                 .id(draftProduct.getId())
                 .images(this.fileCollectionConvert(draftProduct.getImages()))
+                .tags(this.tagCollectionConvert(draftProduct.getTags()))
                 .name(draftProduct.getName())
                 .description(draftProduct.getDescription())
                 .price(draftProduct.getPrice())
                 .createDate(timeMapper.toTime(draftProduct.getCreateDate()))
+                .build();
+    }
+
+    private List<TagResponse> tagCollectionConvert(TagCollection tagCollection) {
+        if (Objects.isNull(tagCollection.getTags())) return Collections.emptyList();
+        return tagCollection.getTags().stream()
+                .map(this::tagConvert)
+                .toList();
+    }
+
+    private TagResponse tagConvert(Tag tag) {
+        return TagResponse.builder()
+                .id(tag.getId())
+                .tagName(tag.getTagName())
                 .build();
     }
 
@@ -200,11 +219,11 @@ public class Convertor {
         }
     }
 
-    public DraftProduct updateConvert(DraftProduct draftProduct, DraftProductDto draftProductDto) {
-        draftProduct.setImages(fileCollectionUpdate(draftProduct.getImages(), draftProductDto.getImages()));
-        draftProduct.setName(draftProductDto.getName());
-        draftProduct.setDescription(draftProductDto.getDescription());
-        draftProduct.setPrice(draftProductDto.getPrice());
+    public DraftProduct updateConvert(DraftProduct draftProduct, DraftProductRequest draftProductRequest) {
+        draftProduct.setImages(fileCollectionUpdate(draftProduct.getImages(), draftProductRequest.getImages()));
+        draftProduct.setName(draftProductRequest.getName());
+        draftProduct.setDescription(draftProductRequest.getDescription());
+        draftProduct.setPrice(draftProductRequest.getPrice());
         return draftProduct;
     }
 

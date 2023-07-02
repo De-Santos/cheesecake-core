@@ -2,7 +2,8 @@ package com.product.service.utils.request;
 
 import com.product.service.dao.DraftProductRepository;
 import com.product.service.dao.FileCollectionRepository;
-import com.product.service.dto.product.DraftProductDto;
+import com.product.service.dto.product.DraftProductRequest;
+import com.product.service.dto.product.DraftProductResponse;
 import com.product.service.entity.DraftProduct;
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
 import com.product.service.utils.check.FileCollectionChecker;
@@ -21,6 +22,7 @@ import java.util.List;
 public class DraftRequestConstructor {
     private final DraftProductRepository draftProductRepository;
     private final FileCollectionRequestConstructor fileCollectionRequestConstructor;
+    private final TagCollectionRequestConstructor tagCollectionRequestConstructor;
     private final FileCollectionRepository fileCollectionRepository;
     private final FileCollectionChecker fileCollectionChecker;
     private final ProductChecker productChecker;
@@ -32,20 +34,20 @@ public class DraftRequestConstructor {
         log.info("Creating new product draft in database");
         DraftProduct draftProduct = draftProductRepository.save(DraftProduct.create());
         fileCollectionRequestConstructor.create(draftProduct);
+        tagCollectionRequestConstructor.create(draftProduct);
         return draftProduct.getId();
     }
 
     // FIXME: 4/22/2023
-    public DraftProductDto update(DraftProductDto draftProductDto) {
+    public DraftProductResponse update(DraftProductRequest draftProductRequest) {
         log.info("Update draft product in database");
-        productChecker.checkDraftById(draftProductDto.getId());
-        DraftProduct draftProduct = this.get(draftProductDto.getId());
-        fileCollectionChecker.checkFileCollectionIdentity(draftProduct.getImages(), draftProductDto.getImages());
-        return convertor.convert(draftProductRepository.save(convertor.updateConvert(draftProduct, draftProductDto)));
+        productChecker.checkDraftById(draftProductRequest.getId());
+        DraftProduct draftProduct = this.get(draftProductRequest.getId());
+        fileCollectionChecker.checkFileCollectionIdentity(draftProduct.getImages(), draftProductRequest.getImages());
+        return convertor.convert(draftProductRepository.save(convertor.updateConvert(draftProduct, draftProductRequest)));
     }
 
-    // FIXME: 5/1/2023
-    public DraftProductDto delete(Long id) {
+    public DraftProductResponse delete(Long id) {
         log.info("Delete draft product from database by id: {}", id);
         DraftProduct draftProduct = draftProductRepository.findById(id)
                 .orElseThrow(() -> DraftProductNotFoundException.create(id));

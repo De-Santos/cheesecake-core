@@ -1,7 +1,7 @@
 package com.product.service.utils.check;
 
 import com.product.service.dao.ProductRepository;
-import com.product.service.dto.product.DraftProductDto;
+import com.product.service.dto.product.DraftProductRequest;
 import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.entity.DraftProduct;
 import com.product.service.entity.additional.FileCollection;
@@ -120,14 +120,14 @@ public class ProductChecker {
         throw ProductNotFoundException.create(versionId.toString());
     }
 
-    public void checkDraft(DraftProductDto draftProductDto) {
-        this.checkDraftPhotoDto(draftProductDto);
+    public void checkDraft(DraftProductRequest draftProductRequest) {
+        this.checkDraftPhotoDto(draftProductRequest);
     }
 
-    private void checkDraftPhotoDto(DraftProductDto draftProductDto) {
-        Protector.notNullRequired(DraftProductIsNullException.create(), draftProductDto);
+    private void checkDraftPhotoDto(DraftProductRequest draftProductRequest) {
+        Protector.notNullRequired(DraftProductIsNullException.create(), draftProductRequest);
         Set<Integer> set = new HashSet<>();
-        draftProductDto.getImages().getBannerPhotos().forEach(it -> {
+        draftProductRequest.getImages().getBannerPhotos().forEach(it -> {
             if (set.contains(it.getPosition())) throw new FileCollectionOrderException("Invalid file order");
             set.add(it.getPosition());
         });

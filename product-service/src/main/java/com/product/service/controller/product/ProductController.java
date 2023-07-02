@@ -1,6 +1,7 @@
 package com.product.service.controller.product;
 
-import com.product.service.dto.product.DraftProductDto;
+import com.product.service.dto.product.DraftProductRequest;
+import com.product.service.dto.product.DraftProductResponse;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.dto.tag.TagRequest;
@@ -100,7 +101,7 @@ public class ProductController implements ProductApi {
 
     @Override
     @GetMapping("/draft/{draftId}")
-    public ResponseEntity<DraftProductDto> getDraft(@PathVariable("draftId") Long id) {
+    public ResponseEntity<DraftProductResponse> getDraft(@PathVariable("draftId") Long id) {
         log.info("Get draft product by id: {}", id);
         return ResponseEntity.ok(draftProductService.get(id));
     }
@@ -114,28 +115,28 @@ public class ProductController implements ProductApi {
 
     @Override
     @PatchMapping("/draft/update")
-    public ResponseEntity<DraftProductDto> updateDraftProduct(@RequestBody DraftProductDto draftProductDto) {
+    public ResponseEntity<DraftProductResponse> updateDraftProduct(@RequestBody DraftProductRequest draftProductRequest) {
         log.info("Update draft product");
-        return ResponseEntity.ok(draftProductService.update(draftProductDto));
+        return ResponseEntity.ok(draftProductService.update(draftProductRequest));
     }
 
     @Override
     @DeleteMapping("/draft/{draftId}")
-    public ResponseEntity<DraftProductDto> deleteDraftProduct(@PathVariable("draftId") Long id) {
+    public ResponseEntity<DraftProductResponse> deleteDraftProduct(@PathVariable("draftId") Long id) {
         log.info("Delete draft product by id: {}", id);
         return ResponseEntity.ok(draftProductService.delete(id));
     }
 
     @Override
     @PostMapping("/draft/{draftId}/new/tag/")
-    public ResponseEntity<DraftProductDto> addNewTagToDraftProduct(@PathVariable("draftId") Long id, @RequestBody TagRequest tagRequest) {
+    public ResponseEntity<List<TagResponse>> addNewTagToDraftProduct(@PathVariable("draftId") Long id, @RequestBody TagRequest tagRequest) {
         log.info("Add new tag by: {} to draft product by id: {}", tagRequest, id);
         return ResponseEntity.ok(tagService.addNewTagToDraftProduct(id, tagRequest));
     }
 
     @Override
     @PatchMapping("/draft/{draftId}/tag")
-    public ResponseEntity<DraftProductDto> addTagToDraftProduct(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId) {
+    public ResponseEntity<List<TagResponse>> addTagToDraftProduct(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId) {
         log.info("Add tag by id: {} to draft product by id: {}", tagId, id);
         return ResponseEntity.ok(tagService.addTagToDraftProduct(id, tagId));
     }
@@ -156,7 +157,7 @@ public class ProductController implements ProductApi {
 
     @Override
     @DeleteMapping("/draft/{draftId}/tag")
-    public ResponseEntity<DraftProductDto> deleteTagFromDraft(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId) {
+    public ResponseEntity<List<TagResponse>> deleteTagFromDraft(@PathVariable("draftId") Long id, @RequestParam("id") Long tagId) {
         log.info("Delete tag by id: {} from draft product by id: {}", tagId, id);
         return ResponseEntity.ok(tagService.deleteTagFromDraft(id, tagId));
     }
@@ -166,5 +167,12 @@ public class ProductController implements ProductApi {
     public ResponseEntity<TagResponse> deleteTag(@PathVariable("tagId") Long tagId) {
         log.info("Delete tag by id: {}", tagId);
         return ResponseEntity.ok(tagService.deleteTag(tagId));
+    }
+
+    @Override
+    @GetMapping("/draft/{draftId}/tag")
+    public ResponseEntity<List<TagResponse>> getTagByDraft(@PathVariable("draftId") Long id) {
+        log.info("Get all tags by draft product id: {}", id);
+        return ResponseEntity.ok(tagService.getTagsByDraftId(id));
     }
 }
