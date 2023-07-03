@@ -22,7 +22,12 @@ public class TagCollection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany
+    @JoinTable(
+            name = "tag_collection_tags",
+            joinColumns = @JoinColumn(name = "tag_collection_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
     private List<Tag> tags;
 
     @OneToOne

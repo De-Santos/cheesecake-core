@@ -1,5 +1,6 @@
 package com.product.service.utils.check;
 
+import com.product.service.exception.exceptions.tag.exist.TagMatchingAlreadyExistException;
 import com.product.service.exception.exceptions.tag.found.TagNotFoundException;
 import com.product.service.exception.exceptions.tag.matching.TagNotMatchingToDraftProductException;
 import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
@@ -19,11 +20,12 @@ public class TagChecker {
     public void checkTagMatchingToDraftProduct(Long tagId, Long draftId) {
         this.checkExistence(tagId);
         if (accelerator.isTagMatchingToDraftProductById(tagId, draftId)) return;
-        throw TagNotMatchingToDraftProductException.crate(tagId, draftId);
+        throw TagNotMatchingToDraftProductException.create(tagId, draftId);
     }
 
     public void checkTagMatchingToProductExistence(Long tagId, Long draftId) {
         this.checkExistence(tagId);
-        if (accelerator.isTagMatchingToDraftProductById(tagId, draftId)) throw TagNotMatchingToDraftProductException.crate(tagId, draftId);
+        if (accelerator.isTagMatchingToDraftProductById(tagId, draftId))
+            throw TagMatchingAlreadyExistException.create(tagId, draftId);
     }
 }

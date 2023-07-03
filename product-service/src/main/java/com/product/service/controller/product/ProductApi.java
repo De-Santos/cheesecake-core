@@ -12,7 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 import java.util.UUID;
@@ -333,7 +336,7 @@ public interface ProductApi {
     @Operation(summary = "Get tags by draftId",
             description = """
                     Returns list of TagResponse.
-                    
+                                        
                     Rules:
                        - If the draft product is not found by `ID`, an exception will be thrown.
                     """)

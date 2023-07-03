@@ -13,7 +13,6 @@ import com.product.service.utils.request.jdbc.accelerator.query.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.env.Environment;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -229,7 +228,7 @@ public class JdbcAccelerator {
     public Optional<TagResponse> deleteTag(Long tagId) {
         logger(TagQuery.DELETE.query);
         this.deleteAllTagMatching(tagId);
-        List<TagResponse> result = jdbc.query(TagQuery.DELETE.query, tagResponseRowMapper, tagId, tagId);
+        List<TagResponse> result = jdbc.query(TagQuery.DELETE.query, tagResponseRowMapper, tagId);
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
@@ -268,7 +267,6 @@ public class JdbcAccelerator {
         return Boolean.TRUE.equals(jdbc.queryForObject(TagQuery.EXIST_MATCHING_TO_DRAFT.query, Boolean.class, tagId, draftId));
     }
 
-    @Modifying
     public List<TagResponse> deleteTagMatchingToDraft(Long tagId, Long draftId) {
         Protector.notNullRequired(new IllegalArgumentException(ID_IS_NULL), tagId, draftId);
         logger(TagQuery.DELETE_MATCHING_TO_DRAFT.query);

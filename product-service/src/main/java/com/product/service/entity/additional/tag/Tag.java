@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @Entity
@@ -19,4 +21,7 @@ public class Tag {
 
     @Column(name = "tag_name")
     private String tagName;
+
+    @ManyToMany(mappedBy = "tags")
+    private List<TagCollection> tagCollections;
 }

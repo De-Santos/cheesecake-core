@@ -5,7 +5,7 @@ import com.product.service.exception.exceptions.tag.main.TagException;
 @SuppressWarnings("unused")
 public class TagNotMatchingToDraftProductException extends TagException {
 
-    public static TagNotMatchingToDraftProductException crate(Long tagId, Long draftId) {
+    public static TagNotMatchingToDraftProductException create(Long tagId, Long draftId) {
         return new TagNotMatchingToDraftProductException("Tag with id: " + tagId + " not matching to draft with id: " + draftId);
     }
 
