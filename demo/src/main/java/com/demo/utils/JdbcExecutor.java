@@ -4,19 +4,16 @@ import com.demo.dto.UserRegistrationRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Log4j2
@@ -24,13 +21,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class JdbcExecutor {
     private final JdbcTemplate jdbc;
-
-    private static final String SELECT_USERS = """
-                SELECT users.id, users.name, upd.email, upd.phone_number, uns.email_notification, uns.sms_notification
-                FROM users
-                JOIN user_private_data AS upd ON users.id = upd.user_id
-                JOIN user_notification_settings AS uns ON users.id = uns.user_id
-            """;
 
     private static final String INSERT_DEFAULT_USER = """
                 WITH inserted_user AS (
@@ -55,22 +45,41 @@ public class JdbcExecutor {
                 FROM inserted_user;
             """;
 
+    private static final String SELECT_USERS = """
+                SELECT users.id, users.name, upd.email, upd.phone_number, uns.email_notification, uns.sms_notification
+                FROM users
+                JOIN user_private_data AS upd ON users.id = upd.user_id
+                JOIN user_notification_settings AS uns ON users.id = uns.user_id
+                LIMIT ?
+                OFFSET ?
+            """;
+    private static final int BATCH_SIZE = 1000;
+
+
     public void createTest() {
-        this.test();
+        test();
     }
 
     private void test() {
-        jdbc.query(select(), new SimpleRowExtractor());
+        int offset = 0;
+        List<Long> batchResults;
+
+        do {
+            batchResults = fetchUsers(offset);
+            processBatch(batchResults);
+            offset += BATCH_SIZE;
+        } while (!batchResults.isEmpty());
     }
 
-
-    private PreparedStatementCreator select() {
-        return con -> {
-            PreparedStatement ps = con.prepareStatement(SELECT_USERS);
-            ps.setFetchSize(1);
-            return ps;
-        };
+    private List<Long> fetchUsers(int offset) {
+        return jdbc.query(SELECT_USERS, userRowMapper, BATCH_SIZE, offset);
     }
+
+    private void processBatch(List<Long> batchResults) {
+        log.info(batchResults.size());
+    }
+
+    private final RowMapper<Long> userRowMapper = (rs, rowNum) -> rs.getLong("id");
 
     @SuppressWarnings("unused")
     public void create(UserRegistrationRequest userRegistrationRequest) {
@@ -122,17 +131,5 @@ public class JdbcExecutor {
     public void insertBasket(Long userId) {
         String sql = "INSERT INTO basket (user_id) VALUES (?)";
         jdbc.update(sql, userId);
-    }
-
-    private static class SimpleRowExtractor implements ResultSetExtractor<String> {
-        @Override
-        public String extractData(ResultSet rs) throws SQLException, DataAccessException {
-            int i = 0;
-            while (rs.next()) {
-                i++;
-            }
-            log.info("ResultSet size is: {}", i);
-            return null;
-        }
     }
 }

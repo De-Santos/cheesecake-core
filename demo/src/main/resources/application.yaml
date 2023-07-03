@@ -12,6 +12,7 @@ spring:
           events:
             post_init: false
   datasource:
+    driver-class-name: org.postgresql.Driver
     username: ${username}
     password: ${password}
     url: ${postgres_url}
