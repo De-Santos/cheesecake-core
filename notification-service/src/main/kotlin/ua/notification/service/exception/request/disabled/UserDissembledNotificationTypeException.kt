@@ -1,9 +1,10 @@
-package ua.notification.service.exception.request.found
+package ua.notification.service.exception.request.disabled
 
+import ua.notification.service.entity.additional.NotifyType
 import ua.notification.service.exception.request.main.DirectNotificationException
 
 @Suppress("unused")
-class UserNotFoundException : DirectNotificationException {
+class UserDissembledNotificationTypeException : DirectNotificationException {
     constructor() : super()
     constructor(message: String?) : super(message)
     constructor(message: String?, cause: Throwable?) : super(message, cause)
@@ -16,8 +17,8 @@ class UserNotFoundException : DirectNotificationException {
     )
 
     companion object {
-        fun create(id: Long): UserNotFoundException {
-            return UserNotFoundException("User not found by id: $id")
+        fun create(id: Long, type: NotifyType): UserDissembledNotificationTypeException {
+            return UserDissembledNotificationTypeException("User by id: $id disable this notification type: $type")
         }
     }
 }

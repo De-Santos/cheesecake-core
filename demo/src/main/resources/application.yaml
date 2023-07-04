@@ -1,0 +1,22 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        session:
+          events:
+            post_init: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${username}
+    password: ${password}
+    url: ${postgres_url}
+  application:
+    name: demo
+server:
+  port: 8090

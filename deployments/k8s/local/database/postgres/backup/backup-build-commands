@@ -1,0 +1,2 @@
+docker build -t localhost:5000/backup-script -f backup-dockerfile .
+docker push localhost:5000/backup-script

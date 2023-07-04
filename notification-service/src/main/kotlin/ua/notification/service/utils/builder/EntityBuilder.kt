@@ -4,10 +4,7 @@ import org.springframework.stereotype.Component
 import ua.notification.service.dto.DirectNotificationRequest
 import ua.notification.service.dto.NotificationRequest
 import ua.notification.service.entity.*
-import ua.notification.service.entity.additional.MessageTask
-import ua.notification.service.entity.additional.NotifyType
-import ua.notification.service.entity.additional.ProcessStatus
-import ua.notification.service.entity.additional.Tuple
+import ua.notification.service.entity.additional.*
 import ua.notification.service.entity.additional.notification.Notification
 import ua.notification.service.entity.additional.notification.NotificationMethod
 import ua.notification.service.entity.additional.notification.NotificationPrincipal
@@ -92,18 +89,20 @@ class EntityBuilder {
     fun buildDirectTaskTuple(
         directNotification: DirectNotificationRequest,
         notifyType: NotifyType,
-        status: ProcessStatus
+        status: ProcessStatus,
+        sendType: SendType
     ): Tuple<DirectTask, DirectTaskMetadata> {
         return Tuple(
-            this.buildDirectTask(status),
+            this.buildDirectTask(status, sendType),
             this.buildDirectTaskMetadata(directNotification, notifyType)
         )
     }
 
-    fun buildDirectTask(status: ProcessStatus): DirectTask {
+    fun buildDirectTask(status: ProcessStatus, sendType: SendType): DirectTask {
         return DirectTask(
             id = null,
             metadata = null,
+            sendType = sendType,
             status = status
         )
     }

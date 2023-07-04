@@ -1,0 +1,14 @@
+{
+  "upload_type": "local",
+  "project_path": "C:/CodeFile/JavaProjects/cheesecake-core/demo",
+  "gradle_build_command": "gradle bootJar",
+  "jar_name": "demo-0.0.1-SNAPSHOT.jar",
+  "jar_file": "build/libs/demo-0.0.1-SNAPSHOT.jar",
+  "docker_dir": "C:/CodeFile/JavaProjects/cheesecake-core/demo/docker",
+  "target_dir": "C:/CodeFile/JavaProjects/cheesecake-core/demo/docker/jar",
+  "local_build_command": "docker build -t localhost:5000/demo -f demo-dockerfile .",
+  "local_push_command": "docker push localhost:5000/demo",
+  "cloud_build_command": "docker build -t eu.gcr.io/cheesecake-core/demo -f demo-dockerfile .",
+  "cloud_push_command": "docker push eu.gcr.io/cheesecake-core/demo:latest",
+  "kubernetes_update_command": "kubectl rollout restart deploy demo"
+}

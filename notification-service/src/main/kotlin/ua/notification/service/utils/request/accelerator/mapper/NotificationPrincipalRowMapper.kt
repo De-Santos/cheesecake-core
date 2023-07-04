@@ -11,7 +11,9 @@ class NotificationPrincipalRowMapper : RowMapper<NotificationPrincipal> {
             userId = rs.getLong("id"),
             email = rs.getString("email"),
             phone = rs.getString("phone_number"),
-            username = rs.getString("name")
+            username = rs.getString("name"),
+            emailNotification = rs.getBoolean("email_notification"),
+            smsNotification = rs.getBoolean("sms_notification")
         )
     }
 }

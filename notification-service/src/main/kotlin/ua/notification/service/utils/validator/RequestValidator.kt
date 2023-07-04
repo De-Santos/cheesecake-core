@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component
 import ua.notification.service.dto.DirectNotificationRequest
 import ua.notification.service.dto.NotificationRequest
 import ua.notification.service.entity.additional.NotifyType
+import ua.notification.service.entity.additional.notification.NotificationPrincipal
+import ua.notification.service.exception.request.disabled.UserDissembledNotificationTypeException
 import ua.notification.service.exception.request.exceeded.MessageLengthExceededException
 import ua.notification.service.exception.request.found.UserNotFoundException
 import ua.notification.service.exception.request.invalid.InvalidMessageException
@@ -22,6 +24,7 @@ class RequestValidator(
     fun forceValidate(type: NotifyType, directNotificationRequest: DirectNotificationRequest) {
         this.messageValidate(type, directNotificationRequest.message)
         this.forceUserValidate(directNotificationRequest.userId)
+        this.forceUserSettingsAccessValidate(directNotificationRequest.userId!!, type)
     }
 
     private fun messageValidate(type: NotifyType, message: String?) {
@@ -34,5 +37,14 @@ class RequestValidator(
         if (id == null) throw InvalidUserIdException("User id can't be null")
         if (accelerator.existUserById(id)) return
         throw UserNotFoundException("User not found by id: $id")
+    }
+
+    private fun forceUserSettingsAccessValidate(id: Long, type: NotifyType) {
+        val principal: NotificationPrincipal = accelerator.getNotificationPrincipalByUserId(id)
+            .orElseThrow{ UserNotFoundException.create(id) }
+        if (!principal.emailNotification && type == NotifyType.EMAIL)
+            throw UserDissembledNotificationTypeException.create(id, type)
+        if (!principal.smsNotification && type == NotifyType.SMS)
+            throw UserDissembledNotificationTypeException.create(id, type)
     }
 }

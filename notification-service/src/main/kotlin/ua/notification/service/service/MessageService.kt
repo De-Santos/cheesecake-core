@@ -5,9 +5,7 @@ import org.springframework.stereotype.Service
 import ua.notification.service.entity.DirectTask
 import ua.notification.service.entity.Task
 import ua.notification.service.entity.TaskMetadata
-import ua.notification.service.entity.additional.MessageTask
-import ua.notification.service.entity.additional.NotifyType
-import ua.notification.service.entity.additional.Tuple
+import ua.notification.service.entity.additional.*
 import ua.notification.service.entity.additional.notification.NotificationMethod
 import ua.notification.service.entity.additional.notification.NotificationPrincipal
 import ua.notification.service.utils.broker.MessageBroker
@@ -26,16 +24,16 @@ class MessageService(
     }
 
     fun sendMessageTask(tuple: Tuple<MessageTask, NotificationPrincipal>) {
-        this.sendEMAIL(tuple.arg2, tuple.arg1)
-        this.sendSMS(tuple.arg2, tuple.arg1)
+        if (tuple.arg2.emailNotification) this.sendEmail(tuple.arg2, tuple.arg1)
+        if (tuple.arg2.smsNotification) this.sendSMS(tuple.arg2, tuple.arg1)
     }
 
-    fun sendDirectTask(directTuple: Tuple<DirectTask, NotificationPrincipal>) {
-        this.sendEMAIL(directTuple.arg2, directTuple.arg1)
-        this.sendSMS(directTuple.arg2, directTuple.arg1)
+    fun sendDirectTask(tuple: Tuple<DirectTask, NotificationPrincipal>, sendType: SendType) {
+        if (sendType == SendType.FORCE || tuple.arg2.emailNotification) this.sendEmail(tuple.arg2, tuple.arg1)
+        if (sendType == SendType.FORCE || tuple.arg2.smsNotification) this.sendSMS(tuple.arg2, tuple.arg1)
     }
 
-    private fun sendEMAIL(principal: NotificationPrincipal, directTask: DirectTask) {
+    private fun sendEmail(principal: NotificationPrincipal, directTask: DirectTask) {
         if (directTask.metadata!!.notifyType == NotifyType.SMS) return
         broker.sendNotification(
             entityBuilder.buildNotification(
@@ -57,7 +55,7 @@ class MessageService(
         )
     }
 
-    private fun sendEMAIL(principal: NotificationPrincipal, task: MessageTask) {
+    private fun sendEmail(principal: NotificationPrincipal, task: MessageTask) {
         if (task.notifyType == NotifyType.SMS) return
         broker.sendNotification(
             entityBuilder.buildNotification(

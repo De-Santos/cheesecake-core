@@ -27,9 +27,8 @@ class DirectTaskRequestConstructor(
     }
 
     fun getPrincipalByUserId(id: Long): NotificationPrincipal {
-        return accelerator.getNotificationPrincipalByUserId(id).orElseThrow {
-            UserNotFoundException("User not found by id: $id")
-        }
+        return accelerator.getNotificationPrincipalByUserId(id)
+            .orElseThrow { UserNotFoundException.create(id) }
     }
 
     fun saveDirectTaskAndReturn(tuple: Tuple<DirectTask, DirectTaskMetadata>): Tuple<DirectTask, NotificationPrincipal> {
