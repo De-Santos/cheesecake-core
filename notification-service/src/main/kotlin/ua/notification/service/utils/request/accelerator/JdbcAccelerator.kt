@@ -15,7 +15,6 @@ import ua.notification.service.service.MessageService
 import ua.notification.service.utils.request.accelerator.mapper.*
 import java.sql.Connection
 import java.sql.PreparedStatement
-import java.sql.ResultSet
 import java.util.*
 
 @Component
@@ -30,93 +29,90 @@ class JdbcAccelerator(
     private val processStatusRowMapper: ProcessStatusRowMapper = ProcessStatusRowMapper()
 
     companion object {
-        const val COUNT_OF_ROWS: String = """
-            SELECT COUNT(id) FROM users
-            """
-        const val SELECT_BATCH: String = """
-            SELECT users.id, users.name, upd.email, upd.phone_number, uns.email_notification, uns.sms_notification
-            FROM users
-            JOIN user_private_data AS upd ON users.id = upd.user_id
-            JOIN user_notification_settings AS uns ON users.id = uns.user_id
-            WHERE users.id > ? AND users.id <= ?
+        private const val BATCH_SIZE: Long = 1000
+        const val SELECT_USERS_BATCH: String = """
+                SELECT users.id, users.name, upd.email, upd.phone_number, uns.email_notification, uns.sms_notification
+                FROM users
+                JOIN user_private_data AS upd ON users.id = upd.user_id
+                JOIN user_notification_settings AS uns ON users.id = uns.user_id
+                LIMIT ?
+                OFFSET ?
         """
-        const val SELECT_PRINCIPAL_BY_USER_ID: String = """
+        private const val SELECT_PRINCIPAL_BY_USER_ID: String = """
             SELECT users.id, users.name, upd.email, upd.phone_number, uns.email_notification, uns.sms_notification
             FROM users
             JOIN user_private_data AS upd ON users.id = upd.user_id
             JOIN user_notification_settings AS uns ON users.id = uns.user_id
             WHERE users.id = ?
         """
-        const val SET_TASK_STATUS: String = """
+        private const val SET_TASK_STATUS: String = """
             UPDATE task  
             SET process_status=?
             WHERE id = ?
         """
-        const val SELECT_NOTIFICATION_BY_ID: String = """
+        private const val SELECT_NOTIFICATION_BY_ID: String = """
             SELECT task.id AS task_id, task.create_time, task.process_status, process_metadata.id AS process_metadata_id
             FROM task
             JOIN process_metadata ON task.id = process_metadata.task_id
             WHERE task.id = ?
         """
-        const val SELECT_DIRECT_NOTIFICATION_BY_ID: String = """
+        private const val SELECT_DIRECT_NOTIFICATION_BY_ID: String = """
             SELECT direct_task.id, direct_task.process_status, direct_task.creation_time, direct_task_metadata.user_id
             FROM direct_task
             JOIN direct_task_metadata ON direct_task.id = direct_task_metadata.direct_task_id
             WHERE direct_task.id = ?
         """
-        const val SELECT_STATUS_BY_ID: String = """
+        private const val SELECT_STATUS_BY_ID: String = """
             SELECT process_status
             FROM task
             WHERE id = ?
         """
-        const val SELECT_ALL_TASK_IDS: String = """
+        private const val SELECT_ALL_TASK_IDS: String = """
             SELECT id
             FROM task
         """
-        const val SELECT_ALL_DIRECT_TASK_IDS: String = """
+        private const val SELECT_ALL_DIRECT_TASK_IDS: String = """
             SELECT id
             FROM direct_task
         """
-        const val SELECT_ALL_ACTIVE_IDS: String = """
+        private const val SELECT_ALL_ACTIVE_IDS: String = """
             SELECT id
             FROM task
             WHERE process_status = 'IN_PROCESS' OR process_status = 'PENDING'
         """
-        const val SELECT_BY_STATUS: String = """
+        private const val SELECT_BY_STATUS: String = """
             SELECT id
             FROM task
             WHERE process_status = ?
         """
-        const val SELECT_PROCESS_METADATA_BY_ID: String = """
+        private const val SELECT_PROCESS_METADATA_BY_ID: String = """
             SELECT *
             FROM process_metadata
             WHERE id = ?
         """
-        const val SET_END_TIME_IN_PROCESS_METADATA: String = """
+        private const val SET_END_TIME_IN_PROCESS_METADATA: String = """
             UPDATE process_metadata
             SET end_time = ?
             WHERE task_id = ?
         """
-        const val SET_START_TIME_IN_PROCESS_METADATA: String = """
+        private const val SET_START_TIME_IN_PROCESS_METADATA: String = """
             UPDATE process_metadata
             SET start_time = ?
             WHERE task_id = ?
         """
-        const val SET_USERS_PROCESSED: String = """
+        private const val SET_USERS_PROCESSED: String = """
             UPDATE process_metadata
             SET users_processed = ?
             WHERE task_id = ?
         """
-        const val EXIST_USER_BY_ID: String = """
+        private const val EXIST_USER_BY_ID: String = """
             SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)
         """
     }
 
     fun createNotification(task: MessageTask) {
-        val rowsCount: Long = jdbc.queryForObject(COUNT_OF_ROWS, Long::class.java)!!
-        if (rowsCount == 0L) return this.updateTaskStatus(task.id, ProcessStatus.DONE)
         this.updateTaskStatus(task.id, ProcessStatus.IN_PROCESS)
-        this.batchCreateNotification(task, rowsCount)
+        this.batchCreateNotification(task)
 
     }
 
@@ -196,26 +192,26 @@ class JdbcAccelerator(
         return resultList.firstOrNull()?.let { Optional.of(it) } ?: Optional.empty()
     }
 
-    private fun batchCreateNotification(task: MessageTask, rowsCount: Long) {
-        val batchSize: Long = 1000
-        var start: Long = 0
-        var end: Long = batchSize
+    private fun batchCreateNotification(task: MessageTask) {
+        var offset: Long = 0
+        var userPrincipals: List<NotificationPrincipal>
         try {
             this.setStartTime(task.id)
-            while (start < rowsCount) {
-                jdbc.query(selectBatchBuilder(start, end)) {
-                    this.createNotificationResultSetExtractor(it, task)
-                }
-                this.setUsersProcessed(task.id, start)
-                start += batchSize
-                end = start + batchSize
-            }
+            do {
+                userPrincipals = this.fetchPrincipals(offset)
+                this.processUsers(userPrincipals, task)
+                this.setUsersProcessed(task.id, offset)
+                offset += BATCH_SIZE
+            } while (userPrincipals.isNotEmpty())
             this.setEndTime(task.id)
-            this.setUsersProcessed(task.id, rowsCount)
             this.updateTaskStatus(task.id, ProcessStatus.DONE)
         } catch (e: Exception) {
             this.updateTaskStatus(task.id, ProcessStatus.ERROR)
         }
+    }
+
+    private fun fetchPrincipals(offset: Long): List<NotificationPrincipal> {
+        return jdbc.query(selectBatchBuilder(offset), notificationPrincipalRowMapper)
     }
 
     private fun setUsersProcessed(id: Long, quantity: Long) {
@@ -234,18 +230,16 @@ class JdbcAccelerator(
         jdbc.update(SET_TASK_STATUS, status.name, id)
     }
 
-    private fun selectBatchBuilder(start: Long, end: Long): PreparedStatementCreator {
+    private fun selectBatchBuilder(offset: Long): PreparedStatementCreator {
         return PreparedStatementCreator { con: Connection ->
-            val ps: PreparedStatement = con.prepareStatement(SELECT_BATCH)
-            ps.setLong(1, start)
-            ps.setLong(2, end)
+            val ps: PreparedStatement = con.prepareStatement(SELECT_USERS_BATCH)
+            ps.setLong(1, BATCH_SIZE)
+            ps.setLong(2, offset)
             ps
         }
     }
 
-    private fun createNotificationResultSetExtractor(rs: ResultSet, task: MessageTask) {
-        while (rs.next()) {
-            messageService.sendMessageTask(Tuple(task, notificationPrincipalRowMapper.mapRow(rs, 0)),)
-        }
+    private fun processUsers(principals: List<NotificationPrincipal>, task: MessageTask) {
+        principals.forEach { messageService.sendMessageTask(Tuple(task, it)) }
     }
 }
