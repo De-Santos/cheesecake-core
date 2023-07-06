@@ -1,4 +1,4 @@
-package com.product.service.utils.request.jdbc.accelerator.mapper;
+package com.product.service.utils.request.jdbc.mapper;
 
 import com.product.service.dto.tag.TagResponse;
 import org.springframework.jdbc.core.RowMapper;

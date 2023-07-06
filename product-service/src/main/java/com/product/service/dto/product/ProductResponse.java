@@ -2,11 +2,13 @@ package com.product.service.dto.product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.product.service.dto.photo.additional.FileCollectionDto;
+import com.product.service.dto.tag.TagResponse;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -40,4 +42,7 @@ public class ProductResponse {
 
     @JsonProperty("file_collection")
     private FileCollectionDto images;
+
+    @JsonProperty("tags")
+    private List<TagResponse> tags;
 }

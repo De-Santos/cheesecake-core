@@ -3,7 +3,7 @@ package com.product.service.service;
 import com.product.service.dto.product.DraftProductRequest;
 import com.product.service.dto.product.DraftProductResponse;
 import com.product.service.utils.check.ProductChecker;
-import com.product.service.utils.convertor.Convertor;
+import com.product.service.utils.converter.Converter;
 import com.product.service.utils.request.DraftRequestConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,7 +18,7 @@ import java.util.List;
 public class DraftProductService {
     private final DraftRequestConstructor draftRequestConstructor;
     private final ProductChecker productChecker;
-    private final Convertor convertor;
+    private final Converter converter;
 
     public Long newDraft() {
         log.info("Creating new product draft");
@@ -41,7 +41,7 @@ public class DraftProductService {
     @Transactional
     public DraftProductResponse get(Long id) {
         log.info("Get draft by id: {}", id);
-        return convertor.convert(draftRequestConstructor.get(id));
+        return converter.convert(draftRequestConstructor.get(id));
     }
 
     public List<Long> get() {

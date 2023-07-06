@@ -1,4 +1,4 @@
-package com.product.service.utils.request.jdbc.accelerator.query;
+package com.product.service.utils.request.jdbc.query;
 
 
 import lombok.AllArgsConstructor;
@@ -13,7 +13,14 @@ public enum ProductQuery {
 
     SELECT_VERSION_ID_BY_ID("SELECT version_id FROM products WHERE id = ?"),
 
-    SELECT_ALL_VERSION_ID("SELECT version_id FROM products");
+    SELECT_ALL_VERSION_ID("SELECT version_id FROM products"),
+
+    UPDATE_PRODUCT_BY_ID("""
+            UPDATE products
+            SET version_id = ?, name = ?, description = ?, price = ?, active = ?, create_date = ?
+            WHERE id = ?
+            RETURNING id
+            """);
 
     public final String query;
 }

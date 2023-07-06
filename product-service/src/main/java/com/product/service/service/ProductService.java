@@ -4,7 +4,7 @@ import com.product.service.dto.product.ProductResponse;
 import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.entity.DraftProduct;
 import com.product.service.utils.check.ProductChecker;
-import com.product.service.utils.convertor.Convertor;
+import com.product.service.utils.converter.Converter;
 import com.product.service.utils.request.DraftRequestConstructor;
 import com.product.service.utils.request.ProductRequestConstructor;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private final Convertor convertor;
+    private final Converter converter;
     private final ProductChecker productChecker;
     private final ProductRequestConstructor productRequestConstructor;
     private final DraftRequestConstructor draftRequestConstructor;
@@ -64,7 +64,7 @@ public class ProductService {
     public ProductResponse sailMode(SaleProductRequest saleProductRequest) {
         log.info("Sail mode for product by versionId: {}", saleProductRequest.getVersionId());
         productChecker.check(saleProductRequest);
-        return convertor.convert(productRequestConstructor.sailMode(saleProductRequest));
+        return converter.convert(productRequestConstructor.sailMode(saleProductRequest));
     }
 
     public List<ProductResponse> getArchiveProducts() {

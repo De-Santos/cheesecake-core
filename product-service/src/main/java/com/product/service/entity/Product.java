@@ -50,4 +50,18 @@ public final class Product {
 
     @Column(name = "active")
     private boolean active;
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", versionId=" + versionId +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", salePrice=" + salePrice +
+                ", createDate=" + createDate +
+                ", active=" + active +
+                '}';
+    }
 }

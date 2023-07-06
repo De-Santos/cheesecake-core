@@ -1,9 +1,6 @@
 package com.product.service.utils.request;
 
-import com.product.service.dao.ArchiveProductRepository;
-import com.product.service.dao.DraftProductRepository;
-import com.product.service.dao.FileCollectionRepository;
-import com.product.service.dao.ProductRepository;
+import com.product.service.dao.*;
 import com.product.service.dto.product.ProductResponse;
 import com.product.service.dto.product.SaleProductRequest;
 import com.product.service.entity.ArchiveProduct;
@@ -12,7 +9,7 @@ import com.product.service.entity.Product;
 import com.product.service.exception.exceptions.product.found.ArchiveProductNotFoundException;
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
 import com.product.service.utils.check.ProductChecker;
-import com.product.service.utils.convertor.Convertor;
+import com.product.service.utils.converter.Converter;
 import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import com.product.service.utils.request.utils.duplicator.EntityDuplicator;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +27,12 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class ProductRequestConstructor {
-    private final Convertor convertor;
+    private final Converter converter;
     private final ProductChecker productChecker;
     private final ProductRepository productRepository;
     private final FileCollectionRepository fileCollectionRepository;
     private final ArchiveProductRepository archiveProductRepository;
+    private final TagCollectionRepository tagCollectionRepository;
     private final DraftProductRepository draftProductRepository;
     private final JdbcAccelerator accelerator;
     private final EntityDuplicator entityDuplicator;
@@ -58,7 +56,7 @@ public class ProductRequestConstructor {
     public ProductResponse getProductById(UUID versionId) {
         log.info("Getting product from database by id: {}", versionId);
         Optional<Product> product = productRepository.findProductByVersionId(versionId);
-        if (product.isPresent()) return convertor.convert(product.get());
+        if (product.isPresent()) return converter.convert(product.get());
         return this.getArchiveProductByVersionId(versionId);
     }
 
@@ -71,26 +69,19 @@ public class ProductRequestConstructor {
     public UUID updateProduct(Long draftProductId) {
         DraftProduct draftProduct = this.safeGetDraftProduct(draftProductId);
         log.info("Updating product from database by version id: {}", draftProduct.getParentVersionId());
-        draftProductRepository.delete(draftProduct);
         Optional<Product> product = productRepository.findProductByVersionId(draftProduct.getParentVersionId());
         if (product.isPresent()) {
             entityDuplicator.copyToArchive(product.get());
-            return this.productMergeUpdate(product.get(), draftProduct).getVersionId();
+            return entityDuplicator.productMergeUpdate(product.get(), draftProduct).getVersionId();
         }
         return this.createProductFromDraft(draftProduct).getVersionId();
     }
 
     private Product createProductFromDraft(DraftProduct draftProduct) {
-        Product newProduct = productRepository.save(convertor.convertToProduct(draftProduct));
+        Product newProduct = productRepository.save(converter.convertToProduct(draftProduct));
         fileCollectionRepository.save(draftProduct.getImages().product(newProduct));
+        tagCollectionRepository.save(draftProduct.getTags().product(newProduct));
         return newProduct;
-    }
-
-    private Product productMergeUpdate(Product product, DraftProduct draftProduct) {
-        Product updatedProduct = productRepository.save(convertor.updateConvert(product, draftProduct));
-        fileCollectionRepository.save(draftProduct.getImages().product(updatedProduct));
-        draftProductRepository.delete(draftProduct);
-        return updatedProduct;
     }
 
     @Transactional
@@ -105,7 +96,7 @@ public class ProductRequestConstructor {
         log.info("Activate/Deactivate product by versionId: {}", versionId);
         Product product = this.safeGetProduct(versionId);
         product.setActive(!product.isActive());
-        return convertor.convert(productRepository.save(product));
+        return converter.convert(productRepository.save(product));
     }
 
     public List<ProductResponse> getArchive() {
@@ -113,14 +104,14 @@ public class ProductRequestConstructor {
         return archiveProductRepository
                 .findAll()
                 .stream()
-                .map(convertor::convert)
+                .map(converter::convert)
                 .toList();
     }
 
     public ProductResponse getArchiveProductByVersionId(UUID versionId) {
         log.info("Getting archive product from database by version id: {}", versionId);
         ArchiveProduct archiveProduct = this.safeGetArchiveProduct(versionId);
-        return convertor.convert(archiveProduct, this.getActualVersionIdById(archiveProduct.getActualProductId()));
+        return converter.convert(archiveProduct, this.getActualVersionIdById(archiveProduct.getActualProductId()));
     }
 
     private UUID getActualVersionIdById(Long id) {

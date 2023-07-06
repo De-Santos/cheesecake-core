@@ -1,4 +1,4 @@
-package com.product.service.utils.convertor;
+package com.product.service.utils.converter;
 
 import com.product.service.dto.photo.PhotoResponse;
 import com.product.service.dto.photo.additional.FileCollectionDto;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class Convertor {
+public class Converter {
     private final TimeMapper timeMapper;
     private final JdbcAccelerator accelerator;
 
@@ -50,6 +50,7 @@ public class Convertor {
                 .createDate(timeMapper.toTime(product.getCreateDate()))
                 .active(product.isActive())
                 .images(this.fileCollectionConvert(product.getImages()))
+                .tags(this.tagCollectionConvert(product.getTags()))
                 .build();
     }
 
@@ -61,6 +62,8 @@ public class Convertor {
                 .price(archiveProduct.getPrice())
                 .createDate(timeMapper.toTime(archiveProduct.getCreateDate()))
                 .activeVersionId(actualVersionId)
+                .images(this.fileCollectionConvert(archiveProduct.getImages()))
+                .tags(this.tagCollectionConvert(archiveProduct.getTags()))
                 .build();
     }
 
@@ -131,16 +134,6 @@ public class Convertor {
                 .price(draftProduct.getPrice())
                 .createDate(LocalDateTime.now())
                 .build();
-    }
-
-    public Product updateConvert(Product product, DraftProduct draftProduct) {
-        product.setVersionId(UUID.randomUUID());
-        product.setName(draftProduct.getName());
-        product.setDescription(draftProduct.getDescription());
-        product.setPrice(draftProduct.getPrice());
-        product.setCreateDate(LocalDateTime.now());
-        product.setActive(product.isActive());
-        return product;
     }
 
     public ProductResponse convert(ArchiveProduct archiveProduct) {

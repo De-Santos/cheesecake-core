@@ -24,4 +24,12 @@ public class Tag {
 
     @ManyToMany(mappedBy = "tags")
     private List<TagCollection> tagCollections;
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "id=" + id +
+                ", tagName='" + tagName + '\'' +
+                '}';
+    }
 }

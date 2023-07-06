@@ -48,9 +48,10 @@ public class TagCollection {
                 .build();
     }
 
-    public static TagCollection create(Product product) {
-        return TagCollection.builder()
-                .product(product)
-                .build();
+    public TagCollection product(Product product) {
+        this.archiveProduct = null;
+        this.draftProduct = null;
+        this.product = product;
+        return this;
     }
 }

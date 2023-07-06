@@ -4,7 +4,7 @@ package com.product.service.service;
 import com.product.service.dto.photo.PhotoResponse;
 import com.product.service.entity.additional.BannerPhoto;
 import com.product.service.utils.check.ProductChecker;
-import com.product.service.utils.convertor.Convertor;
+import com.product.service.utils.converter.Converter;
 import com.product.service.utils.request.PhotoRequestConstructor;
 import com.product.service.utils.validator.FileValidator;
 import lombok.RequiredArgsConstructor;
@@ -21,16 +21,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class PhotoService {
     private final PhotoRequestConstructor photoRequestConstructor;
     private final ProductChecker productChecker;
-    private final Convertor convertor;
+    private final Converter converter;
 
     public ResponseEntity<byte[]> getBannerPhoto(Long id) {
         log.info("Get photo by id: {}", id);
-        return convertor.mergeToPhotoResponse(photoRequestConstructor.getBannerPhoto(id));
+        return converter.mergeToPhotoResponse(photoRequestConstructor.getBannerPhoto(id));
     }
 
     public ResponseEntity<byte[]> getDescriptionPhoto(Long id) {
         log.info("Get photo by id: {}", id);
-        return convertor.mergeToPhotoResponse(photoRequestConstructor.getDescriptionPhoto(id));
+        return converter.mergeToPhotoResponse(photoRequestConstructor.getDescriptionPhoto(id));
     }
 
     @Transactional
@@ -60,13 +60,13 @@ public class PhotoService {
         productChecker.checkDraftById(draftId);
         BannerPhoto removedPhoto = photoRequestConstructor.removeBannerPhoto(id);
         photoRequestConstructor.fileCollectionNormalization(draftId);
-        return convertor.convert(removedPhoto);
+        return converter.convert(removedPhoto);
     }
 
     @Transactional
     public PhotoResponse removeDescriptionPhoto(Long draftId, Long id) {
         log.info("Remove description photo by id: {}", id);
         productChecker.checkDraftById(draftId);
-        return convertor.convert(photoRequestConstructor.removeDescriptionPhoto(id));
+        return converter.convert(photoRequestConstructor.removeDescriptionPhoto(id));
     }
 }

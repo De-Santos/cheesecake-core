@@ -29,10 +29,10 @@ public final class DraftProduct {
     @Column(name = "parent_version_id")
     private UUID parentVersionId;
 
-    @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER)
     private FileCollection images;
 
-    @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "draftProduct", fetch = FetchType.EAGER)
     private TagCollection tags;
 
     @Column(name = "name")

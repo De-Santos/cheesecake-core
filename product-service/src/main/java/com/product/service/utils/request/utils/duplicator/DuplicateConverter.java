@@ -7,13 +7,15 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Component
-public class DuplicateConvertor {
+public class DuplicateConverter {
     public DraftProduct convert(@NotNull Product product) {
         return DraftProduct.builder()
                 .parentVersionId(product.getVersionId())
                 .images(null)
+                .hash(UUID.randomUUID())
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
@@ -25,6 +27,7 @@ public class DuplicateConvertor {
         return DraftProduct.builder()
                 .parentVersionId(archiveProduct.getVersionId())
                 .images(null)
+                .hash(UUID.randomUUID())
                 .name(archiveProduct.getName())
                 .description(archiveProduct.getDescription())
                 .price(archiveProduct.getPrice())
@@ -41,6 +44,19 @@ public class DuplicateConvertor {
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .createDate(product.getCreateDate())
+                .tags(null)
                 .build();
     }
+
+
+    public Product convertToProduct(Product product, DraftProduct draftProduct) {
+        product.setVersionId(UUID.randomUUID());
+        product.setName(draftProduct.getName());
+        product.setDescription(draftProduct.getDescription());
+        product.setPrice(draftProduct.getPrice());
+        product.setCreateDate(LocalDateTime.now());
+        product.setActive(product.isActive());
+        return product;
+    }
+
 }

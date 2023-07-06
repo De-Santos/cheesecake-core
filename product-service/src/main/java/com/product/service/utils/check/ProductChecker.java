@@ -66,7 +66,7 @@ public class ProductChecker {
     }
 
     public void checkDraftData(DraftProduct draftProduct) {
-        Protector.safeNull(draftProduct);
+        Protector.nonNull(DraftProductIsNullException.create(), draftProduct);
         this.checkName(draftProduct.getName());
         this.checkPhoto(draftProduct);
         this.checkPrice(draftProduct.getPrice());

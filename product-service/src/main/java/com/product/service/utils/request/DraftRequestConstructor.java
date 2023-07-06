@@ -8,7 +8,7 @@ import com.product.service.entity.DraftProduct;
 import com.product.service.exception.exceptions.product.found.DraftProductNotFoundException;
 import com.product.service.utils.check.FileCollectionChecker;
 import com.product.service.utils.check.ProductChecker;
-import com.product.service.utils.convertor.Convertor;
+import com.product.service.utils.converter.Converter;
 import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,7 +27,7 @@ public class DraftRequestConstructor {
     private final FileCollectionChecker fileCollectionChecker;
     private final ProductChecker productChecker;
     private final JdbcAccelerator accelerator;
-    private final Convertor convertor;
+    private final Converter converter;
 
     // FIXME: 4/22/2023
     public Long newDraft() {
@@ -44,7 +44,7 @@ public class DraftRequestConstructor {
         productChecker.checkDraftById(draftProductRequest.getId());
         DraftProduct draftProduct = this.get(draftProductRequest.getId());
         fileCollectionChecker.checkFileCollectionIdentity(draftProduct.getImages(), draftProductRequest.getImages());
-        return convertor.convert(draftProductRepository.save(convertor.updateConvert(draftProduct, draftProductRequest)));
+        return converter.convert(draftProductRepository.save(converter.updateConvert(draftProduct, draftProductRequest)));
     }
 
     public DraftProductResponse delete(Long id) {
@@ -53,7 +53,7 @@ public class DraftRequestConstructor {
                 .orElseThrow(() -> DraftProductNotFoundException.create(id));
         draftProductRepository.delete(draftProduct);
         fileCollectionRepository.delete(draftProduct.getImages());
-        return convertor.convert(draftProduct);
+        return converter.convert(draftProduct);
     }
 
     public DraftProduct get(Long id) {

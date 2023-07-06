@@ -1,4 +1,4 @@
-package com.product.service.utils.request.jdbc.accelerator.query;
+package com.product.service.utils.request.jdbc.query;
 
 import lombok.AllArgsConstructor;
 
