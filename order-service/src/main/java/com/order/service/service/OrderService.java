@@ -21,11 +21,6 @@ public class OrderService {
         return responseBuilder.build(orderRequestConstructor.newOrder(orderRequest));
     }
 
-    public OrderResponse newOrderFromBasket(Long basketId) {
-        requestValidator.validateBasketById(basketId);
-        return null;
-    }
-
     public OrderResponse disableOrder(Long orderId) {
         return responseBuilder.build(orderRequestConstructor.disableOrder(orderId));
     }
@@ -41,7 +36,7 @@ public class OrderService {
 
     public OrderResponse updateOrder(UpdateOrderRequest updateOrderRequest) {
         requestValidator.validateUpdateOrderRequest(updateOrderRequest);
-        return null;
+        return responseBuilder.build(orderRequestConstructor.updateOrder(updateOrderRequest));
     }
 
     public OrderResponse updateOrderStatus(Long id, UpdateProcessStatusRequest processStatus) {

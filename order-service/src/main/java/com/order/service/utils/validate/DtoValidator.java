@@ -4,13 +4,16 @@ import com.order.service.dto.OrderRequest;
 import com.order.service.dto.RejectOrderRequest;
 import com.order.service.dto.UpdateOrderRequest;
 import com.order.service.dto.UpdateProcessStatusRequest;
-import com.order.service.exception.exceptions.basket.empty.BasketProductListIsEmptyException;
-import com.order.service.exception.exceptions.basket.exceeded.BasketProductCountExceededException;
-import com.order.service.exception.exceptions.basket.found.BasketNotFoundException;
-import com.order.service.exception.exceptions.basket.nullable.BasketIdIsNullException;
 import com.order.service.exception.exceptions.order.found.OrderNotFoundException;
 import com.order.service.exception.exceptions.order.invalid.OrderTotalPriceInvalidException;
-import com.order.service.exception.exceptions.order.nullable.*;
+import com.order.service.exception.exceptions.order.nullable.AdminIdIsNullRequestException;
+import com.order.service.exception.exceptions.order.nullable.OrderRequestIsNullException;
+import com.order.service.exception.exceptions.order.nullable.OrderTotalPriceIsNullException;
+import com.order.service.exception.exceptions.order.nullable.RejectOrderExceptionIsNullRequestException;
+import com.order.service.exception.exceptions.order.nullable.RejectOrderMessageIsNullRequestException;
+import com.order.service.exception.exceptions.order.nullable.UpdateOrderRequestIsNullException;
+import com.order.service.exception.exceptions.order.nullable.UpdateProcessStatusIsNullRequestException;
+import com.order.service.exception.exceptions.order.nullable.UserNameIsNullException;
 import com.order.service.exception.exceptions.order.time.invalid.OrderRequiredDoneTimeInvalidException;
 import com.order.service.exception.exceptions.order.time.nullable.OrderRequiredDoneTimeIsNullException;
 import com.order.service.exception.exceptions.product.empty.OrderProductListIsEmptyException;
@@ -45,18 +48,6 @@ public interface DtoValidator {
      * @throws OrderRequiredDoneTimeInvalidException        If the requiredDoneTime is before the current date or less than the minimum required done time.
      */
     void validateOrderRequest(OrderRequest orderRequest);
-
-    /**
-     * Validates the basket by its ID.
-     *
-     * @param basketId The ID of the basket to validate.
-     * @throws BasketIdIsNullException                      If the basketId parameter is null.
-     * @throws BasketNotFoundException                      If the basket with the specified basketId does not exist.
-     * @throws BasketProductListIsEmptyException            If the product list in the basket is empty.
-     * @throws BasketProductCountExceededException          If the count of any product in the basket exceeds the maximum allowed count.
-     * @throws ProductDoesNotExistInActiveProductsException If any product in the basket does not exist in the active products.
-     */
-    void validateBasketById(Long basketId);
 
     /**
      * Validates the RejectOrderRequest.

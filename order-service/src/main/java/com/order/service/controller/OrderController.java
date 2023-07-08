@@ -22,13 +22,6 @@ public class OrderController implements OrderApi {
     }
 
     @Override
-    @PostMapping("/basket/{basketId}")
-    public ResponseEntity<OrderResponse> createOrderFromBasket(@PathVariable Long basketId) {
-        log.info("Create order from basket by id: {}", basketId);
-        return ResponseEntity.ok(orderService.newOrderFromBasket(basketId));
-    }
-
-    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<OrderResponse> disableOrder(@PathVariable("id") Long orderId) {
         log.info("Disable order by id: {}", orderId);

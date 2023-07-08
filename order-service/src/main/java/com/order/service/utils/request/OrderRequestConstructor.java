@@ -3,8 +3,11 @@ package com.order.service.utils.request;
 import com.order.service.dao.*;
 import com.order.service.dto.OrderRequest;
 import com.order.service.dto.RejectOrderRequest;
+import com.order.service.dto.UpdateOrderRequest;
 import com.order.service.dto.UpdateProcessStatusRequest;
 import com.order.service.entities.Order;
+import com.order.service.entities.OrderMetadata;
+import com.order.service.entities.PaymentData;
 import com.order.service.entities.RejectOrderCause;
 import com.order.service.entities.additional.ProcessStatus;
 import com.order.service.exception.exceptions.order.found.OrderNotFoundException;
@@ -57,5 +60,18 @@ public class OrderRequestConstructor {
     public RejectOrderCause rejectOrder(Long id, RejectOrderRequest rejectOrderRequest) {
         accelerator.updateStatus(id, ProcessStatus.REJECTED);
         return rejectOrderCauseRepository.saveFrom(id, rejectOrderRequest.getUserId(), rejectOrderRequest.getMessage());
+    }
+
+    public Order updateOrder(UpdateOrderRequest updateOrderRequest) {
+        Order order = orderRepository.findById(updateOrderRequest.getId())
+                .orElseThrow(() -> OrderNotFoundException.create(updateOrderRequest.getId()));
+        order.setProcessStatus(updateOrderRequest.getProcessStatus());
+        PaymentData paymentData = order.getPaymentData();
+        paymentData.setTotalPrice(updateOrderRequest.getTotalPrice());
+        order.setPaymentData(paymentDataRepository.save(paymentData));
+        OrderMetadata orderMetadata = order.getOrderMetadata();
+        orderMetadata.setRequiredDoneTime(updateOrderRequest.getRequiredDoneTime());
+        order.setOrderMetadata(orderMetadataRepository.save(orderMetadata));
+        return orderRepository.save(order);
     }
 }

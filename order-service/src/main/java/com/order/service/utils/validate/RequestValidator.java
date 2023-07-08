@@ -1,10 +1,6 @@
 package com.order.service.utils.validate;
 
 import com.order.service.dto.*;
-import com.order.service.exception.exceptions.basket.empty.BasketProductListIsEmptyException;
-import com.order.service.exception.exceptions.basket.exceeded.BasketProductCountExceededException;
-import com.order.service.exception.exceptions.basket.found.BasketNotFoundException;
-import com.order.service.exception.exceptions.basket.nullable.BasketIdIsNullException;
 import com.order.service.exception.exceptions.order.found.OrderNotFoundException;
 import com.order.service.exception.exceptions.order.invalid.OrderTotalPriceInvalidException;
 import com.order.service.exception.exceptions.order.nullable.*;
@@ -22,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -42,17 +40,6 @@ public class RequestValidator implements DtoValidator {
         this.validateUserId(orderRequest.getUserId());
         this.validateProducts(orderRequest.getProducts());
         this.validateRequiredDoneTime(orderRequest.getRequiredDoneTime());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void validateBasketById(Long basketId) {
-        if (basketId == null) throw BasketIdIsNullException.create();
-        if (Boolean.FALSE.equals(validationAccelerator.existBasketById(basketId)))
-            throw BasketNotFoundException.create(basketId);
-        this.validateBasketProductsByBasketId(basketId);
     }
 
     /**
@@ -123,17 +110,6 @@ public class RequestValidator implements DtoValidator {
 
         if (requiredDoneTime.before(calendar.getTime()))
             throw new OrderRequiredDoneTimeInvalidException("Required done time must be after " + MIN_REQUIRED_DONE_TIME_DAYS + " days.");
-    }
-
-    private void validateBasketProductsByBasketId(Long basketId) {
-        Map<UUID, Integer> products = validationAccelerator.getBasketProductsByBasketId(basketId);
-        if (products.isEmpty()) throw BasketProductListIsEmptyException.create();
-        products.forEach((productVersionId, count) -> {
-            if (count > MAX_PRODUCT_COUNT)
-                throw BasketProductCountExceededException.create(productVersionId, basketId, MAX_PRODUCT_COUNT);
-            if (Boolean.FALSE.equals(validationAccelerator.existProductByVersionId(productVersionId)))
-                throw ProductDoesNotExistInActiveProductsException.create(productVersionId);
-        });
     }
 
     private void validateRejectOrderRequest(RejectOrderRequest rejectOrderRequest) {
