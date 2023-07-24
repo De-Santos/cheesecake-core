@@ -4,9 +4,9 @@ import com.user.service.dao.*;
 import com.user.service.dto.user.*;
 import com.user.service.entities.User;
 import com.user.service.entities.UserPrivateData;
-import com.user.service.exceptions.UserNotificationSettingsNotFoundException;
-import com.user.service.exceptions.exceptions.UserPrivateDataNotFoundException;
-import com.user.service.exceptions.exceptions.user.UserNotFoundException;
+import com.user.service.exceptions.exceptions.user.found.UserNotFoundException;
+import com.user.service.exceptions.exceptions.user.found.UserNotificationSettingsNotFoundException;
+import com.user.service.exceptions.exceptions.user.found.UserPrivateDataNotFoundException;
 import com.user.service.utils.additional.checker.base.UserChecker;
 import com.user.service.utils.builder.EntityBuilder;
 import com.user.service.utils.convertor.Converter;
@@ -93,8 +93,8 @@ public class UserRequestConstructor {
         );
     }
 
-    public User updateUser(UserRequest userRequest) {
-        userChecker.check(userRequest.getId());
-        return userRepository.save(converter.convert(userRequest));
+    public UserResponse updateUser(UserRequest userRequest) {
+        return accelerator.updateUserById(userRequest)
+                .orElseThrow(() -> UserNotFoundException.create(userRequest.getId()));
     }
 }

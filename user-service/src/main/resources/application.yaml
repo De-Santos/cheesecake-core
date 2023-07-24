@@ -6,7 +6,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -19,8 +19,6 @@ spring:
     name: user-service
 server:
   port: 8081
-
-product.service.url: ${product_service_url}
 
 logging:
   level:

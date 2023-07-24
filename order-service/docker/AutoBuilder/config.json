@@ -1,5 +1,5 @@
 {
-  "upload_type": "CLOUD",
+  "upload_type": "LOCAL",
   "project_path": "C:/CodeFile/JavaProjects/cheesecake-core/order-service",
   "gradle_build_command": "gradle bootJar",
   "jar_name": "order-service-0.0.1-SNAPSHOT.jar",

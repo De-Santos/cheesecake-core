@@ -1,4 +1,5 @@
 #!/bin/bash
 
 echo "AUTO BUILD START..."
-python3 /Users/your_username/CodeFile/JavaProjects/cheesecake-core/order-service/docker/AutoBuilder/builder.py
+python3 full path to build.py file
+echo "AUTO BUILD COMPLETED!"

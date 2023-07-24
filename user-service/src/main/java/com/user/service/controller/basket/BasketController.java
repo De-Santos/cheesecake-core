@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v3/basket")
+@CrossOrigin(origins = "*")
 public class BasketController implements BasketApi {
 
     private final BasketService basketService;
