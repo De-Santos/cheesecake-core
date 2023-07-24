@@ -9,14 +9,16 @@ spring:
       max-request-size: 10000000MB
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    show-sql: false
-    open-in-view: false
+      ddl-auto: update
+    show-sql: true
+    open-in-view: true
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
         session:
+          proxy:
+            auto_detect: true
           events:
             post_init: false
   datasource:
@@ -24,16 +26,13 @@ spring:
     username: ${username}
     password: ${password}
     url: ${postgres_url}
-  #    username: ${username}
-  #    password: ${password}
-  #    url: ${postgres_url}
   application:
     name: product-service
 server:
   port: 8082
 
 accelerator:
-  show-sql: true
+  show-sql: false
 
 logging:
   level:

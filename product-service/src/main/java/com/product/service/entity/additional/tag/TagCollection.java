@@ -22,7 +22,12 @@ public class TagCollection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany
+    @JoinTable(
+            name = "tag_collection_tags",
+            joinColumns = @JoinColumn(name = "tag_collection_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
     private List<Tag> tags;
 
     @OneToOne
@@ -36,4 +41,17 @@ public class TagCollection {
     @OneToOne
     @JoinColumn(name = "product_id", referencedColumnName = "version_id", unique = true)
     private Product product;
+
+    public static TagCollection create(DraftProduct draftProduct) {
+        return TagCollection.builder()
+                .draftProduct(draftProduct)
+                .build();
+    }
+
+    public TagCollection product(Product product) {
+        this.archiveProduct = null;
+        this.draftProduct = null;
+        this.product = product;
+        return this;
+    }
 }

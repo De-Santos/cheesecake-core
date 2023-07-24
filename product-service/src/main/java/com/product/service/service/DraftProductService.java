@@ -1,8 +1,9 @@
 package com.product.service.service;
 
-import com.product.service.dto.photo.DraftProductDto;
-import com.product.service.utils.additional.ProductChecker;
-import com.product.service.utils.convertor.Convertor;
+import com.product.service.dto.product.DraftProductRequest;
+import com.product.service.dto.product.DraftProductResponse;
+import com.product.service.utils.check.ProductChecker;
+import com.product.service.utils.converter.Converter;
 import com.product.service.utils.request.DraftRequestConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,35 +18,34 @@ import java.util.List;
 public class DraftProductService {
     private final DraftRequestConstructor draftRequestConstructor;
     private final ProductChecker productChecker;
-    private final Convertor convertor;
+    private final Converter converter;
 
     public Long newDraft() {
         log.info("Creating new product draft");
         return draftRequestConstructor.newDraft();
     }
 
-    public DraftProductDto update(DraftProductDto draftProductDto) {
-        log.info("Update draft product by id: {}", draftProductDto.getId());
-        productChecker.checkDraft(draftProductDto);
-        return draftRequestConstructor.update(draftProductDto);
+    public DraftProductResponse update(DraftProductRequest draftProductRequest) {
+        log.info("Update draft product by id: {}", draftProductRequest.getId());
+        productChecker.checkDraft(draftProductRequest);
+        return draftRequestConstructor.update(draftProductRequest);
     }
 
     @Transactional
-    public DraftProductDto delete(Long id) {
+    public DraftProductResponse delete(Long id) {
         log.info("Delete draft product by id: {}", id);
         productChecker.checkDraftById(id);
         return draftRequestConstructor.delete(id);
     }
 
     @Transactional
-    public DraftProductDto get(Long id) {
+    public DraftProductResponse get(Long id) {
         log.info("Get draft by id: {}", id);
-        return convertor.convert(draftRequestConstructor.get(id));
+        return converter.convert(draftRequestConstructor.get(id));
     }
 
     public List<Long> get() {
         log.info("Get all draft products");
         return draftRequestConstructor.get();
     }
-
 }

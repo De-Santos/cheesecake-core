@@ -11,6 +11,7 @@ import lombok.extern.jackson.Jacksonized;
 public class PhotoResponse {
     @JsonProperty("id")
     private final Long id;
+
     @JsonProperty("real_photo_name")
     private final String realPhotoName;
 }

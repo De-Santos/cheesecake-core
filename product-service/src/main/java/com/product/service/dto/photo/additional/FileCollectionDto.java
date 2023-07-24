@@ -13,7 +13,7 @@ import java.util.List;
 public class FileCollectionDto {
     @JsonProperty("banner_photo")
     private List<PhotoDto> bannerPhotos;
+
     @JsonProperty("description_photo")
     private PhotoDto descriptionPhoto;
-
 }

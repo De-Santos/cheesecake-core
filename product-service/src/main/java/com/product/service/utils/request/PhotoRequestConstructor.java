@@ -9,11 +9,11 @@ import com.product.service.entity.additional.FileCollection;
 import com.product.service.exception.exceptions.file.collection.found.FileCollectionNotFoundException;
 import com.product.service.exception.exceptions.file.photo.found.BannerPhotoNotFoundException;
 import com.product.service.exception.exceptions.file.photo.found.DescriptionPhotoNotFoundException;
-import com.product.service.utils.additional.FileCollectionChecker;
-import com.product.service.utils.convertor.Convertor;
+import com.product.service.utils.check.FileCollectionChecker;
+import com.product.service.utils.converter.Converter;
 import com.product.service.utils.request.jdbc.accelerator.JdbcAccelerator;
 import com.product.service.utils.request.utils.FileCollectionUtils;
-import com.product.service.utils.validator.Validator;
+import com.product.service.utils.validator.FileValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.lang.NonNull;
@@ -33,7 +33,7 @@ public class PhotoRequestConstructor {
     private final BannerPhotoRepository bannerPhotoRepository;
     private final DescriptionPhotoRepository descriptionPhotoRepository;
     private final JdbcAccelerator accelerator;
-    private final Convertor convertor;
+    private final Converter converter;
 
     public BannerPhoto getBannerPhoto(Long id) {
         log.info("Get photo by index: {}", id);
@@ -47,7 +47,7 @@ public class PhotoRequestConstructor {
 
     public Long uploadFile(@NonNull MultipartFile file, Long draftId) {
         log.info("Upload file in database with name: {}", file.getOriginalFilename());
-        Validator.validateObtainFile(file);
+        FileValidator.validateObtainFile(file);
         FileCollection fileCollection = this.safeGetFileCollectionByDraftId(draftId);
         fileCollectionChecker.checkFileOrder(fileCollection);
         return this.addNewPhoto(file, fileCollection);
@@ -85,20 +85,20 @@ public class PhotoRequestConstructor {
     }
 
     private Long addNewPhoto(MultipartFile file, FileCollection fileCollection) {
-        BannerPhoto newBannerPhoto = convertor.bannerPhotoBuilder(file, fileCollection);
+        BannerPhoto newBannerPhoto = converter.bannerPhotoBuilder(file, fileCollection);
         BannerPhoto bannerPhoto = accelerator.saveBannerPhoto(newBannerPhoto);
         return bannerPhoto.getId();
     }
 
     private Long setDescriptionPhoto(MultipartFile file, FileCollection fileCollection) {
-        DescriptionPhoto descriptionPhoto = convertor.descriptionPhotoBuilder(file, fileCollection);
+        DescriptionPhoto descriptionPhoto = converter.descriptionPhotoBuilder(file, fileCollection);
         if (Objects.nonNull(fileCollection.getDescriptionPhoto()))
             descriptionPhoto.setId(fileCollection.getDescriptionPhoto().getId());
         return accelerator.saveDescriptionPhoto(descriptionPhoto).getId();
     }
 
     private Long updateExistingPhoto(MultipartFile file, Long existingPhotoId, FileCollection fileCollection) {
-        BannerPhoto bannerPhoto = convertor.bannerPhotoBuilder(file, fileCollection);
+        BannerPhoto bannerPhoto = converter.bannerPhotoBuilder(file, fileCollection);
         bannerPhoto.setId(existingPhotoId);
         BannerPhoto oldBannerPhoto = this.safeGetBannerPhoto(existingPhotoId);
         bannerPhoto.setPosition(oldBannerPhoto.getPosition());

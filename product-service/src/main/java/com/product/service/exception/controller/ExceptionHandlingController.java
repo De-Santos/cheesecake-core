@@ -9,6 +9,7 @@ import com.product.service.exception.exceptions.file.photo.main.NullFileExceptio
 import com.product.service.exception.exceptions.product.main.DraftRequestException;
 import com.product.service.exception.exceptions.product.main.ModifyingRequestException;
 import com.product.service.exception.exceptions.product.main.ProductRequestException;
+import com.product.service.exception.exceptions.tag.main.TagException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -120,6 +121,16 @@ public class ExceptionHandlingController {
     @ExceptionHandler(DraftRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> handleException(DraftRequestException e) {
+        e.printStackTrace();
+        log.error(DEFAULT_EXCEPTION_LOG, e.getClass().getName(), e.getMessage());
+        return new ResponseEntity<>(
+                new ExceptionDto(e.getClass().getSimpleName(), e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TagException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ExceptionDto> handleException(TagException e) {
         e.printStackTrace();
         log.error(DEFAULT_EXCEPTION_LOG, e.getClass().getName(), e.getMessage());
         return new ResponseEntity<>(
