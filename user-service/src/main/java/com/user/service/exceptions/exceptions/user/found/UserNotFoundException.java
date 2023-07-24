@@ -9,6 +9,10 @@ public class UserNotFoundException extends UserException {
         return new UserNotFoundException("User not found by id: " + id);
     }
 
+    public static UserNotFoundException create(String email) {
+        return new UserNotFoundException("User not found by email: " + email);
+    }
+
     public UserNotFoundException() {
     }
 
